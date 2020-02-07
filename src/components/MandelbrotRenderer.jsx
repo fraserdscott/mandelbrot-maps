@@ -110,8 +110,14 @@ export default function MandelbrotRenderer(props) {
     },
 
   }, { 
-    event: { passive: false, capture: false }, 
     domTarget: touchTarget,
+    eventOptions: { 
+      passive: false, 
+      capture: true,
+    },
+    drag: {
+      bounds,
+    },
     // The config object passed to useGesture has drag, wheel, scroll, pinch and move keys
     // for specific gesture options. See here for more details.
     // drag: {
@@ -127,10 +133,11 @@ export default function MandelbrotRenderer(props) {
     twgl.resizeCanvasToDisplaySize(gl.current.canvas);
     gl.current.viewport(0, 0, gl.current.canvas.width, gl.current.canvas.height);
 
+    const z = zoom.getValue();
     // values to pass to the shader
     const uniforms = {
       resolution: [gl.current.canvas.width, gl.current.canvas.height],
-      u_zoom: zoom.getValue(),
+      u_zoom: z,
       u_pos:  scale(pos.getValue(), -screenScaleMultiplier),  // re-scale from screen coordinates to plot coordinates
       u_maxI: maxI,
     };

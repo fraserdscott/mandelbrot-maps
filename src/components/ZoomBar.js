@@ -34,7 +34,7 @@ export default function ZoomBar(props) {
   // let [minZoom, maxZoom] = [0.01, 1000]
   // const [zoom, setZoom] = useState(100) // useSpring(() => ({ zoom: 100 }));
   
-  const [{ zoom, minZoom, maxZoom }, setZoom] = props.controller;
+  const [{ zoom, minZoom, maxZoom, zMult, zCons }, setZoom] = props.controller;
   // const [{ zoom }, setZoom] = useSpring(() => ({ zoom: 100, config: {
   //   friction: 50, 
   //   tension: 600,
@@ -42,9 +42,9 @@ export default function ZoomBar(props) {
 
   const zoomClick = dir => {
     // zoom in a particular direction
-    const z = Math.sign(dir) * (1e-1 * zoom.getValue() + 1);
+    const z = Math.sign(dir) * (2e-1 * zoom.getValue() + 1);
     setZoom({ zoom: clamp(zoom.getValue() + z, minZoom.getValue(), maxZoom.getValue()) });
-  }
+  };
 
   return (
     <div 
@@ -70,7 +70,6 @@ export default function ZoomBar(props) {
           </TransparentFab>
           <div style={{
             height: fabSize,
-            position: "relative",
           }}>
             <ZoomBarFab 
               diameter={fabSize} 
@@ -78,6 +77,7 @@ export default function ZoomBar(props) {
               zoomControl={setZoom} 
               minZoom={minZoom}
               maxZoom={maxZoom}
+              zUser={[zMult, zCons]}
             />
           </div>
           <TransparentFab onClick={e => {
@@ -91,7 +91,7 @@ export default function ZoomBar(props) {
   )
 }
 
-export function ZoomBarFab(props) {
+function ZoomBarFab(props) {
   const [{ y }, set] = useSpring(() => ({ y: 0, config: {
      friction: 30, 
      tension: 400,
@@ -99,11 +99,17 @@ export function ZoomBarFab(props) {
   }}))
   
   const [zoom, setZoom] = [props.zoom, props.zoomControl];
+  // const [minZ, maxZ] = [props.minZoom, props.maxZoom];
+  const [zMult, zCons] = props.zUser.map(v => v.getValue());
+  // user zoom should be between 1 and 100; linear mapping to ensure this
+  const zoomToUserRange = z => Math.sqrt(z * zMult + zCons);
   
   const [gestureDown, setGestureDown] = useState(false);
   const [zoomMult, setZoomMult] = useState(1);
   const ref = React.useRef(null);
   
+  const yLimit = 80;
+
   const reset = () => {
     setZoom({ zoom: 1 });
   }
@@ -128,13 +134,18 @@ export function ZoomBarFab(props) {
     // tell zoom listener if drag is happening
     setGestureDown(down);
     
-    const limit = 80;
-    const clampY = clamp(y, -limit, limit)
+    const clampY = clamp(y, -yLimit, yLimit)
     
     setZoomMult(down ? -Math.sign(clampY) * Math.abs(clampY / 8)**4 : 0)
     set({ y: down ? clampY : 0 })
     
-  }, { event: { passive: false, capture: false }, domTarget: ref })
+  }, { 
+    eventOptions: { 
+      passive: false, 
+      capture: false 
+    }, 
+    domTarget: ref 
+  });
   
   React.useEffect(bind, [bind])
 
@@ -151,7 +162,7 @@ export function ZoomBarFab(props) {
         marginTop: -props.diameter/2,
         top: "50%",
         left: "50%",
-        position: "absolute",
+        position: "relative",
         zIndex: 1,
       }} 
       >
@@ -165,9 +176,10 @@ export function ZoomBarFab(props) {
           backgroundColor: "#2196f3",
           width: props.diameter,
           height: props.diameter,
+          position: "relative",
         }}>
         <Typography style={{ color: "#fff" }}>
-          <animated.span>{zoom.interpolate(z => (z).toPrecision(6))}</animated.span>
+          <animated.span>{zoom.interpolate(z => zoomToUserRange(z).toPrecision(4))}</animated.span>
         </Typography>
       </Fab>
     </animated.div>

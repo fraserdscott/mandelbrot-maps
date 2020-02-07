@@ -59,12 +59,22 @@ function App() {
     config: defaultSpringConfig,
   }))
 
+  const minZ = 0.75;
+  const maxZ = 100000;
+  // user zoom should be between 1 and 100; linear mapping to ensure this
+  const zMult = (10000 - 1) / (maxZ - minZ);
+  const zCons = 1 - ((10000 - 1) * minZ) / (maxZ - minZ);
+
+
   const controlZoom = useSpring(() => ({
-    zoom: 1.0,
+    zoom: minZ,
     last_pointer_dist: 0,
 
-    minZoom: 0.5,
-    maxZoom: 100000,
+    minZoom: minZ,
+    maxZoom: maxZ,
+
+    zMult: zMult,
+    zCons: zCons,
 
     config: { mass: 1, tension: 600, friction: 50 },
   }))
