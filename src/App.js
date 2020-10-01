@@ -109,6 +109,7 @@ function App() {
     miniViewer: useState(true),
     crosshair: useState(true),
     coords: useState(false),
+    misiurewiczParameters: useState(false),
     maxI: useState(250),
     aa: useState(false),
     dpr: useState(false),
@@ -142,6 +143,14 @@ function App() {
           color="primary"
           checked={controls.coords[0]} 
           onChange={() => toggleVal(controls.coords)} 
+        />
+      },
+      misiurewiczParameters: {
+        name: 'Display Misiurewicz parameters', 
+        ctrl: <Switch 
+          color="primary"
+          checked={controls.misiurewiczParameters[0]} 
+          onChange={() => toggleVal(controls.misiurewiczParameters)} 
         />
       },
     }
@@ -247,6 +256,7 @@ function App() {
             miniSize={miniSize}
             enableMini={controls.miniViewer[0]}
             crosshair={controls.crosshair[0]}
+            misiurewiczParameters={controls.misiurewiczParameters[0]}
             aa={controls.aa[0]}
             dpr={dpr}
             showFps={controls.fps[0]}
