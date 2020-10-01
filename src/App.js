@@ -30,6 +30,11 @@ function App() {
   const startZoom = 165.0;
   const miniSize = useState(100);
 
+
+  //Georgies experiment
+  const mPoint = [0, 1];
+  const mZoom = [sqrt(32.0)];
+
   const mandelbrotControls = {
     pos: useSpring(() => ({
       pos: startPos.map(x => x / screenScaleMultiplier),
@@ -107,6 +112,7 @@ function App() {
 
   let controls = {
     miniViewer: useState(true),
+    week3Deadline: useState(false),
     crosshair: useState(true),
     coords: useState(false),
     maxI: useState(250),
@@ -126,6 +132,14 @@ function App() {
           color="primary"
           checked={controls.miniViewer[0]} 
           onChange={() => toggleVal(controls.miniViewer)} 
+        />
+      },
+      week3Deadline: {
+        name: 'An M-point w magnification!', 
+        ctrl: <Switch 
+          color="primary"
+          checked={controls.week3Deadline[0]} 
+          onChange={() => toggleVal(controls.week3Deadline)} 
         />
       },
       crosshair: {
