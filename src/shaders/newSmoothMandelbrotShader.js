@@ -49,6 +49,9 @@ bool crosshair( float x, float y ) {
 }
 
 float mandelbrot( in vec2 c ) {
+    // Shade points around the Misiurewicz parameter
+    if (c.x > -2.01 && c.x < -1.99 && c.y < 0.01 && c.y > -0.01) return 25.0;
+    
     {
         float c2 = dot(c, c);
         // skip computation inside M1 - http://iquilezles.org/www/articles/mset_1bulb/mset1bulb.htm
