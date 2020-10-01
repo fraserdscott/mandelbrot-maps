@@ -51,8 +51,14 @@ bool crosshair( float x, float y ) {
 }
 
 float mandelbrot( in vec2 c ) {
-    // Shade points around the Misiurewicz parameter
-    if (M==1 && c.x > -2.01 && c.x < -1.99 && c.y < 0.01 && c.y > -0.01) return 25.0;
+    vec2 m1  = vec2(-2.0, 0.0);
+    vec2 m2  = vec2(0.0, 1.0);
+    vec2 m3  = vec2(-0.1010, 0.9562);
+
+    // Shade points around the Misiurewicz parameters
+    if (M==1 && c.x < m1.x + 0.02 && c.x > m1.x - 0.02 && c.y < m1.y + 0.0 && c.y > m1.y - 0.06) return 100.0;
+    if (M==1 && c.x < m2.x + 0.02 && c.x > m2.x - 0.02 && c.y < m2.y + 0.0 && c.y > m2.y - 0.06) return 100.0;
+    if (M==1 && c.x < m3.x + 0.02 && c.x > m3.x - 0.02 && c.y < m3.y + 0.0 && c.y > m3.y - 0.06) return 100.0;
 
     {
         float c2 = dot(c, c);
