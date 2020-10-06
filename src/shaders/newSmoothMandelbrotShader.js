@@ -8,7 +8,12 @@ const newSmoothMandelbrotShader = ({
     crosshair = {
         stroke: 2, 
         radius: 100, 
-    }
+    },
+    //Georgies Experiment - setting mPoint with zoom as a constant 
+    week3Deadline ={ 
+        pos: [0,1],
+        zoom: [5.66], 
+    },
 ) => `
 // Adapted by Joao Maio/2019, based on work by inigo quilez - iq/2013
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
@@ -24,6 +29,10 @@ const newSmoothMandelbrotShader = ({
 // crosshair parameters
 #define cross_stroke ${crosshair.stroke.toFixed(1)}
 #define cross_radius ${crosshair.radius.toFixed(1)}
+
+//Georgies Mpoint parameters 
+#define mpoint_pos ${week3Deadline.pos}
+#define mpoint_zoom ${week3Deadline.zoom}
 
 // set high float precision (lower than this may break colours on mobile)
 precision highp float;

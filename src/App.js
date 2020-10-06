@@ -33,7 +33,32 @@ function App() {
 
   //Georgies experiment
   const mPoint = [0, 1];
-  const mZoom = [sqrt(32.0)];
+  const mZoom = [5.66];
+
+  const georgiesMPointExperiment = {
+    pos: useSpring(() => ({
+      //pos: mPoint,
+      pos: mPoint.map(x => x / screenScaleMultiplier),
+      config: defaultSpringConfig,
+    })),
+
+    rot: useSpring(() => ({
+      theta: 0,
+      last_pointer_angle: 0,
+      itheta: 0,
+      config: defaultSpringConfig,
+    })),
+
+    zoom: useSpring(() => ({
+      zoom: mZoom,
+      last_pointer_dist: 0,
+  
+      minZoom: 0.5,
+      maxZoom: 100000,
+  
+      config: { mass: 1, tension: 600, friction: 50 },
+    })),
+  };
 
   const mandelbrotControls = {
     pos: useSpring(() => ({
@@ -110,9 +135,10 @@ function App() {
 
   let toggleInfo = () => setShowInfo(!showInfo);
 
+  //Georgie - Control menu
   let controls = {
     miniViewer: useState(true),
-    week3Deadline: useState(false),
+    week3Deadline: useState(false), //sets the default of switching this button on as false
     crosshair: useState(true),
     coords: useState(false),
     maxI: useState(250),
@@ -122,7 +148,10 @@ function App() {
   };
 
   let toggleVal = ([v, setV]) => setV(!v);
+  let toggleVal2 = ([v, setV, action]) => setV(!v);
 
+
+  //Visual settings - buttons turning blue/turned on etc
   let settings = [{
     title: "Interface",
     items: {
@@ -139,7 +168,8 @@ function App() {
         ctrl: <Switch 
           color="primary"
           checked={controls.week3Deadline[0]} 
-          onChange={() => toggleVal(controls.week3Deadline)} 
+          //onChange={() => toggleVal(georgiesMPointExperiment)}
+          onChange={() => toggleVal(controls.week3Deadline)} //Deals w the visual of it
         />
       },
       crosshair: {
@@ -260,6 +290,7 @@ function App() {
             screenmult={screenScaleMultiplier}
             miniSize={miniSize}
             enableMini={controls.miniViewer[0]}
+            showMPoint = {controls.week3Deadline[0]}
             crosshair={controls.crosshair[0]}
             aa={controls.aa[0]}
             dpr={dpr}
