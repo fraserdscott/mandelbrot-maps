@@ -31,6 +31,25 @@ export const startZoom = 85.0;
 export const startTheta = 0.6;
 export const screenScaleMultiplier = 1e-7;
 
+// coordinates of each point, along with zoom and theta
+export const misiurewiczPoints: [[number, number], number, number][] = [
+  [[-0.562204, 0.6428146], 7, -0.4],
+  [[-0.1010963, 0.9562867], 400, -0.6],
+  [[-2, 0], 70, 0],
+  [[-0.9870042, -0.3129012], 1900, 0.6],
+];
+
+export const misiurewiczFlat: number[] = [
+  -0.562204,
+  0.6428146,
+  -0.1010963,
+  0.9562867,
+  -2,
+  0,
+  -0.9870042,
+  -0.3129012,
+];
+
 function App(): JSX.Element {
   const size = useWindowSize();
 
