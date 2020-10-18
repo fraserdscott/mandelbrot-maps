@@ -56,3 +56,10 @@ export interface ChangeCoordinatesCardProps extends CardProps {
   mandelbrot: MandelbrotControls;
   julia?: OpaqueInterpolation<XYType>;
 }
+
+export interface ChangeMisiurewiczCardProps extends CardProps {
+  show: boolean;
+  screenScaleMultiplier: number;
+  mandelbrot: MandelbrotControls;
+  julia?: OpaqueInterpolation<XYType>;
+}
