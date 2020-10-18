@@ -12,27 +12,17 @@ import {
 import { ChangeMisiurewiczCardProps } from '../../common/info';
 
 const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element => {
-  const [x, setX] = useState(startPos[0]);
-  const [y, setY] = useState(startPos[1]);
-  const [zoom, setZoom] = useState(startZoom);
-  const [theta, setTheta] = useState(startTheta);
-
-  const go = (wurpos: [number, number], wurzoom: number, wurtheta: number) => {
-    setX(wurpos[0]);
-    setY(wurpos[1]);
-    setZoom(wurzoom);
-    setTheta(wurtheta);
-
+  const go = (newPos: [number, number], newZoom: number, newTheta: number) => {
     props.mandelbrot.xyCtrl[1]({
-      xy: vScale(1 / props.screenScaleMultiplier, [x, y]),
+      xy: vScale(1 / props.screenScaleMultiplier, newPos),
       config: resetPosSpringConfig,
     });
     props.mandelbrot.zoomCtrl[1]({
-      z: zoom,
+      z: newZoom,
       config: resetZoomSpringConfig,
     });
     props.mandelbrot.rotCtrl[1]({
-      theta: theta,
+      theta: newTheta,
       config: resetZoomSpringConfig,
     });
   };
