@@ -11,6 +11,7 @@ import {
 } from './common/types';
 import CoordinatesCard from './components/info/CoordinatesCard';
 import ChangeCoordinatesCard from './components/info/ChangeCoordinatesCard';
+import ChangeMisiurewiczCard from './components/info/ChangeMisiurewiczCard';
 import InfoDialog from './components/info/InfoDialog';
 import JuliaRenderer from './components/render/JuliaRenderer';
 // import 'typeface-roboto';
@@ -161,6 +162,21 @@ function App(): JSX.Element {
                   position: 'absolute',
                 }}
               >
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    margin: 20,
+                    width: 'auto',
+                  }}
+                >
+                  <ChangeMisiurewiczCard
+                    show={settings.showMisiurewiczPoints}
+                    mandelbrot={mandelbrotControls}
+                    screenScaleMultiplier={screenScaleMultiplier}
+                  />
+                </div>
                 <div
                   style={{
                     position: 'absolute',
