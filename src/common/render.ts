@@ -26,6 +26,7 @@ export interface MandelbrotRendererProps {
   useDPR: boolean;
   useAA: boolean;
   showCrosshair: boolean;
+  showMisiurewiczPoints: boolean;
 }
 
 export interface MinimapViewerProps extends WebGLCanvasProps {

@@ -10,6 +10,7 @@ export const defaultSettings = {
   showMinimap: true,
   showCrosshair: true,
   showCoordinates: true,
+  showMisiurewiczPoints: false,
   maxI: 250,
   showFPS: false,
   useDPR: false,
@@ -35,6 +36,12 @@ export const settingsWidgets = (
     k: 'showCoordinates',
     label: 'Show coordinates',
     checked: settings.showCoordinates,
+    control: <Switch />,
+  },
+  showMisiurewiczPoints: {
+    k: 'showMisiurewiczPoints',
+    label: 'Show Misiurewicz Points',
+    checked: settings.showMisiurewiczPoints,
     control: <Switch />,
   },
   maxI: {
@@ -98,6 +105,7 @@ export const getSettingsWidgetsGrouping = (
       settingsWidgets.showMinimap,
       settingsWidgets.showCrosshair,
       settingsWidgets.showCoordinates,
+      settingsWidgets.showMisiurewiczPoints,
     ],
   },
   {
