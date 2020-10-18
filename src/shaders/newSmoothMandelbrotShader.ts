@@ -14,10 +14,11 @@ export interface MandelbrotShaderParams {
   B: number;
   /** Anti-aliasing samples */
   AA: number;
+  showM: boolean;
 }
 
 const newSmoothMandelbrotShader = (
-  { maxI = 300, AA = 1, B = 64 },
+  { maxI = 300, AA = 1, B = 64, showM = false },
   showCrosshair = true,
   crosshairShape = {
     stroke: 2,
@@ -38,6 +39,7 @@ const newSmoothMandelbrotShader = (
 #define AA ${AA}
 #define MAXI ${maxI}
 #define B ${B.toFixed(1)}
+#define showM ${showM}
 
 // crosshair parameters
 #define show_crosshair ${showCrosshair}
@@ -55,6 +57,7 @@ uniform int   u_maxI;
 uniform vec2  u_xy;
 uniform float u_zoom;
 uniform float u_theta;
+uniform float myValues[8];
 
 bool crosshair( float x, float y ) {
   float abs_x = abs(2.0*x - resolution.x);
@@ -68,6 +71,14 @@ bool crosshair( float x, float y ) {
 }
 
 float mandelbrot( in vec2 c ) {
+    if (showM == true) {
+      for( int i=0; i<8; i+=2 )
+      {
+        float d = pow(distance(c, vec2(myValues[i], myValues[i+1])), 2.0);
+        if (d < 0.01 && d > 0.005) return 100.0;
+      }
+    }
+
     {
         float c2 = dot(c, c);
         // skip computation inside M1 - http://iquilezles.org/www/articles/mset_1bulb/mset1bulb.htm

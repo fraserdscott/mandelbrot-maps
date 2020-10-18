@@ -42,6 +42,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps) {
     {
       maxI: maxI,
       AA: AA,
+      showM: props.showMisiurewiczPoints,
     },
     props.showCrosshair,
     standardCrosshair,

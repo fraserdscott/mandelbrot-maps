@@ -4,6 +4,7 @@ import * as twgl from 'twgl.js';
 import { vScale } from 'vec-la-fp';
 import { WebGLCanvasProps } from '../../common/render';
 import { fullscreenVertexArray, fullVertexShader } from '../../shaders/fullVertexShader';
+import { misiurewiczFlat } from '../../App';
 
 // https://mariusschulz.com/blog/typing-destructured-object-parameters-in-typescript
 // https://stackoverflow.com/a/50294843/9184658
@@ -97,6 +98,7 @@ const WebGLCanvas = React.forwardRef<
         u_xy: vScale(u.screenScaleMultiplier, u.xy.getValue()),
         u_maxI: u.maxI,
         u_theta: u.theta?.getValue(),
+        myValues: misiurewiczFlat,
       };
 
       (gl.current as WebGLRenderingContext).useProgram(
