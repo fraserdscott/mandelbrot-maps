@@ -12,19 +12,30 @@ import {
 import { ChangeMisiurewiczCardProps } from '../../common/info';
 
 const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element => {
+  var clicks = 0;
   const go = (newPos: [number, number], newZoom: number, newTheta: number) => {
-    props.mandelbrot.xyCtrl[1]({
-      xy: vScale(1 / props.screenScaleMultiplier, newPos),
-      config: resetPosSpringConfig,
-    });
-    props.mandelbrot.zoomCtrl[1]({
-      z: newZoom,
-      config: resetZoomSpringConfig,
-    });
-    props.mandelbrot.rotCtrl[1]({
-      theta: newTheta,
-      config: resetZoomSpringConfig,
-    });
+    if (clicks == 0) {
+      props.mandelbrot.xyCtrl[1]({
+        xy: vScale(1 / props.screenScaleMultiplier, newPos),
+        config: resetPosSpringConfig,
+      });
+    }
+    if (clicks == 1) {
+      props.mandelbrot.zoomCtrl[1]({
+        z: newZoom,
+        config: resetZoomSpringConfig,
+      });
+    }
+    if (clicks == 2) {
+      props.mandelbrot.rotCtrl[1]({
+        theta: newTheta,
+        config: resetZoomSpringConfig,
+      });
+    }
+    clicks += 1;
+    if (clicks == 3) {
+      clicks = 0;
+    }
   };
 
   return (
