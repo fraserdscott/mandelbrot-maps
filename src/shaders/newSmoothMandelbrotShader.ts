@@ -71,37 +71,25 @@ bool crosshair( float x, float y ) {
 }
 
 float mandelbrot( in vec2 c ) {
-    if (showM == true) {
-      for( int i=0; i<8; i+=2 )
-      {
-        float d = pow(distance(c, vec2(myValues[i], myValues[i+1])), 2.0);
-        if (d < 0.01 && d > 0.005) return 100.0;
-      }
-    }
-
-    {
-        float c2 = dot(c, c);
-        // skip computation inside M1 - http://iquilezles.org/www/articles/mset_1bulb/mset1bulb.htm
-        if( 256.0*c2*c2 - 96.0*c2 + 32.0*c.x - 3.0 < 0.0 ) return 0.0;
-        // skip computation inside M2 - http://iquilezles.org/www/articles/mset_2bulb/mset2bulb.htm
-        if( 16.0*(c2+2.0*c.x+1.0) - 1.0 < 0.0 ) return 0.0;
-    }
-
+    float minDistance = 999999999.0;
+    float q = 0.0;
     float l = 0.0;
     vec2 z  = vec2(0.0);
     for( int i=0; i<MAXI; i++ )
     {
+        vec2 z0 = z;
         z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
+        if (distance(z0, z) < minDistance){
+          q = float(i);
+          minDistance = distance(z0, z);
+        }
         if( dot(z,z)>(B*B) ) break;
         l += 1.0;
     }
-
-    // maxed out iterations
-    if( l>float(MAXI)-1.0 ) return 0.0;
+    if (l < float(MAXI)) {
+      l = q*minDistance*3.0;
+    }
     
-    // optimized smooth interation count
-    l = l - log2(log2(dot(z,z))) + 4.0;
-
     return l;
 }
 
