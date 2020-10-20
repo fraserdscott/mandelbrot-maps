@@ -1,30 +1,12 @@
 import { Button, Card, Grid, Grow } from '@material-ui/core';
 import React, { useState } from 'react';
-import { vScale } from 'vec-la-fp';
-import {
-  resetPosSpringConfig,
-  resetZoomSpringConfig,
-  startPos,
-  startTheta,
-  startZoom,
-  misiurewiczPoints,
-} from '../../App';
 import { ChangeMisiurewiczCardProps } from '../../common/info';
+import { misiurewiczPoints } from '../../App';
+import { warpToPoint } from '../utils';
 
 const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element => {
   const go = (newPos: [number, number], newZoom: number, newTheta: number) => {
-    props.mandelbrot.xyCtrl[1]({
-      xy: vScale(1 / props.screenScaleMultiplier, newPos),
-      config: resetPosSpringConfig,
-    });
-    props.mandelbrot.zoomCtrl[1]({
-      z: newZoom,
-      config: resetZoomSpringConfig,
-    });
-    props.mandelbrot.rotCtrl[1]({
-      theta: newTheta,
-      config: resetZoomSpringConfig,
-    });
+    warpToPoint(props.mandelbrot, { xy: newPos, z: newZoom, theta: newTheta });
   };
 
   return (

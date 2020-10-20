@@ -135,7 +135,6 @@ function App(): JSX.Element {
                   <ChangeMisiurewiczCard
                     show={settings.showMisiurewiczPoints}
                     mandelbrot={mandelbrotControls}
-                    screenScaleMultiplier={screenScaleMultiplier}
                   />
                 </div>
                 <div
