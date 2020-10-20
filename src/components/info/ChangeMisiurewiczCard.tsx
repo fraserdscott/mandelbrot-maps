@@ -1,13 +1,53 @@
-import { Button, Card, Grid, Grow } from '@material-ui/core';
+import { Button, Card, Grid, Grow, Snackbar } from '@material-ui/core';
 import React from 'react';
 import { ChangeMisiurewiczCardProps } from '../../common/info';
 import { misiurewiczPoints } from '../../App';
 import { warpToPoint } from '../utils';
 
 const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element => {
-  const go = (newPos: [number, number], newZoom: number, newTheta: number) => {
-    warpToPoint(props.mandelbrot, { xy: newPos, z: newZoom, theta: newTheta });
-    warpToPoint(props.julia, { xy: newPos, z: newZoom, theta: 0 });
+  const [openT, setOpenT] = React.useState(false);
+  const [openM, setOpenM] = React.useState(false);
+  const [openR, setOpenR] = React.useState(false);
+
+  const handleClose = (
+    event: React.SyntheticEvent | React.MouseEvent,
+    reason?: string,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenT(false);
+    setOpenM(false);
+    setOpenR(false);
+  };
+
+  const [state, setState] = React.useState(0);
+  const [pointToAnimate, setPointToAnimate] = React.useState([0, 0]);
+  const go = (pos: [number, number], zoom: number, theta: number) => {
+    if (pos[0] !== pointToAnimate[0] && pos[1] !== pointToAnimate[1]) {
+      setState(0);
+      setPointToAnimate(pos);
+    } else if (state === 0) {
+      warpToPoint(props.mandelbrot, { xy: [0, 0], z: 0.8, theta: 0 });
+      warpToPoint(props.julia, { xy: [0, 0], z: 0.8, theta: 0 });
+      setState(1);
+    } else if (state === 1) {
+      setOpenT(true);
+      warpToPoint(props.mandelbrot, { xy: pos, z: 1, theta: 0 });
+      warpToPoint(props.julia, { xy: pos, z: 1, theta: 0 });
+      setState(2);
+    } else if (state === 2) {
+      setOpenM(true);
+      warpToPoint(props.mandelbrot, { xy: pos, z: zoom, theta: 0 });
+      warpToPoint(props.julia, { xy: pos, z: zoom, theta: 0 });
+      setState(3);
+    } else if (state === 3) {
+      setOpenR(true);
+      warpToPoint(props.mandelbrot, { xy: pos, z: zoom, theta: theta });
+      warpToPoint(props.julia, { xy: pos, z: zoom, theta: 0 });
+      setState(4);
+    }
   };
 
   return (
@@ -36,6 +76,36 @@ const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element =
               {m[0].toString()}
             </Button>
           ))}
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            open={openT}
+            onClose={handleClose}
+            autoHideDuration={3000}
+            message="Translating"
+          />
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            open={openM}
+            onClose={handleClose}
+            autoHideDuration={3000}
+            message="Magnifying"
+          />
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            open={openR}
+            onClose={handleClose}
+            autoHideDuration={3000}
+            message="Rotating"
+          />
         </Grid>
       </Card>
     </Grow>

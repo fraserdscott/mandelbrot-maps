@@ -32,7 +32,7 @@ import theme from './theme/theme';
 
 // coordinates of each point, along with zoom and theta
 export const misiurewiczPoints: [[number, number], number, number][] = [
-  [[-0.562204, 0.6428146], 7, 0.2],
+  [[-0.562204, 0.6428146], 100, 0.3],
   [[-0.1010963, 0.9562867], 200, 0.3],
   [[-2, 0], 70, 0],
   [[-0.9870042, -0.3129012], 1900, 0.6],
