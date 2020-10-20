@@ -9,6 +9,10 @@ const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element =
   const [openM, setOpenM] = React.useState(false);
   const [openR, setOpenR] = React.useState(false);
 
+  const [messageT, setMessageT] = React.useState('not set');
+  const [messageM, setMessageM] = React.useState('not set');
+  const [messageR, setMessageR] = React.useState('not set');
+
   const handleClose = (
     event: React.SyntheticEvent | React.MouseEvent,
     reason?: string,
@@ -28,6 +32,9 @@ const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element =
     if (pos[0] !== pointToAnimate[0] && pos[1] !== pointToAnimate[1]) {
       setState(0);
       setPointToAnimate(pos);
+      setMessageT(`Translating to ${pos}`);
+      setMessageM(`Magnifying ${zoom}x`);
+      setMessageR(`Rotating by ${theta} radians`);
     } else if (state === 0) {
       warpToPoint(props.mandelbrot, { xy: [0, 0], z: 0.8, theta: 0 });
       warpToPoint(props.julia, { xy: [0, 0], z: 0.8, theta: 0 });
@@ -84,7 +91,7 @@ const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element =
             open={openT}
             onClose={handleClose}
             autoHideDuration={3000}
-            message="Translating"
+            message={messageT}
           />
           <Snackbar
             anchorOrigin={{
@@ -94,7 +101,7 @@ const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element =
             open={openM}
             onClose={handleClose}
             autoHideDuration={3000}
-            message="Magnifying"
+            message={messageM}
           />
           <Snackbar
             anchorOrigin={{
@@ -104,7 +111,7 @@ const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element =
             open={openR}
             onClose={handleClose}
             autoHideDuration={3000}
-            message="Rotating"
+            message={messageR}
           />
         </Grid>
       </Card>
