@@ -42,5 +42,5 @@ export interface ChangeMisiurewiczCardProps extends CardProps {
   show: boolean;
   // screenScaleMultiplier: number;
   mandelbrot: ViewerControls;
-  julia?: OpaqueInterpolation<XYType>;
+  julia: ViewerControls;
 }

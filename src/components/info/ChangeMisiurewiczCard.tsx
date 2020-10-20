@@ -1,5 +1,5 @@
 import { Button, Card, Grid, Grow } from '@material-ui/core';
-import React, { useState } from 'react';
+import React from 'react';
 import { ChangeMisiurewiczCardProps } from '../../common/info';
 import { misiurewiczPoints } from '../../App';
 import { warpToPoint } from '../utils';
@@ -7,6 +7,7 @@ import { warpToPoint } from '../utils';
 const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element => {
   const go = (newPos: [number, number], newZoom: number, newTheta: number) => {
     warpToPoint(props.mandelbrot, { xy: newPos, z: newZoom, theta: newTheta });
+    warpToPoint(props.julia, { xy: newPos, z: newZoom, theta: 0 });
   };
 
   return (

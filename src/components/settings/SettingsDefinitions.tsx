@@ -10,7 +10,7 @@ export const defaultSettings = {
   showMinimap: true,
   showCrosshair: true,
   showCoordinates: true,
-  showMisiurewiczPoints: false,
+  showMisiurewiczPoints: true,
   maxI: 250,
   showFPS: false,
   useDPR: false,
