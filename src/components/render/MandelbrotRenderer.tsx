@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useGesture } from 'react-use-gesture';
-import { UserHandlersPartial } from 'react-use-gesture/dist/types';
 import { MandelbrotRendererProps } from '../../common/render';
+import { screenScaleMultiplier } from '../../common/values';
 import newSmoothMandelbrotShader, {
   miniCrosshair,
   standardCrosshair,
@@ -12,7 +12,7 @@ import { genericTouchBind } from '../utils';
 import MinimapViewer from './MinimapViewer';
 import WebGLCanvas from './WebGLCanvas';
 
-export default function MandelbrotRenderer(props: MandelbrotRendererProps) {
+export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.Element {
   // variables to hold canvas and webgl information
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const miniCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,7 +23,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps) {
   // this multiplier subdivides the screen space into smaller increments
   // to allow for velocity calculations to not immediately decay, due to the
   // otherwise small scale that is being mapped to the screen.
-  const screenScaleMultiplier = props.screenScaleMultiplier; // -> global
+  // const screenScaleMultiplier = props.screenScaleMultiplier; // -> global
 
   // temporary bounds to prevent excessive panning
   // eslint-disable-next-line
@@ -60,22 +60,20 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps) {
 
   const gtb = genericTouchBind({
     domTarget: canvasRef,
-    posControl: props.controls.xyCtrl,
-    zoomControl: props.controls.zoomCtrl,
-    rotCtrl: props.controls.rotCtrl,
+    controls: props.controls,
     screenScaleMultiplier:
       screenScaleMultiplier / (props.useDPR ? window.devicePixelRatio : 1), // -> global
     // gl: gl,
     setDragging: setDragging,
   });
 
-  // @ts-expect-error
-  const touchBind = useGesture(gtb.binds, gtb.config);
+  const touchBind = useGesture(gtb.handlers, gtb.config);
 
-  // @ts-expect-error
-  useEffect(touchBind, [touchBind]);
+  useEffect(() => {
+    touchBind();
+  }, [touchBind]);
 
-  const [fps, setFps] = useState(0);
+  const [fps, setFps] = useState('');
 
   return (
     <SettingsContext.Consumer>
@@ -98,7 +96,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps) {
               xy: xy,
               theta: theta,
               maxI: maxI,
-              screenScaleMultiplier: screenScaleMultiplier,
+              // screenScaleMultiplier: screenScaleMultiplier,
             }}
             ref={canvasRef}
             // glRef={gl}
@@ -114,7 +112,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps) {
               xy: xy,
               theta: theta,
               maxI: maxI,
-              screenScaleMultiplier: screenScaleMultiplier,
+              // screenScaleMultiplier: screenScaleMultiplier,
             }}
             canvasRef={miniCanvasRef}
             // glRef={miniGl}
