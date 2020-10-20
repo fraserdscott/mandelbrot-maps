@@ -75,7 +75,7 @@ float mandelbrot( in vec2 c ) {
       for( int i=0; i<8; i+=2 )
       {
         float d = pow(distance(c, vec2(myValues[i], myValues[i+1])), 2.0);
-        if (d < 0.01 && d > 0.005) return 100.0;
+        if (d < 0.01 && d > 0.007) return 100.0;
       }
     }
 

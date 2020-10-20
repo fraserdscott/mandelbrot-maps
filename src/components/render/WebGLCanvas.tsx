@@ -98,6 +98,7 @@ const WebGLCanvas = React.forwardRef<
         u_xy: vScale(screenScaleMultiplier, u.xy.getValue()),
         u_maxI: u.maxI,
         u_theta: u.theta?.getValue(),
+        myValues: misiurewiczFlat,
       };
 
       (gl.current as WebGLRenderingContext).useProgram(
