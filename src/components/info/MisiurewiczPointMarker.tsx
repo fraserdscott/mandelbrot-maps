@@ -21,13 +21,6 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
     ) {
       props.setAnimationState(0);
       props.setFocusedPoint(chosenPoint);
-      props.setMagState(1);
-
-      const zoomM: number = magnificationMandelbrot(props.focusedPoint) * 1;
-      const zoomJ: number = magnificationJulia(props.focusedPoint) * 1;
-
-      warpToPoint(props.mandelbrot, { xy: chosenPoint, z: zoomM, theta: 0 });
-      warpToPoint(props.julia, { xy: chosenPoint, z: zoomJ, theta: 0 });
     }
   };
 

@@ -37,7 +37,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
       chosenPoint[0] !== props.focusedPoint[0] &&
       chosenPoint[1] !== props.focusedPoint[1]
     ) {
-      props.setAnimationState(0);
+      props.setAnimationState(1);
       props.setFocusedPoint(chosenPoint);
       props.setMagState(1);
 
@@ -50,7 +50,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   };
 
   const handleAlignViews = () => {
-    props.setAnimationState(1);
+    props.setAnimationState(2);
 
     const zoomM: number = magnificationMandelbrot(props.focusedPoint) * props.mag;
     const zoomJ: number = magnificationJulia(props.focusedPoint) * props.mag;
@@ -72,6 +72,17 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
 
     warpToPoint(props.mandelbrot, { xy: props.focusedPoint, z: zoomM, theta: thetaM });
     warpToPoint(props.julia, { xy: props.focusedPoint, z: zoomJ, theta: thetaJ });
+  };
+
+  const HandleGoto = () => {
+    props.setAnimationState(1);
+    props.setMagState(1);
+
+    const zoomM: number = magnificationMandelbrot(props.focusedPoint) * 1;
+    const zoomJ: number = magnificationJulia(props.focusedPoint) * 1;
+
+    warpToPoint(props.mandelbrot, { xy: props.focusedPoint, z: zoomM, theta: 0 });
+    warpToPoint(props.julia, { xy: props.focusedPoint, z: zoomJ, theta: 0 });
   };
 
   return (
@@ -125,13 +136,23 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
               <Button
                 fullWidth
                 style={{ marginBottom: 8, marginTop: 8 }}
+                onClick={() => HandleGoto()}
+                startIcon={<ThreeSixtyIcon />}
+              >
+                Goto
+              </Button>
+            ) : null}
+            {props.animationState === 1 ? (
+              <Button
+                fullWidth
+                style={{ marginBottom: 8, marginTop: 8 }}
                 onClick={() => handleAlignViews()}
                 startIcon={<ThreeSixtyIcon />}
               >
                 Align views
               </Button>
             ) : null}
-            {props.animationState === 1 ? (
+            {props.animationState === 2 ? (
               <Grid container direction="column" alignItems="center">
                 <Grid container direction="column" spacing={2}>
                   <Grid item>
