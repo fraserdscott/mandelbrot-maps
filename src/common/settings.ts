@@ -6,6 +6,7 @@ export type settingsDefinitionsType = {
   showMinimap: boolean;
   showCrosshair: boolean;
   showCoordinates: boolean;
+  showMisiurewiczPoints: boolean;
   showFPS: boolean;
   maxI: number;
   useDPR: boolean;
