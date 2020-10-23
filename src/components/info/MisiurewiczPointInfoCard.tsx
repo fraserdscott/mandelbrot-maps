@@ -12,7 +12,11 @@ function formatAngle(angle: number) {
 }
 
 function formatComplexNumber(c: [number, number]) {
-  return `${round(c[0], 1)}+${round(c[1], 1)}j`;
+  return `${round(c[0], 2)}${c[1] >= 0 ? '+' : ''}${round(c[1], 2)}j`;
+}
+
+function formatMisiurewiczName(c: [number, number]) {
+  return `M${prePeriod(c)},${1}`;
 }
 
 const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element => {
@@ -38,9 +42,7 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
     >
       <Grid container>
         <Typography style={{ fontWeight: 'bold' }}>
-          {`M${prePeriod(focusedPoint)},${1} = ${round(focusedPoint[0], 3)}${
-            focusedPoint[1] >= 0 ? '+' : ''
-          }${round(focusedPoint[1], 3)}j`}
+          {formatMisiurewiczName(focusedPoint)} = {formatComplexNumber(focusedPoint)}
         </Typography>
       </Grid>
       {points.map((m) => (

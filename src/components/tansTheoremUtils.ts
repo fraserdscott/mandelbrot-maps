@@ -12,7 +12,7 @@ const orbit = function (
   t: number,
 ): [number, number] {
   for (let i = 0; i < t; i++) {
-    z = add([z[0] * z[0] - z[1] * z[1], 2.0 * z[0] * z[1]], c);
+    z = add(square(z), c);
   }
   return z;
 };
@@ -24,10 +24,7 @@ const derivOrbit = function (
 ): [number, number] {
   let der: [number, number] = [1, 0];
   for (let i = 0; i < t; i++) {
-    const new_z: [number, number] = add(
-      [z[0] * z[0] - z[1] * z[1], 2.0 * z[0] * z[1]],
-      c,
-    );
+    const new_z: [number, number] = add(square(z), c);
     const new_der: [number, number] = [
       2 * (der[0] * z[0] - der[1] * z[1]),
       2 * (der[0] * z[1] + der[1] * z[0]),
@@ -48,8 +45,12 @@ const sub = function (a: [number, number], b: [number, number]): [number, number
 };
 
 const divide = function (x: [number, number], y: [number, number]): [number, number] {
-  const d = y[0] * y[0] + y[1] * y[1];
+  const d = Math.pow(y[0], 2) + Math.pow(y[1], 2);
   return [(x[0] * y[0] + x[1] * y[1]) / d, (x[1] * y[0] - x[0] * y[1]) / d];
+};
+
+const square = (c: [number, number]): [number, number] => {
+  return [Math.pow(c[0], 2) - Math.pow(c[1], 2), 2.0 * c[0] * c[1]];
 };
 
 const findWPrime = function (
@@ -71,7 +72,7 @@ const findWPrime = function (
 export const prePeriod = (c: [number, number]) => {
   let z: [number, number] = [0, 0];
   for (let i = 0; i < 100; i++) {
-    const newZ: [number, number] = add([z[0] * z[0] - z[1] * z[1], 2.0 * z[0] * z[1]], c);
+    const newZ: [number, number] = add(square(z), c);
     if (distance(z, newZ) < Math.pow(10, -2)) {
       return i - 1;
     }

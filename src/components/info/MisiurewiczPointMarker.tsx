@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { screenScaleMultiplier } from '../../common/values';
 import { MisiurewiczPointMarkerProps } from '../../common/info';
 import { animated } from 'react-spring';
+import { prePeriod } from '../tansTheoremUtils';
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
   const [{ z }, setControlZoom] = props.mandelbrot.zoomCtrl;
@@ -13,12 +14,12 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
 
   const handlePointSelection = (chosenPoint: [number, number]) => {
     if (
-      (chosenPoint[0] !== props.focusedPoint[0] &&
-        chosenPoint[1] !== props.focusedPoint[1]) ||
+      (chosenPoint[0] !== props.focusedPoint[0][0] &&
+        chosenPoint[1] !== props.focusedPoint[0][1]) ||
       props.animationState === 0
     ) {
       props.setAnimationState(0);
-      props.setFocusedPoint(chosenPoint);
+      props.setFocusedPoint([chosenPoint, prePeriod(chosenPoint)]);
     }
   };
 
@@ -56,7 +57,8 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
               handlePointSelection(props.m);
             }}
             color={
-              props.m[0] === props.focusedPoint[0] && props.m[1] === props.focusedPoint[1]
+              props.m[0] === props.focusedPoint[0][0] &&
+              props.m[1] === props.focusedPoint[0][1]
                 ? 'secondary'
                 : 'primary'
             }

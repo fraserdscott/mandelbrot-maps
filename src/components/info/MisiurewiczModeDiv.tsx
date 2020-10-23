@@ -9,9 +9,9 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
   const [animationState, setAnimationState] = React.useState(0);
   const [mag, setMagState] = React.useState<number>(1);
   const [focusedPoint, setFocusedPoint]: [
-    [number, number],
-    Dispatch<SetStateAction<[number, number]>>,
-  ] = React.useState(misiurewiczPoints[0]);
+    [[number, number], number],
+    Dispatch<SetStateAction<[[number, number], number]>>,
+  ] = React.useState([misiurewiczPoints[0], prePeriod(misiurewiczPoints[0])]);
 
   return (
     <>
@@ -30,7 +30,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
         />
       ))}
       <MisiurewiczPointMarker
-        m={findU(focusedPoint, prePeriod(focusedPoint), 1)}
+        m={findU(focusedPoint[0], focusedPoint[1], 1)}
         show={props.show}
         mandelbrot={props.mandelbrot}
         julia={props.julia}

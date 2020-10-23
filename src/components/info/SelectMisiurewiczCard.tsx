@@ -7,13 +7,7 @@ import React from 'react';
 import MisiurewiczPointInfoCard from './MisiurewiczPointInfoCard';
 import { SelectMisiurewiczCardProps } from '../../common/info';
 import { warpToPoint } from '../utils';
-import {
-  prePeriod,
-  magnificationMandelbrot,
-  magnificationJulia,
-  rotationMandelbrot,
-  rotationJulia,
-} from '../tansTheoremUtils';
+import { prePeriod, magnitude, findA, findU } from '../tansTheoremUtils';
 
 export const misiurewiczPoints: [number, number][] = [
   [-2, 0],
@@ -31,21 +25,33 @@ function round(value: number, precision: number) {
   return Math.round(value * multiplier) / multiplier;
 }
 
+function complexNumbersEqual(a: [number, number], b: [number, number]) {
+  return a[0] === b[0] && a[1] === b[1];
+}
+
+function formatComplexNumber(c: [number, number]) {
+  return `${round(c[0], 3)}${c[1] >= 0 ? '+' : ''}${round(c[1], 3)}j`;
+}
+
+function formatMisiurewiczName(c: [number, number]) {
+  return `M${prePeriod(c)},${1}`;
+}
+
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
   const handlePointSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
     const posStr = (event.target.value as string).split(',');
     const chosenPoint: [number, number] = [parseFloat(posStr[0]), parseFloat(posStr[1])];
 
-    if (
-      chosenPoint[0] !== props.focusedPoint[0] &&
-      chosenPoint[1] !== props.focusedPoint[1]
-    ) {
+    if (!complexNumbersEqual(chosenPoint, props.focusedPoint[0])) {
       props.setAnimationState(1);
-      props.setFocusedPoint(chosenPoint);
+      props.setFocusedPoint([chosenPoint, prePeriod(chosenPoint)]);
       props.setMagState(1);
 
-      const zoomM: number = magnificationMandelbrot(props.focusedPoint) * 1;
-      const zoomJ: number = magnificationJulia(props.focusedPoint) * 1;
+      const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
+      const a: [number, number] = findA(props.focusedPoint[0], props.focusedPoint[1]);
+
+      const zoomM: number = magnitude(u) * 1;
+      const zoomJ: number = magnitude(a) * 1;
 
       warpToPoint(props.mandelbrot, { xy: chosenPoint, z: zoomM, theta: 0 });
       warpToPoint(props.julia, { xy: chosenPoint, z: zoomJ, theta: 0 });
@@ -55,37 +61,45 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   const handleAlignViews = () => {
     props.setAnimationState(2);
 
-    const zoomM: number = magnificationMandelbrot(props.focusedPoint) * props.mag;
-    const zoomJ: number = magnificationJulia(props.focusedPoint) * props.mag;
-    const thetaM: number = rotationMandelbrot(props.focusedPoint);
-    const thetaJ = rotationJulia(props.focusedPoint);
+    const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
+    const a: [number, number] = findA(props.focusedPoint[0], props.focusedPoint[1]);
 
-    warpToPoint(props.mandelbrot, { xy: props.focusedPoint, z: zoomM, theta: thetaM });
-    warpToPoint(props.julia, { xy: props.focusedPoint, z: zoomJ, theta: thetaJ });
+    const zoomM: number = magnitude(u) * props.mag;
+    const zoomJ: number = magnitude(a) * props.mag;
+    const thetaM: number = -Math.atan2(u[1], u[0]);
+    const thetaJ = -Math.atan2(a[1], a[0]);
+
+    warpToPoint(props.mandelbrot, { xy: props.focusedPoint[0], z: zoomM, theta: thetaM });
+    warpToPoint(props.julia, { xy: props.focusedPoint[0], z: zoomJ, theta: thetaJ });
   };
 
   const handleSetMagnification = (event: any, newValue: number | number[]) => {
     props.setMagState(newValue as number);
 
-    const zoomM: number =
-      magnificationMandelbrot(props.focusedPoint) * (newValue as number);
-    const zoomJ: number = magnificationJulia(props.focusedPoint) * (newValue as number);
-    const thetaM: number = rotationMandelbrot(props.focusedPoint);
-    const thetaJ = rotationJulia(props.focusedPoint);
+    const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
+    const a: [number, number] = findA(props.focusedPoint[0], props.focusedPoint[1]);
 
-    warpToPoint(props.mandelbrot, { xy: props.focusedPoint, z: zoomM, theta: thetaM });
-    warpToPoint(props.julia, { xy: props.focusedPoint, z: zoomJ, theta: thetaJ });
+    const zoomM: number = magnitude(u) * (newValue as number);
+    const zoomJ: number = magnitude(a) * (newValue as number);
+    const thetaM: number = -Math.atan2(u[1], u[0]);
+    const thetaJ = -Math.atan2(a[1], a[0]);
+
+    warpToPoint(props.mandelbrot, { xy: props.focusedPoint[0], z: zoomM, theta: thetaM });
+    warpToPoint(props.julia, { xy: props.focusedPoint[0], z: zoomJ, theta: thetaJ });
   };
 
   const HandleGoto = () => {
     props.setAnimationState(1);
     props.setMagState(1);
 
-    const zoomM: number = magnificationMandelbrot(props.focusedPoint) * 1;
-    const zoomJ: number = magnificationJulia(props.focusedPoint) * 1;
+    const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
+    const a: [number, number] = findA(props.focusedPoint[0], props.focusedPoint[1]);
 
-    warpToPoint(props.mandelbrot, { xy: props.focusedPoint, z: zoomM, theta: 0 });
-    warpToPoint(props.julia, { xy: props.focusedPoint, z: zoomJ, theta: 0 });
+    const zoomM: number = magnitude(u) * 1;
+    const zoomJ: number = magnitude(a) * 1;
+
+    warpToPoint(props.mandelbrot, { xy: props.focusedPoint[0], z: zoomM, theta: 0 });
+    warpToPoint(props.julia, { xy: props.focusedPoint[0], z: zoomJ, theta: 0 });
   };
 
   return (
@@ -115,13 +129,13 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             >
               {misiurewiczPoints.map((m) => (
                 <option key={m.toString()} value={m.toString()}>
-                  {`M${prePeriod(m)},${1} = ${round(m[0], 3)}+${round(m[1], 3)}j`}
+                  {formatMisiurewiczName(m)} = {formatComplexNumber(m)}
                 </option>
               ))}
             </Select>
           </Grid>
         </Card>
-        {MisiurewiczPointInfoCard(props.focusedPoint)}
+        {MisiurewiczPointInfoCard(props.focusedPoint[0])}
         {props.animationState >= 0 ? (
           <Card
             style={{
