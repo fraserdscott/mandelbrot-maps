@@ -121,9 +121,10 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             </Select>
           </Grid>
         </Card>
+        {MisiurewiczPointInfoCard(focusedPoint)}
         <Card
           style={{
-            width: '30vh',
+            width: 'auto',
             zIndex: 1300,
             position: 'relative',
             padding: 8,
@@ -133,7 +134,6 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             flexShrink: 1,
           }}
         >
-          {MisiurewiczPointInfoCard(focusedPoint)}
           {animationState === 0 ? (
             <Button
               fullWidth
@@ -145,26 +145,28 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             </Button>
           ) : null}
           {animationState === 1 ? (
-            <Grid container alignItems="center">
-              <Typography id="continuous-slider" gutterBottom style={{ marginTop: 8 }}>
-                Magnify
-              </Typography>
-              <Grid container spacing={2}>
+            <Grid container direction="column" alignItems="center">
+              <Grid container direction="column" spacing={2}>
                 <Grid item>
-                  <ZoomOutIcon />
+                  <ZoomInIcon />
                 </Grid>
                 <Grid item xs>
                   <Slider
                     value={mag}
                     onChange={handleSetMagnification}
+                    style={{
+                      height: '25vh',
+                    }}
                     min={1}
                     max={1000}
+                    track={false}
+                    orientation="vertical"
                     aria-labelledby="continuous-slider"
                     valueLabelDisplay="auto"
                   />{' '}
                 </Grid>
                 <Grid item>
-                  <ZoomInIcon />
+                  <ZoomOutIcon />
                 </Grid>
               </Grid>
             </Grid>

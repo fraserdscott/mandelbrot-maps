@@ -17,10 +17,11 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
   return (
     <Card
       style={{
-        width: 'auto',
+        width: '30vh',
         zIndex: 1300,
         position: 'relative',
         padding: 8,
+        marginTop: 8,
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 1,
