@@ -1,4 +1,5 @@
 import { Button, Card, Grid, Grow, Slider, InputLabel, Select } from '@material-ui/core';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ThreeSixtyIcon from '@material-ui/icons/ThreeSixty';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
@@ -21,6 +22,7 @@ export const misiurewiczPoints: [number, number][] = [
   [-0.5621929, 0.6427984],
   [0.0016429, -0.8224842],
   [0.3482524, 0.5552302],
+  [0.0135779, 0.6556269],
 ];
 
 function round(value: number, precision: number) {
@@ -137,7 +139,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 fullWidth
                 style={{ marginBottom: 8, marginTop: 8 }}
                 onClick={() => HandleGoto()}
-                startIcon={<ThreeSixtyIcon />}
+                startIcon={<ArrowForwardIcon />}
               >
                 Goto
               </Button>

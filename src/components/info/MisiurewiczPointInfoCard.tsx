@@ -31,7 +31,9 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
     >
       <Grid container>
         <Typography style={{ fontWeight: 'bold' }}>
-          M{prePeriod(focusedPoint)}, 1
+          {`M${prePeriod(focusedPoint)},${1} = ${round(focusedPoint[0], 3)}${
+            focusedPoint[1] >= 0 ? '+' : ''
+          }${round(focusedPoint[1], 3)}j`}
         </Typography>
       </Grid>
       <Grid container alignItems="center">
