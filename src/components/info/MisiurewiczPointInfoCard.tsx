@@ -6,6 +6,8 @@ import {
   rotationMandelbrot,
   rotationJulia,
   prePeriod,
+  findA,
+  findU,
 } from '../tansTheoremUtils';
 
 function round(value: number, precision: number) {
@@ -38,19 +40,35 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
       </Grid>
       <Grid container alignItems="center">
         <ListItemText
-          primary="arg(u'(c))"
-          secondary={`${round((180 / Math.PI) * rotationMandelbrot(focusedPoint), 0)}°`}
+          primary="u'(c)"
+          secondary={`${round(
+            findU(focusedPoint, prePeriod(focusedPoint), 1)[0],
+            1,
+          )}+${round(findU(focusedPoint, prePeriod(focusedPoint), 1)[1], 1)}j`}
         />
         <Divider orientation="vertical" flexItem />
         <ListItemText
-          primary="arg(a)"
-          secondary={`${round((180 / Math.PI) * rotationJulia(focusedPoint), 0)}°`}
+          primary="arg(u'(c))"
+          secondary={`${-round((180 / Math.PI) * rotationMandelbrot(focusedPoint), 0)}°`}
+        />
+        <Divider orientation="vertical" flexItem />
+        <ListItemText
+          primary="|u'(c)|"
+          secondary={`${round(magnificationMandelbrot(focusedPoint), 1)}`}
         />
       </Grid>
       <Grid container alignItems="center">
         <ListItemText
-          primary="|u'(c)|"
-          secondary={`${round(magnificationMandelbrot(focusedPoint), 1)}`}
+          primary="a"
+          secondary={`${round(
+            findA(focusedPoint, prePeriod(focusedPoint))[0],
+            1,
+          )}+${round(findA(focusedPoint, prePeriod(focusedPoint))[1], 1)}j`}
+        />
+        <Divider orientation="vertical" flexItem />
+        <ListItemText
+          primary="arg(a)"
+          secondary={`${-round((180 / Math.PI) * rotationJulia(focusedPoint), 0)}°`}
         />
         <Divider orientation="vertical" flexItem />
         <ListItemText

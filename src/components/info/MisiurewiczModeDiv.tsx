@@ -3,6 +3,7 @@ import { MisiurewiczModeDivProps } from '../../common/info';
 import SelectMisiurewiczCard from './SelectMisiurewiczCard';
 import { misiurewiczPoints } from './SelectMisiurewiczCard';
 import MisiurewiczPointMarker from './MisiurewiczPointMarker';
+import { findU, prePeriod } from '../tansTheoremUtils';
 
 const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
   const [animationState, setAnimationState] = React.useState(0);
@@ -17,7 +18,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
       {misiurewiczPoints.map((m) => (
         <MisiurewiczPointMarker
           m={m}
-          show={animationState <= 1}
+          show={props.show && animationState <= 1}
           mandelbrot={props.mandelbrot}
           julia={props.julia}
           animationState={animationState}
@@ -28,6 +29,18 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           setMagState={setMagState}
         />
       ))}
+      <MisiurewiczPointMarker
+        m={findU(focusedPoint, prePeriod(focusedPoint), 1)}
+        show={props.show}
+        mandelbrot={props.mandelbrot}
+        julia={props.julia}
+        animationState={animationState}
+        setAnimationState={setAnimationState}
+        focusedPoint={focusedPoint}
+        setFocusedPoint={setFocusedPoint}
+        mag={mag}
+        setMagState={setMagState}
+      />
       <div
         style={{
           position: 'absolute',

@@ -120,7 +120,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             </Select>
           </Grid>
         </Card>
-        {props.animationState >= 0 ? MisiurewiczPointInfoCard(props.focusedPoint) : null}
+        {MisiurewiczPointInfoCard(props.focusedPoint)}
         {props.animationState >= 0 ? (
           <Card
             style={{

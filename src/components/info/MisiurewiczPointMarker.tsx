@@ -5,8 +5,6 @@ import IconButton from '@material-ui/core/IconButton';
 import { screenScaleMultiplier } from '../../common/values';
 import { MisiurewiczPointMarkerProps } from '../../common/info';
 import { animated } from 'react-spring';
-import { warpToPoint } from '../utils';
-import { magnificationMandelbrot, magnificationJulia } from '../tansTheoremUtils';
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
   const [{ z }, setControlZoom] = props.mandelbrot.zoomCtrl;
