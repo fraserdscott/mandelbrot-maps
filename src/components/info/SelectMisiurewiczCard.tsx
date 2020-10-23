@@ -1,17 +1,8 @@
-import {
-  Button,
-  Card,
-  Grid,
-  Grow,
-  Typography,
-  Slider,
-  InputLabel,
-  Select,
-} from '@material-ui/core';
+import { Button, Card, Grid, Grow, Slider, InputLabel, Select } from '@material-ui/core';
 import ThreeSixtyIcon from '@material-ui/icons/ThreeSixty';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import MisiurewiczPointInfoCard from './MisiurewiczPointInfoCard';
 import { SelectMisiurewiczCardProps } from '../../common/info';
 import { warpToPoint } from '../utils';
@@ -23,7 +14,7 @@ import {
   rotationJulia,
 } from '../tansTheoremUtils';
 
-const misiurewiczPoints: [number, number][] = [
+export const misiurewiczPoints: [number, number][] = [
   [-1.543, 0],
   [-0.1011, 0.95629],
   [-1.7712568, 0.0661614],
@@ -38,24 +29,20 @@ function round(value: number, precision: number) {
 }
 
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
-  const [animationState, setAnimationState] = React.useState(0);
-  const [mag, setMagnification] = React.useState<number>(1);
-  const [focusedPoint, setFocusedPoint]: [
-    [number, number],
-    Dispatch<SetStateAction<[number, number]>>,
-  ] = React.useState(misiurewiczPoints[0]);
-
   const handlePointSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
     const posStr = (event.target.value as string).split(',');
     const chosenPoint: [number, number] = [parseFloat(posStr[0]), parseFloat(posStr[1])];
 
-    if (chosenPoint[0] !== focusedPoint[0] && chosenPoint[1] !== focusedPoint[1]) {
-      setAnimationState(0);
-      setFocusedPoint(chosenPoint);
-      setMagnification(1);
+    if (
+      chosenPoint[0] !== props.focusedPoint[0] &&
+      chosenPoint[1] !== props.focusedPoint[1]
+    ) {
+      props.setAnimationState(0);
+      props.setFocusedPoint(chosenPoint);
+      props.setMagState(1);
 
-      const zoomM: number = magnificationMandelbrot(focusedPoint) * 1;
-      const zoomJ: number = magnificationJulia(focusedPoint) * 1;
+      const zoomM: number = magnificationMandelbrot(props.focusedPoint) * 1;
+      const zoomJ: number = magnificationJulia(props.focusedPoint) * 1;
 
       warpToPoint(props.mandelbrot, { xy: chosenPoint, z: zoomM, theta: 0 });
       warpToPoint(props.julia, { xy: chosenPoint, z: zoomJ, theta: 0 });
@@ -63,27 +50,28 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   };
 
   const handleAlignViews = () => {
-    setAnimationState(1);
+    props.setAnimationState(1);
 
-    const zoomM: number = magnificationMandelbrot(focusedPoint) * mag;
-    const zoomJ: number = magnificationJulia(focusedPoint) * mag;
-    const thetaM: number = rotationMandelbrot(focusedPoint);
-    const thetaJ = rotationJulia(focusedPoint);
+    const zoomM: number = magnificationMandelbrot(props.focusedPoint) * props.mag;
+    const zoomJ: number = magnificationJulia(props.focusedPoint) * props.mag;
+    const thetaM: number = rotationMandelbrot(props.focusedPoint);
+    const thetaJ = rotationJulia(props.focusedPoint);
 
-    warpToPoint(props.mandelbrot, { xy: focusedPoint, z: zoomM, theta: thetaM });
-    warpToPoint(props.julia, { xy: focusedPoint, z: zoomJ, theta: thetaJ });
+    warpToPoint(props.mandelbrot, { xy: props.focusedPoint, z: zoomM, theta: thetaM });
+    warpToPoint(props.julia, { xy: props.focusedPoint, z: zoomJ, theta: thetaJ });
   };
 
   const handleSetMagnification = (event: any, newValue: number | number[]) => {
-    setMagnification(newValue as number);
+    props.setMagState(newValue as number);
 
-    const zoomM: number = magnificationMandelbrot(focusedPoint) * (newValue as number);
-    const zoomJ: number = magnificationJulia(focusedPoint) * (newValue as number);
-    const thetaM: number = rotationMandelbrot(focusedPoint);
-    const thetaJ = rotationJulia(focusedPoint);
+    const zoomM: number =
+      magnificationMandelbrot(props.focusedPoint) * (newValue as number);
+    const zoomJ: number = magnificationJulia(props.focusedPoint) * (newValue as number);
+    const thetaM: number = rotationMandelbrot(props.focusedPoint);
+    const thetaJ = rotationJulia(props.focusedPoint);
 
-    warpToPoint(props.mandelbrot, { xy: focusedPoint, z: zoomM, theta: thetaM });
-    warpToPoint(props.julia, { xy: focusedPoint, z: zoomJ, theta: thetaJ });
+    warpToPoint(props.mandelbrot, { xy: props.focusedPoint, z: zoomM, theta: thetaM });
+    warpToPoint(props.julia, { xy: props.focusedPoint, z: zoomJ, theta: thetaJ });
   };
 
   return (
@@ -99,15 +87,13 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             flexDirection: 'column',
             flexShrink: 1,
             marginRight: 8,
-            // display: props.show ? 'block' : 'none',
-            // borderRadius: 100,
           }}
         >
           <Grid container direction="column" alignItems="center">
             <InputLabel htmlFor="select-multiple-native">Misiurewicz points</InputLabel>
             <Select
               native
-              value={focusedPoint.toString()}
+              value={props.focusedPoint.toString()}
               onChange={handlePointSelection}
               inputProps={{
                 id: 'select-multiple-native',
@@ -121,7 +107,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             </Select>
           </Grid>
         </Card>
-        {MisiurewiczPointInfoCard(focusedPoint)}
+        {MisiurewiczPointInfoCard(props.focusedPoint)}
         <Card
           style={{
             width: 'auto',
@@ -134,7 +120,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             flexShrink: 1,
           }}
         >
-          {animationState === 0 ? (
+          {props.animationState === 0 ? (
             <Button
               fullWidth
               style={{ marginBottom: 8, marginTop: 8 }}
@@ -144,7 +130,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
               Align views
             </Button>
           ) : null}
-          {animationState === 1 ? (
+          {props.animationState === 1 ? (
             <Grid container direction="column" alignItems="center">
               <Grid container direction="column" spacing={2}>
                 <Grid item>
@@ -152,7 +138,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 </Grid>
                 <Grid item xs>
                   <Slider
-                    value={mag}
+                    value={props.mag}
                     onChange={handleSetMagnification}
                     style={{
                       height: '25vh',
