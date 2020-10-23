@@ -37,3 +37,10 @@ export interface ChangeCoordinatesCardProps extends CardProps {
   mandelbrot: ViewerControls;
   julia?: OpaqueInterpolation<XYType>;
 }
+
+export interface SelectMisiurewiczCardProps extends CardProps {
+  show: boolean;
+  // screenScaleMultiplier: number;
+  mandelbrot: ViewerControls;
+  julia: ViewerControls;
+}
