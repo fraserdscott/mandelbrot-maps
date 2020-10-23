@@ -1,21 +1,28 @@
 import { Card, Grid, Divider, ListItemText, Typography } from '@material-ui/core';
 import React from 'react';
-import {
-  magnificationMandelbrot,
-  magnificationJulia,
-  rotationMandelbrot,
-  rotationJulia,
-  prePeriod,
-  findA,
-  findU,
-} from '../tansTheoremUtils';
+import { magnitude, prePeriod, findA, findU } from '../tansTheoremUtils';
 
 function round(value: number, precision: number) {
   const multiplier = Math.pow(10, precision || 0);
   return Math.round(value * multiplier) / multiplier;
 }
 
+function formatAngle(angle: number) {
+  return `${round((180 / Math.PI) * angle, 0)}°`;
+}
+
+function formatComplexNumber(c: [number, number]) {
+  return `${round(c[0], 1)}+${round(c[1], 1)}j`;
+}
+
 const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element => {
+  const a = findA(focusedPoint, prePeriod(focusedPoint));
+  const u = findU(focusedPoint, prePeriod(focusedPoint), 1);
+
+  const points: [[number, number], string][] = [
+    [u, `u'(c)`],
+    [a, 'a'],
+  ];
   return (
     <Card
       style={{
@@ -27,8 +34,6 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 1,
-        // display: props.show ? 'block' : 'none',
-        // borderRadius: 100,
       }}
     >
       <Grid container>
@@ -38,44 +43,21 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
           }${round(focusedPoint[1], 3)}j`}
         </Typography>
       </Grid>
-      <Grid container alignItems="center">
-        <ListItemText
-          primary="u'(c)"
-          secondary={`${round(
-            findU(focusedPoint, prePeriod(focusedPoint), 1)[0],
-            1,
-          )}+${round(findU(focusedPoint, prePeriod(focusedPoint), 1)[1], 1)}j`}
-        />
-        <Divider orientation="vertical" flexItem />
-        <ListItemText
-          primary="arg(u'(c))"
-          secondary={`${-round((180 / Math.PI) * rotationMandelbrot(focusedPoint), 0)}°`}
-        />
-        <Divider orientation="vertical" flexItem />
-        <ListItemText
-          primary="|u'(c)|"
-          secondary={`${round(magnificationMandelbrot(focusedPoint), 1)}`}
-        />
-      </Grid>
-      <Grid container alignItems="center">
-        <ListItemText
-          primary="a"
-          secondary={`${round(
-            findA(focusedPoint, prePeriod(focusedPoint))[0],
-            1,
-          )}+${round(findA(focusedPoint, prePeriod(focusedPoint))[1], 1)}j`}
-        />
-        <Divider orientation="vertical" flexItem />
-        <ListItemText
-          primary="arg(a)"
-          secondary={`${-round((180 / Math.PI) * rotationJulia(focusedPoint), 0)}°`}
-        />
-        <Divider orientation="vertical" flexItem />
-        <ListItemText
-          primary="|a|"
-          secondary={`${round(magnificationJulia(focusedPoint), 1)}`}
-        />
-      </Grid>
+      {points.map((m) => (
+        <Grid container alignItems="center">
+          <ListItemText primary={m[1]} secondary={formatComplexNumber(m[0])} />
+          <Divider orientation="vertical" flexItem />
+          <ListItemText
+            primary={`arg(${m[1]})`}
+            secondary={formatAngle(Math.atan2(m[0][1], m[0][0]))}
+          />
+          <Divider orientation="vertical" flexItem />
+          <ListItemText
+            primary={`|${m[1]}|`}
+            secondary={`${round(magnitude(m[0]), 1)}`}
+          />
+        </Grid>
+      ))}
     </Card>
   );
 };
