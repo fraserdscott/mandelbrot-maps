@@ -16,6 +16,7 @@ import {
 } from '../tansTheoremUtils';
 
 export const misiurewiczPoints: [number, number][] = [
+  [-2, 0],
   [-1.543, 0],
   [-0.1011, 0.95629],
   [-1.7712568, 0.0661614],
