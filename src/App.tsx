@@ -19,6 +19,7 @@ import {
 } from './common/values';
 import ChangeCoordinatesCard from './components/info/ChangeCoordinatesCard';
 import CoordinatesCard from './components/info/CoordinatesCard';
+import SelectMisiurewiczCard from './components/info/SelectMisiurewiczCard';
 import InfoDialog from './components/info/InfoDialog';
 import JuliaRenderer from './components/render/JuliaRenderer';
 // import 'typeface-roboto';
@@ -104,6 +105,21 @@ function App(): JSX.Element {
                   position: 'absolute',
                 }}
               >
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    margin: 20,
+                    width: 'auto',
+                  }}
+                >
+                  <SelectMisiurewiczCard
+                    show={settings.showMisiurewiczPoints}
+                    mandelbrot={mandelbrotControls}
+                    julia={juliaControls}
+                  />
+                </div>
                 <div
                   style={{
                     position: 'absolute',
