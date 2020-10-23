@@ -15,8 +15,9 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
 
   const handlePointSelection = (chosenPoint: [number, number]) => {
     if (
-      chosenPoint[0] !== props.focusedPoint[0] &&
-      chosenPoint[1] !== props.focusedPoint[1]
+      (chosenPoint[0] !== props.focusedPoint[0] &&
+        chosenPoint[1] !== props.focusedPoint[1]) ||
+      props.animationState === 0
     ) {
       props.setAnimationState(0);
       props.setFocusedPoint(chosenPoint);
@@ -63,7 +64,11 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
             onClick={() => {
               handlePointSelection(props.m);
             }}
-            color="secondary"
+            color={
+              props.m[0] === props.focusedPoint[0] && props.m[1] === props.focusedPoint[1]
+                ? 'secondary'
+                : 'primary'
+            }
           >
             <RoomIcon style={{ width: 40, height: 40 }} />
           </IconButton>

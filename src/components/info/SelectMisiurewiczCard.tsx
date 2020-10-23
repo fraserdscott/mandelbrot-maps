@@ -107,57 +107,59 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             </Select>
           </Grid>
         </Card>
-        {MisiurewiczPointInfoCard(props.focusedPoint)}
-        <Card
-          style={{
-            width: 'auto',
-            zIndex: 1300,
-            position: 'relative',
-            padding: 8,
-            display: 'flex',
-            marginTop: 8,
-            flexDirection: 'column',
-            flexShrink: 1,
-          }}
-        >
-          {props.animationState === 0 ? (
-            <Button
-              fullWidth
-              style={{ marginBottom: 8, marginTop: 8 }}
-              onClick={() => handleAlignViews()}
-              startIcon={<ThreeSixtyIcon />}
-            >
-              Align views
-            </Button>
-          ) : null}
-          {props.animationState === 1 ? (
-            <Grid container direction="column" alignItems="center">
-              <Grid container direction="column" spacing={2}>
-                <Grid item>
-                  <ZoomInIcon />
-                </Grid>
-                <Grid item xs>
-                  <Slider
-                    value={props.mag}
-                    onChange={handleSetMagnification}
-                    style={{
-                      height: '25vh',
-                    }}
-                    min={1}
-                    max={1000}
-                    track={false}
-                    orientation="vertical"
-                    aria-labelledby="continuous-slider"
-                    valueLabelDisplay="auto"
-                  />{' '}
-                </Grid>
-                <Grid item>
-                  <ZoomOutIcon />
+        {props.animationState >= 0 ? MisiurewiczPointInfoCard(props.focusedPoint) : null}
+        {props.animationState >= 0 ? (
+          <Card
+            style={{
+              width: 'auto',
+              zIndex: 1300,
+              position: 'relative',
+              padding: 8,
+              display: 'flex',
+              marginTop: 8,
+              flexDirection: 'column',
+              flexShrink: 1,
+            }}
+          >
+            {props.animationState === 0 ? (
+              <Button
+                fullWidth
+                style={{ marginBottom: 8, marginTop: 8 }}
+                onClick={() => handleAlignViews()}
+                startIcon={<ThreeSixtyIcon />}
+              >
+                Align views
+              </Button>
+            ) : null}
+            {props.animationState === 1 ? (
+              <Grid container direction="column" alignItems="center">
+                <Grid container direction="column" spacing={2}>
+                  <Grid item>
+                    <ZoomInIcon />
+                  </Grid>
+                  <Grid item xs>
+                    <Slider
+                      value={props.mag}
+                      onChange={handleSetMagnification}
+                      style={{
+                        height: '25vh',
+                      }}
+                      min={1}
+                      max={1000}
+                      track={false}
+                      orientation="vertical"
+                      aria-labelledby="continuous-slider"
+                      valueLabelDisplay="auto"
+                    />{' '}
+                  </Grid>
+                  <Grid item>
+                    <ZoomOutIcon />
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-          ) : null}
-        </Card>
+            ) : null}
+          </Card>
+        ) : null}
       </Grid>
     </Grow>
   );
