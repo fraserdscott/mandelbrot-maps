@@ -31,23 +31,15 @@ import { useWindowSize, warpToPoint } from './components/utils';
 import theme from './theme/theme';
 
 // coordinates of each point, along with zoom and theta
-export const misiurewiczPoints: [[number, number], number, number][] = [
-  [[-0.562204, 0.6428146], 100, 0.3],
-  [[-0.1010963, 0.9562867], 200, 0.3],
-  [[-2, 0], 70, 0],
-  [[-0.9870042, -0.3129012], 1900, 0.6],
+export const misiurewiczPoints: [number, number][] = [
+  [-1.543, 0],
+  [-0.1011, 0.95629],
+  [-1.7712568, 0.0661614],
+  [-0.5621929, 0.6427984],
+  [0.0016429, -0.8224842],
+  [0.3482524, 0.5552302],
 ];
 
-export const misiurewiczFlat: number[] = [
-  -0.562204,
-  0.6428146,
-  -0.1010963,
-  0.9562867,
-  -2,
-  0,
-  -0.9870042,
-  -0.3129012,
-];
 function App(): JSX.Element {
   const size = useWindowSize();
 

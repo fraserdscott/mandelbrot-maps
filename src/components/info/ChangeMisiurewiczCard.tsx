@@ -1,135 +1,168 @@
-import { Button, Card, Grid, Grow, Snackbar } from '@material-ui/core';
-import React from 'react';
+import {
+  Button,
+  Card,
+  Grid,
+  Grow,
+  Typography,
+  Slider,
+  InputLabel,
+  Select,
+} from '@material-ui/core';
+import ThreeSixtyIcon from '@material-ui/icons/ThreeSixty';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
+import ZoomOutIcon from '@material-ui/icons/ZoomOut';
+import React, { Dispatch, SetStateAction } from 'react';
 import { ChangeMisiurewiczCardProps } from '../../common/info';
+import MisiurewiczPointInfoCard from './MisiurewiczPointInfoCard';
 import { misiurewiczPoints } from '../../App';
 import { warpToPoint } from '../utils';
+import {
+  prePeriod,
+  magnificationMandelbrot,
+  magnificationJulia,
+  rotationMandelbrot,
+  rotationJulia,
+} from '../compute_factors';
+
+function round(value: number, precision: number) {
+  const multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
+}
 
 const ChangeMisiurewiczCard = (props: ChangeMisiurewiczCardProps): JSX.Element => {
   const [animationState, setAnimationState] = React.useState(0);
-  const [pointToAnimate, setPointToAnimate] = React.useState([0, 0]);
+  const [mag, setMagnification] = React.useState<number>(1);
+  const [focusedPoint, setFocusedPoint]: [
+    [number, number],
+    Dispatch<SetStateAction<[number, number]>>,
+  ] = React.useState(misiurewiczPoints[0]);
 
-  const [showReset, setOpenReset] = React.useState(false);
-  const [showTranslation, setOpenT] = React.useState(false);
-  const [showMagnification, setOpenM] = React.useState(false);
-  const [showRotation, setOpenR] = React.useState(false);
+  const handlePointSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const posStr = (event.target.value as string).split(',');
+    const chosenPoint: [number, number] = [parseFloat(posStr[0]), parseFloat(posStr[1])];
 
-  const [messageTranslation, setMessageT] = React.useState('not set');
-  const [messageMagnification, setMessageM] = React.useState('not set');
-  const [messageRotation, setMessageR] = React.useState('not set');
+    if (chosenPoint[0] !== focusedPoint[0] && chosenPoint[1] !== focusedPoint[1]) {
+      setAnimationState(0);
+      setFocusedPoint(chosenPoint);
+      setMagnification(1);
 
-  const handleClose = (
-    event: React.SyntheticEvent | React.MouseEvent,
-    reason?: string,
-  ) => {
-    if (reason === 'clickaway') {
-      return;
+      const zoomM: number = magnificationMandelbrot(focusedPoint) * 1;
+      const zoomJ: number = magnificationJulia(focusedPoint) * 1;
+
+      warpToPoint(props.mandelbrot, { xy: chosenPoint, z: zoomM, theta: 0 });
+      warpToPoint(props.julia, { xy: chosenPoint, z: zoomJ, theta: 0 });
     }
-
-    setOpenReset(false);
-    setOpenT(false);
-    setOpenM(false);
-    setOpenR(false);
   };
 
-  const go = (pos: [number, number], zoom: number, theta: number) => {
-    // If the user has clicked on a different point to the one we are currently animating
-    if (pos[0] !== pointToAnimate[0] && pos[1] !== pointToAnimate[1]) {
-      setAnimationState(0);
-      setPointToAnimate(pos);
-      setMessageT(`Translating to ${pos}`);
-      setMessageM(`Magnifying ${zoom}x`);
-      setMessageR(`Rotating by ${theta} radians`);
-    } else if (animationState === 0) {
-      setOpenReset(true);
-      warpToPoint(props.mandelbrot, { xy: [-0.45, 0], z: 0.8, theta: 0 });
-      warpToPoint(props.julia, { xy: [-0.45, 0], z: 0.8, theta: 0 });
-      setAnimationState(1);
-    } else if (animationState === 1) {
-      setOpenT(true);
-      warpToPoint(props.mandelbrot, { xy: pos, z: 1, theta: 0 });
-      warpToPoint(props.julia, { xy: pos, z: 1, theta: 0 });
-      setAnimationState(2);
-    } else if (animationState === 2) {
-      setOpenM(true);
-      warpToPoint(props.mandelbrot, { xy: pos, z: zoom, theta: 0 });
-      warpToPoint(props.julia, { xy: pos, z: zoom, theta: 0 });
-      setAnimationState(3);
-    } else if (animationState === 3) {
-      setOpenR(true);
-      warpToPoint(props.mandelbrot, { xy: pos, z: zoom, theta: theta });
-      warpToPoint(props.julia, { xy: pos, z: zoom, theta: 0 });
-      setAnimationState(4);
-    }
+  const handleAlignViews = () => {
+    setAnimationState(1);
+
+    const zoomM: number = magnificationMandelbrot(focusedPoint) * mag;
+    const zoomJ: number = magnificationJulia(focusedPoint) * mag;
+    const thetaM: number = rotationMandelbrot(focusedPoint);
+    const thetaJ = rotationJulia(focusedPoint);
+
+    warpToPoint(props.mandelbrot, { xy: focusedPoint, z: zoomM, theta: thetaM });
+    warpToPoint(props.julia, { xy: focusedPoint, z: zoomJ, theta: thetaJ });
+  };
+
+  const handleSetMagnification = (event: any, newValue: number | number[]) => {
+    setMagnification(newValue as number);
+
+    const zoomM: number = magnificationMandelbrot(focusedPoint) * (newValue as number);
+    const zoomJ: number = magnificationJulia(focusedPoint) * (newValue as number);
+    const thetaM: number = rotationMandelbrot(focusedPoint);
+    const thetaJ = rotationJulia(focusedPoint);
+
+    warpToPoint(props.mandelbrot, { xy: focusedPoint, z: zoomM, theta: thetaM });
+    warpToPoint(props.julia, { xy: focusedPoint, z: zoomJ, theta: thetaJ });
   };
 
   return (
     <Grow in={props.show}>
-      <Card
-        style={{
-          width: 'auto',
-          zIndex: 1300,
-          position: 'relative',
-          padding: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          flexShrink: 1,
-          // display: props.show ? 'block' : 'none',
-          // borderRadius: 100,
-        }}
-      >
-        <Grid container direction="column" alignItems="center">
-          <div style={{ marginTop: 12, fontWeight: 'bold' }}>Misiurewicz points</div>
-          {misiurewiczPoints.map((m) => (
+      <Grid container direction="column" alignItems="flex-start">
+        <Card
+          style={{
+            width: 'auto',
+            zIndex: 1300,
+            position: 'relative',
+            padding: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: 1,
+            marginRight: 8,
+            // display: props.show ? 'block' : 'none',
+            // borderRadius: 100,
+          }}
+        >
+          <Grid container direction="column" alignItems="center">
+            <InputLabel htmlFor="select-multiple-native">Misiurewicz points</InputLabel>
+            <Select
+              native
+              value={focusedPoint.toString()}
+              onChange={handlePointSelection}
+              inputProps={{
+                id: 'select-multiple-native',
+              }}
+            >
+              {misiurewiczPoints.map((m) => (
+                <option key={m.toString()} value={m.toString()}>
+                  {`M${prePeriod(m)},${1} = ${round(m[0], 3)}+${round(m[1], 3)}j`}
+                </option>
+              ))}
+            </Select>
+          </Grid>
+        </Card>
+        <Card
+          style={{
+            width: '30vh',
+            zIndex: 1300,
+            position: 'relative',
+            padding: 8,
+            display: 'flex',
+            marginTop: 8,
+            flexDirection: 'column',
+            flexShrink: 1,
+          }}
+        >
+          {MisiurewiczPointInfoCard(focusedPoint)}
+          {animationState === 0 ? (
             <Button
               fullWidth
-              style={{ marginTop: 12 }}
-              onClick={() => go(m[0], m[1], m[2])}
+              style={{ marginBottom: 8, marginTop: 8 }}
+              onClick={() => handleAlignViews()}
+              startIcon={<ThreeSixtyIcon />}
             >
-              {m[0].toString()}
+              Align views
             </Button>
-          ))}
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
-            open={showReset}
-            onClose={handleClose}
-            autoHideDuration={3000}
-            message={'Resetting'}
-          />
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
-            open={showTranslation}
-            onClose={handleClose}
-            autoHideDuration={3000}
-            message={messageTranslation}
-          />
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
-            open={showMagnification}
-            onClose={handleClose}
-            autoHideDuration={3000}
-            message={messageMagnification}
-          />
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
-            open={showRotation}
-            onClose={handleClose}
-            autoHideDuration={3000}
-            message={messageRotation}
-          />
-        </Grid>
-      </Card>
+          ) : null}
+          {animationState === 1 ? (
+            <Grid container alignItems="center">
+              <Typography id="continuous-slider" gutterBottom style={{ marginTop: 8 }}>
+                Magnify
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item>
+                  <ZoomOutIcon />
+                </Grid>
+                <Grid item xs>
+                  <Slider
+                    value={mag}
+                    onChange={handleSetMagnification}
+                    min={1}
+                    max={1000}
+                    aria-labelledby="continuous-slider"
+                    valueLabelDisplay="auto"
+                  />{' '}
+                </Grid>
+                <Grid item>
+                  <ZoomInIcon />
+                </Grid>
+              </Grid>
+            </Grid>
+          ) : null}
+        </Card>
+      </Grid>
     </Grow>
   );
 };
