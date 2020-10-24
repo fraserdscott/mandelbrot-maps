@@ -1,4 +1,11 @@
-import { Card, Grid, Divider, ListItemText, Typography } from '@material-ui/core';
+import {
+  Card,
+  Grid,
+  Divider,
+  ListItemText,
+  Typography,
+  Tooltip,
+} from '@material-ui/core';
 import React from 'react';
 import {
   magnitude,
@@ -45,13 +52,23 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
             primary={`arg(${m[1]})`}
             secondary={formatAngle(Math.atan2(m[0][1], m[0][0]))}
           />
-          <Divider orientation="vertical" flexItem />
+          {/* <Divider orientation="vertical" flexItem />
           <ListItemText
             primary={`|${m[1]}|`}
             secondary={`${round(magnitude(m[0]), 1)}`}
-          />
+          /> */}
         </Grid>
       ))}
+      <Tooltip
+        title={'The size of Mandelbrot vs Julia'}
+        aria-label="add"
+        placement="top-start"
+      >
+        <ListItemText
+          primary={`Scale factor`}
+          secondary={`${round(magnitude(u) / magnitude(a), 1)}`}
+        />
+      </Tooltip>
     </Card>
   );
 };

@@ -33,8 +33,8 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     const u: [number, number] = findU(c, props.focusedPoint[1], 1);
     const a: [number, number] = findA(c, props.focusedPoint[1]);
 
-    const zoomM: number = magnitude(u) * mag;
-    const zoomJ: number = magnitude(a) * mag;
+    const zoomM: number = (magnitude(u) / magnitude(a)) * mag;
+    const zoomJ: number = mag;
     let thetaM = 0;
     let thetaJ = 0;
     if (useAngle === true) {
