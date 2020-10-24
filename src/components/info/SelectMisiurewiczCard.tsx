@@ -7,7 +7,15 @@ import React from 'react';
 import MisiurewiczPointInfoCard from './MisiurewiczPointInfoCard';
 import { SelectMisiurewiczCardProps } from '../../common/info';
 import { warpToPoint } from '../utils';
-import { prePeriod, magnitude, findA, findU } from '../tansTheoremUtils';
+import {
+  prePeriod,
+  magnitude,
+  findA,
+  findU,
+  complexNumbersEqual,
+  formatMisiurewiczName,
+  formatComplexNumber,
+} from '../tansTheoremUtils';
 
 export const misiurewiczPoints: [number, number][] = [
   [-2, 0],
@@ -20,24 +28,24 @@ export const misiurewiczPoints: [number, number][] = [
   [0.0135779, 0.6556269],
 ];
 
-function round(value: number, precision: number) {
-  const multiplier = Math.pow(10, precision || 0);
-  return Math.round(value * multiplier) / multiplier;
-}
-
-function complexNumbersEqual(a: [number, number], b: [number, number]) {
-  return a[0] === b[0] && a[1] === b[1];
-}
-
-function formatComplexNumber(c: [number, number]) {
-  return `${round(c[0], 3)}${c[1] >= 0 ? '+' : ''}${round(c[1], 3)}j`;
-}
-
-function formatMisiurewiczName(c: [number, number]) {
-  return `M${prePeriod(c)},${1}`;
-}
-
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
+  const rotateAndZoom = (c: [number, number], mag: number, useAngle: boolean) => {
+    const u: [number, number] = findU(c, props.focusedPoint[1], 1);
+    const a: [number, number] = findA(c, props.focusedPoint[1]);
+
+    const zoomM: number = magnitude(u) * mag;
+    const zoomJ: number = magnitude(a) * mag;
+    let thetaM = 0;
+    let thetaJ = 0;
+    if (useAngle === true) {
+      thetaM = -Math.atan2(u[1], u[0]);
+      thetaJ = -Math.atan2(a[1], a[0]);
+    }
+
+    warpToPoint(props.mandelbrot, { xy: c, z: zoomM, theta: thetaM });
+    warpToPoint(props.julia, { xy: c, z: zoomJ, theta: thetaJ });
+  };
+
   const handlePointSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
     const posStr = (event.target.value as string).split(',');
     const chosenPoint: [number, number] = [parseFloat(posStr[0]), parseFloat(posStr[1])];
@@ -47,59 +55,26 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
       props.setFocusedPoint([chosenPoint, prePeriod(chosenPoint)]);
       props.setMagState(1);
 
-      const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
-      const a: [number, number] = findA(props.focusedPoint[0], props.focusedPoint[1]);
-
-      const zoomM: number = magnitude(u) * 1;
-      const zoomJ: number = magnitude(a) * 1;
-
-      warpToPoint(props.mandelbrot, { xy: chosenPoint, z: zoomM, theta: 0 });
-      warpToPoint(props.julia, { xy: chosenPoint, z: zoomJ, theta: 0 });
+      rotateAndZoom(chosenPoint, 1, false);
     }
+  };
+
+  const handleGoto = () => {
+    props.setAnimationState(1);
+    props.setMagState(1);
+
+    rotateAndZoom(props.focusedPoint[0], 1, false);
   };
 
   const handleAlignViews = () => {
     props.setAnimationState(2);
-
-    const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
-    const a: [number, number] = findA(props.focusedPoint[0], props.focusedPoint[1]);
-
-    const zoomM: number = magnitude(u) * props.mag;
-    const zoomJ: number = magnitude(a) * props.mag;
-    const thetaM: number = -Math.atan2(u[1], u[0]);
-    const thetaJ = -Math.atan2(a[1], a[0]);
-
-    warpToPoint(props.mandelbrot, { xy: props.focusedPoint[0], z: zoomM, theta: thetaM });
-    warpToPoint(props.julia, { xy: props.focusedPoint[0], z: zoomJ, theta: thetaJ });
+    rotateAndZoom(props.focusedPoint[0], props.mag, true);
   };
 
   const handleSetMagnification = (event: any, newValue: number | number[]) => {
     props.setMagState(newValue as number);
 
-    const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
-    const a: [number, number] = findA(props.focusedPoint[0], props.focusedPoint[1]);
-
-    const zoomM: number = magnitude(u) * (newValue as number);
-    const zoomJ: number = magnitude(a) * (newValue as number);
-    const thetaM: number = -Math.atan2(u[1], u[0]);
-    const thetaJ = -Math.atan2(a[1], a[0]);
-
-    warpToPoint(props.mandelbrot, { xy: props.focusedPoint[0], z: zoomM, theta: thetaM });
-    warpToPoint(props.julia, { xy: props.focusedPoint[0], z: zoomJ, theta: thetaJ });
-  };
-
-  const HandleGoto = () => {
-    props.setAnimationState(1);
-    props.setMagState(1);
-
-    const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
-    const a: [number, number] = findA(props.focusedPoint[0], props.focusedPoint[1]);
-
-    const zoomM: number = magnitude(u) * 1;
-    const zoomJ: number = magnitude(a) * 1;
-
-    warpToPoint(props.mandelbrot, { xy: props.focusedPoint[0], z: zoomM, theta: 0 });
-    warpToPoint(props.julia, { xy: props.focusedPoint[0], z: zoomJ, theta: 0 });
+    rotateAndZoom(props.focusedPoint[0], newValue as number, true);
   };
 
   return (
@@ -153,7 +128,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
               <Button
                 fullWidth
                 style={{ marginBottom: 8, marginTop: 8 }}
-                onClick={() => HandleGoto()}
+                onClick={() => handleGoto()}
                 startIcon={<ArrowForwardIcon />}
               >
                 Goto

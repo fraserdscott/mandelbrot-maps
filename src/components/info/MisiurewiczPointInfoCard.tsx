@@ -1,23 +1,15 @@
 import { Card, Grid, Divider, ListItemText, Typography } from '@material-ui/core';
 import React from 'react';
-import { magnitude, prePeriod, findA, findU } from '../tansTheoremUtils';
-
-function round(value: number, precision: number) {
-  const multiplier = Math.pow(10, precision || 0);
-  return Math.round(value * multiplier) / multiplier;
-}
-
-function formatAngle(angle: number) {
-  return `${round((180 / Math.PI) * angle, 0)}°`;
-}
-
-function formatComplexNumber(c: [number, number]) {
-  return `${round(c[0], 2)}${c[1] >= 0 ? '+' : ''}${round(c[1], 2)}j`;
-}
-
-function formatMisiurewiczName(c: [number, number]) {
-  return `M${prePeriod(c)},${1}`;
-}
+import {
+  magnitude,
+  prePeriod,
+  findA,
+  findU,
+  formatComplexNumber,
+  formatMisiurewiczName,
+  round,
+  formatAngle,
+} from '../tansTheoremUtils';
 
 const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element => {
   const a = findA(focusedPoint, prePeriod(focusedPoint));
