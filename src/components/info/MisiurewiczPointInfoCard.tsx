@@ -27,14 +27,11 @@ const MisiurewiczPointInfoCard = (
   const u = findU(focusedPoint, prePeriod(focusedPoint), PERIOD);
   const a = findA(focusedPointJulia, focusedPointJulia, prePeriod(focusedPointJulia));
 
-  const points: [[number, number], string][] = [
-    [u, `u'(c)`],
-    [a, 'a'],
-  ];
+  const points: [[number, number], string][] = [[u, `u'(c)`]];
   return (
     <Card
       style={{
-        width: '30vh',
+        width: 'auto',
         zIndex: 1300,
         position: 'relative',
         padding: 8,
@@ -57,23 +54,19 @@ const MisiurewiczPointInfoCard = (
             primary={`arg(${m[1]})`}
             secondary={formatAngle(Math.atan2(m[0][1], m[0][0]))}
           />
-          {/* <Divider orientation="vertical" flexItem />
-          <ListItemText
-            primary={`|${m[1]}|`}
-            secondary={`${round(magnitude(m[0]), 1)}`}
-          /> */}
+          <Divider orientation="vertical" flexItem />
+          <Tooltip
+            title={'1/The size of the branch'}
+            aria-label="add"
+            placement="top-start"
+          >
+            <ListItemText
+              primary={`|${m[1]}|`}
+              secondary={`${round(magnitude(m[0]), 1)}`}
+            />
+          </Tooltip>
         </Grid>
       ))}
-      <Tooltip
-        title={'The size of Mandelbrot vs Julia'}
-        aria-label="add"
-        placement="top-start"
-      >
-        <ListItemText
-          primary={`Scale factor`}
-          secondary={`${round(magnitude(u) / magnitude(a), 1)}`}
-        />
-      </Tooltip>
     </Card>
   );
 };
