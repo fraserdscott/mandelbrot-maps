@@ -18,12 +18,14 @@ import {
   formatAngle,
 } from '../tansTheoremUtils';
 
+const PERIOD = 1;
+
 const MisiurewiczPointInfoCard = (
   focusedPoint: [number, number],
   focusedPointJulia: [number, number],
 ): JSX.Element => {
-  const a = findA(focusedPointJulia, prePeriod(focusedPointJulia));
-  const u = findU(focusedPoint, prePeriod(focusedPoint), 1);
+  const u = findU(focusedPoint, prePeriod(focusedPoint), PERIOD);
+  const a = findA(focusedPointJulia, focusedPointJulia, prePeriod(focusedPointJulia));
 
   const points: [[number, number], string][] = [
     [u, `u'(c)`],

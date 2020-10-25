@@ -30,6 +30,7 @@ import {
   formatComplexNumber,
   orbit,
   round,
+  formatAngle,
 } from '../tansTheoremUtils';
 
 export const misiurewiczPoints: [number, number][] = [
@@ -41,10 +42,15 @@ export const misiurewiczPoints: [number, number][] = [
   [0.0016429, -0.8224842],
   [0.3482524, 0.5552302],
   [0.0135779, 0.6556269],
+  // experimental VVVV
+  [0, 1],
+  [-0.77568377, 0.13646737],
 ];
 
-const GOTOALPHA = true; // the point alpha has the same similairty properites
+const ITERATEFORJULIA = 0; // c0 is self similar to all of it's iterates in the Mandelbrot set
+// I'm not sure if this holds for p > 1 as the derivative will be computed differently.
 const INITIALZOOM = 1;
+const PERIOD = 1; // remove when we can compute this
 
 function getSteps() {
   return ['Translate M', 'Translate J', 'Zoom M', 'Rotate M', 'Rotate J'];
@@ -71,8 +77,13 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
 
   const zoomMandelbrot = () => {
     props.setAnimationState(3);
-    const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
+    const u: [number, number] = findU(
+      props.focusedPoint[0],
+      props.focusedPoint[1],
+      PERIOD,
+    );
     const a: [number, number] = findA(
+      props.focusedPoint[0],
       props.focusedPointJulia[0],
       props.focusedPointJulia[1],
     );
@@ -84,8 +95,13 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
 
   const rotateMandelbrot = () => {
     props.setAnimationState(4);
-    const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
+    const u: [number, number] = findU(
+      props.focusedPoint[0],
+      props.focusedPoint[1],
+      PERIOD,
+    );
     const a: [number, number] = findA(
+      props.focusedPoint[0],
       props.focusedPointJulia[0],
       props.focusedPointJulia[1],
     );
@@ -99,6 +115,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   const rotateJulia = () => {
     props.setAnimationState(5);
     const a: [number, number] = findA(
+      props.focusedPoint[0],
       props.focusedPointJulia[0],
       props.focusedPointJulia[1],
     );
@@ -113,8 +130,13 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   };
 
   const rotateAndZoom = (mag: number) => {
-    const u: [number, number] = findU(props.focusedPoint[0], props.focusedPoint[1], 1);
+    const u: [number, number] = findU(
+      props.focusedPoint[0],
+      props.focusedPoint[1],
+      PERIOD,
+    );
     const a: [number, number] = findA(
+      props.focusedPoint[0],
       props.focusedPointJulia[0],
       props.focusedPointJulia[1],
     );
@@ -134,14 +156,10 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
 
     if (!complexNumbersEqual(chosenPoint, props.focusedPoint[0])) {
       props.setFocusedPoint([chosenPoint, prePeriod(chosenPoint)]);
-      if (GOTOALPHA) {
-        props.setFocusedPointJulia([
-          orbit(chosenPoint, chosenPoint, prePeriod(chosenPoint)),
-          0,
-        ]);
-      } else {
-        props.setFocusedPointJulia([chosenPoint, prePeriod(chosenPoint)]);
-      }
+      props.setFocusedPointJulia([
+        orbit(chosenPoint, chosenPoint, ITERATEFORJULIA),
+        prePeriod(chosenPoint) - ITERATEFORJULIA,
+      ]);
       props.setMagState(1);
       props.setAnimationState(-1);
     }
@@ -260,7 +278,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 onClick={() => translateMandelbrot(props.focusedPoint[0])}
                 startIcon={<ArrowForwardIcon />}
               >
-                translate Mandelbrot set
+                {`Translate Mandelbrot set to ${props.focusedPoint[0]}`}
               </Button>
             ) : null}
             {props.animationState === 1 ? (
@@ -270,7 +288,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 onClick={() => translateJulia()}
                 startIcon={<ThreeSixtyIcon />}
               >
-                translate Julia set
+                {`Translate Julia set to ${props.focusedPointJulia[0]}`}
               </Button>
             ) : null}
             {props.animationState === 2 ? (
@@ -281,10 +299,16 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 startIcon={<ZoomInIcon />}
               >
                 {`zoom Mandelbrot set by ${round(
-                  magnitude(findU(props.focusedPoint[0], props.focusedPoint[1], 1)) /
-                    magnitude(
-                      findA(props.focusedPointJulia[0], props.focusedPointJulia[1]),
+                  magnitude(findU(props.focusedPoint[0], props.focusedPoint[1], PERIOD)),
+                  1,
+                )} / ${round(
+                  magnitude(
+                    findA(
+                      props.focusedPoint[0],
+                      props.focusedPointJulia[0],
+                      props.focusedPointJulia[1],
                     ),
+                  ),
                   1,
                 )}x`}
               </Button>
@@ -296,7 +320,12 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 onClick={() => rotateMandelbrot()}
                 startIcon={<ThreeSixtyIcon />}
               >
-                rotate Mandelbrot set
+                {`rotate Mandelbrot set by ${formatAngle(
+                  Math.atan2(
+                    findU(props.focusedPoint[0], props.focusedPoint[1], PERIOD)[1],
+                    findU(props.focusedPoint[0], props.focusedPoint[1], PERIOD)[0],
+                  ),
+                )}`}
               </Button>
             ) : null}
             {props.animationState === 4 ? (
@@ -306,7 +335,20 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 onClick={() => rotateJulia()}
                 startIcon={<ThreeSixtyIcon />}
               >
-                rotate julia set
+                {`rotate julia set by ${formatAngle(
+                  Math.atan2(
+                    findA(
+                      props.focusedPoint[0],
+                      props.focusedPointJulia[0],
+                      props.focusedPointJulia[1],
+                    )[1],
+                    findA(
+                      props.focusedPoint[0],
+                      props.focusedPointJulia[0],
+                      props.focusedPointJulia[1],
+                    )[0],
+                  ),
+                )}`}
               </Button>
             ) : null}
           </Card>

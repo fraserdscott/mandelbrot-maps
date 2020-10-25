@@ -57,27 +57,34 @@ export function complexNumbersEqual(a: [number, number], b: [number, number]) {
   return a[0] === b[0] && a[1] === b[1];
 }
 
+// subtract the end of the cycle from the start
+// the derivative of this gives you some sense of the speed of the cycle?
+const W = function (c: [number, number], l: number, p: number) {
+  const h1 = orbit([0, 0], c, 1 + l + p);
+  const h2 = orbit([0, 0], c, 1 + l);
+
+  return sub(h1, h2);
+};
+
 const findWPrime = function (
   c: [number, number],
   l: number,
   p: number,
 ): [number, number] {
   const h = 1e-8;
-  let h1 = orbit([0, 0], [c[0] + h, c[1]], l + 1 + p);
-  let h2 = orbit([0, 0], [c[0] + h, c[1]], l + 1);
-  const eps = sub(h1, h2);
-  h1 = orbit([0, 0], c, l + 1 + p);
-  h2 = orbit([0, 0], c, l + 1);
-  const tru = sub(h1, h2);
+  const withoutH = W(c, l, p);
+  const withH = W([c[0] + h, c[1]], l, p);
 
-  return [sub(eps, tru)[0] / h, sub(eps, tru)[1] / h];
+  return [sub(withH, withoutH)[0] / h, sub(withH, withoutH)[1] / h];
 };
 
+// fixme this can only find preperiods if the period is 1
 export const prePeriod = (c: [number, number]) => {
   let z: [number, number] = [0, 0];
   for (let i = 0; i < 100; i++) {
     const newZ: [number, number] = add(square(z), c);
     if (distance(z, newZ) < Math.pow(10, -2)) {
+      // check if we've hit a cycle
       return i - 1;
     }
     z = newZ;
@@ -85,8 +92,16 @@ export const prePeriod = (c: [number, number]) => {
   return -1;
 };
 
-export const findA = function (c: [number, number], l: number): [number, number] {
-  return derivOrbit(c, c, l);
+// Find the size of a branch in the Julia set
+// c is the point that defines that Julia set
+// cJ is the point you are looking at in the set
+// l is it's preperiod
+export const findA = function (
+  c: [number, number],
+  cj: [number, number],
+  l: number,
+): [number, number] {
+  return derivOrbit(cj, c, l);
 };
 
 export const findU = function (
@@ -95,26 +110,6 @@ export const findU = function (
   p: number,
 ): [number, number] {
   return divide(findWPrime(c, l, p), sub(derivOrbit(orbit(c, c, l), c, p), [1, 0]));
-};
-
-export const magnificationMandelbrot = function (c: [number, number]): number {
-  const u: [number, number] = findU(c, prePeriod(c), 1);
-  return magnitude(u);
-};
-
-export const magnificationJulia = function (c: [number, number]): number {
-  const a: [number, number] = findA(c, prePeriod(c));
-  return magnitude(a);
-};
-
-export const rotationMandelbrot = function (c: [number, number]): number {
-  const u: [number, number] = findU(c, prePeriod(c), 1);
-  return -Math.atan2(u[1], u[0]);
-};
-
-export const rotationJulia = function (c: [number, number]): number {
-  const a: [number, number] = findA(c, prePeriod(c));
-  return -Math.atan2(a[1], a[0]);
 };
 
 export function round(value: number, precision: number) {
@@ -131,5 +126,5 @@ export function formatMisiurewiczName(c: [number, number]) {
 }
 
 export function formatAngle(angle: number) {
-  return `${round((180 / Math.PI) * angle, 0)}°`;
+  return `${round((180 / Math.PI) * angle, 1)}°`;
 }

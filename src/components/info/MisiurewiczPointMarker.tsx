@@ -12,7 +12,7 @@ import {
   orbit,
 } from '../tansTheoremUtils';
 
-const gotoAlpha = true;
+const gotoAlpha = false;
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
   const [{ z }, setControlZoom] = props.mandelbrot.zoomCtrl;
