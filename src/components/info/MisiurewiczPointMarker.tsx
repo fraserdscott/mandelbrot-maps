@@ -25,10 +25,8 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
       props.animationState === 0
     ) {
       if (gotoAlpha) {
-        props.setFocusedPointJulia([
-          orbit(chosenPoint, chosenPoint, prePeriod(chosenPoint)),
-          0,
-        ]);
+        const alpha = orbit(chosenPoint, chosenPoint, prePeriod(chosenPoint));
+        props.setFocusedPointJulia([alpha, 0]);
       } else {
         props.setFocusedPointJulia([chosenPoint, prePeriod(chosenPoint)]);
       }
