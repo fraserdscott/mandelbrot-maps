@@ -9,7 +9,10 @@ import {
   prePeriod,
   complexNumbersEqual,
   formatMisiurewiczName,
+  orbit,
 } from '../tansTheoremUtils';
+
+const gotoAlpha = true;
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
   const [{ z }, setControlZoom] = props.mandelbrot.zoomCtrl;
@@ -21,7 +24,15 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
       !complexNumbersEqual(chosenPoint, props.focusedPoint[0]) ||
       props.animationState === 0
     ) {
-      props.setAnimationState(0);
+      if (gotoAlpha) {
+        props.setFocusedPointJulia([
+          orbit(chosenPoint, chosenPoint, prePeriod(chosenPoint)),
+          0,
+        ]);
+      } else {
+        props.setFocusedPointJulia([chosenPoint, prePeriod(chosenPoint)]);
+      }
+      props.setAnimationState(-1);
       props.setFocusedPoint([chosenPoint, prePeriod(chosenPoint)]);
     }
   };

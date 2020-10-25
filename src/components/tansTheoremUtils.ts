@@ -6,7 +6,7 @@ const distance = (a: [number, number], b: [number, number]) => {
   return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
 };
 
-const orbit = function (
+export const orbit = function (
   z: [number, number],
   c: [number, number],
   t: number,

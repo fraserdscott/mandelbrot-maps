@@ -53,6 +53,8 @@ export interface SelectMisiurewiczCardProps extends CardProps {
   setAnimationState: React.Dispatch<React.SetStateAction<number>>;
   focusedPoint: [[number, number], number];
   setFocusedPoint: React.Dispatch<React.SetStateAction<[[number, number], number]>>;
+  focusedPointJulia: [[number, number], number];
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<[[number, number], number]>>;
   mag: number;
   setMagState: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -66,6 +68,8 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
   setAnimationState: React.Dispatch<React.SetStateAction<number>>;
   focusedPoint: [[number, number], number];
   setFocusedPoint: React.Dispatch<React.SetStateAction<[[number, number], number]>>;
+  focusedPointJulia: [[number, number], number];
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<[[number, number], number]>>;
   mag: number;
   setMagState: React.Dispatch<React.SetStateAction<number>>;
 }

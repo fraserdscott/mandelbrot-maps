@@ -6,9 +6,13 @@ import MisiurewiczPointMarker from './MisiurewiczPointMarker';
 import { findU, prePeriod } from '../tansTheoremUtils';
 
 const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
-  const [animationState, setAnimationState] = React.useState(0);
+  const [animationState, setAnimationState] = React.useState(-1);
   const [mag, setMagState] = React.useState<number>(1);
   const [focusedPoint, setFocusedPoint]: [
+    [[number, number], number],
+    Dispatch<SetStateAction<[[number, number], number]>>,
+  ] = React.useState([misiurewiczPoints[0], prePeriod(misiurewiczPoints[0])]);
+  const [focusedPointJulia, setFocusedPointJulia]: [
     [[number, number], number],
     Dispatch<SetStateAction<[[number, number], number]>>,
   ] = React.useState([misiurewiczPoints[0], prePeriod(misiurewiczPoints[0])]);
@@ -25,6 +29,8 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           setAnimationState={setAnimationState}
           focusedPoint={focusedPoint}
           setFocusedPoint={setFocusedPoint}
+          focusedPointJulia={focusedPointJulia}
+          setFocusedPointJulia={setFocusedPointJulia}
           mag={mag}
           setMagState={setMagState}
         />
@@ -38,6 +44,8 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
         setAnimationState={setAnimationState}
         focusedPoint={focusedPoint}
         setFocusedPoint={setFocusedPoint}
+        focusedPointJulia={focusedPointJulia}
+        setFocusedPointJulia={setFocusedPointJulia}
         mag={mag}
         setMagState={setMagState}
       />
@@ -57,6 +65,8 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           setAnimationState={setAnimationState}
           focusedPoint={focusedPoint}
           setFocusedPoint={setFocusedPoint}
+          focusedPointJulia={focusedPointJulia}
+          setFocusedPointJulia={setFocusedPointJulia}
           mag={mag}
           setMagState={setMagState}
         />
