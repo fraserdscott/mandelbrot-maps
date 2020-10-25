@@ -50,10 +50,17 @@ const MisiurewiczPointInfoCard = (
         <Grid container alignItems="center">
           <ListItemText primary={m[1]} secondary={formatComplexNumber(m[0])} />
           <Divider orientation="vertical" flexItem />
-          <ListItemText
-            primary={`arg(${m[1]})`}
-            secondary={formatAngle(Math.atan2(m[0][1], m[0][0]))}
-          />
+
+          <Tooltip
+            title={'The angle of the branch'}
+            aria-label="add"
+            placement="top-start"
+          >
+            <ListItemText
+              primary={`arg(${m[1]})`}
+              secondary={formatAngle(Math.atan2(m[0][1], m[0][0]))}
+            />
+          </Tooltip>
           <Divider orientation="vertical" flexItem />
           <Tooltip
             title={'1/The size of the branch'}
