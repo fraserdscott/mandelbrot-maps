@@ -22,7 +22,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
       {misiurewiczPoints.map((m) => (
         <MisiurewiczPointMarker
           m={m}
-          show={props.show && animationState <= 1}
+          show={props.show && animationState === -1}
           mandelbrot={props.mandelbrot}
           julia={props.julia}
           animationState={animationState}
