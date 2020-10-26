@@ -275,7 +275,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
               <Button
                 fullWidth
                 style={{ marginBottom: 8, marginTop: 8 }}
-                onClick={() => translateMandelbrot(props.focusedPoint[0])}
+                onClick={() => translateMandelbrot()}
                 startIcon={<ArrowForwardIcon />}
               >
                 {`Translate Mandelbrot set to ${props.focusedPoint[0]}`}
