@@ -57,7 +57,7 @@ function getSteps() {
 }
 
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
-  const translateMandelbrot = (c: [number, number]) => {
+  const translateMandelbrot = () => {
     props.setAnimationState(1);
     warpToPoint(props.mandelbrot, {
       xy: props.focusedPoint[0],
@@ -130,6 +130,8 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   };
 
   const rotateAndZoom = (mag: number) => {
+    props.setMagState(mag);
+
     const u: [number, number] = findU(
       props.focusedPoint[0],
       props.focusedPoint[1],
@@ -166,8 +168,6 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   };
 
   const handleSetMagnification = (event: any, newValue: number | number[]) => {
-    props.setMagState(newValue as number);
-
     rotateAndZoom(newValue as number);
   };
 

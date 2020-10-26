@@ -35,10 +35,6 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
     }
   };
 
-  const complexToScreenCoord = (center: number, point: number, measure: number) => {
-    return (measure / 2) * (1 + (point - center * screenScaleMultiplier) * z.getValue());
-  };
-
   return (
     <Grow in={props.show}>
       <animated.div
@@ -46,11 +42,17 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
           position: 'absolute',
           left: props.mandelbrot.xyCtrl[0].xy.interpolate(
             // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
-            (x, y) => complexToScreenCoord(x, props.m[0], width) - (3 * 40) / 4,
+            (x, y) =>
+              (width / 2) *
+                (1 + (props.m[0] - x * screenScaleMultiplier) * z.getValue()) -
+              3 * (40 / 4),
           ),
           bottom: props.mandelbrot.xyCtrl[0].xy.interpolate(
             // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
-            (x, y) => complexToScreenCoord(y, props.m[1], height) - 40 / 4,
+            (x, y) =>
+              (height / 2) *
+                (1 + (props.m[1] - y * screenScaleMultiplier) * z.getValue()) -
+              40 / 4,
           ),
           width: 'auto',
         }}
