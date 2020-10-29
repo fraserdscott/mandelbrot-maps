@@ -1,16 +1,17 @@
 import {
   Card,
-  Grid,
   Divider,
   ListItemText,
   Typography,
-  Tooltip,
+  List,
+  ListItem,
+  Button,
 } from '@material-ui/core';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import React from 'react';
 import {
   magnitude,
   prePeriod,
-  findA,
   findU,
   formatComplexNumber,
   formatMisiurewiczName,
@@ -20,14 +21,9 @@ import {
 
 const PERIOD = 1;
 
-const MisiurewiczPointInfoCard = (
-  focusedPoint: [number, number],
-  focusedPointJulia: [number, number],
-): JSX.Element => {
+const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element => {
   const u = findU(focusedPoint, prePeriod(focusedPoint), PERIOD);
-  const a = findA(focusedPointJulia, focusedPointJulia, prePeriod(focusedPointJulia));
 
-  const points: [[number, number], string][] = [[u, `u'(c)`]];
   return (
     <Card
       style={{
@@ -41,39 +37,43 @@ const MisiurewiczPointInfoCard = (
         flexShrink: 1,
       }}
     >
-      <Grid container>
-        <Typography style={{ fontWeight: 'bold' }}>
-          {formatMisiurewiczName(focusedPoint)} = {formatComplexNumber(focusedPoint)}
-        </Typography>
-      </Grid>
-      {points.map((m) => (
-        <Grid container alignItems="center">
-          <ListItemText primary={m[1]} secondary={formatComplexNumber(m[0])} />
-          <Divider orientation="vertical" flexItem />
+      <Typography variant="h4" component="h5" gutterBottom>
+        {formatMisiurewiczName(focusedPoint)}
+      </Typography>
+      <Typography variant="h6" gutterBottom>
+        = {formatComplexNumber(focusedPoint)}
+      </Typography>
 
-          <Tooltip
-            title={'The angle of the branch'}
-            aria-label="add"
-            placement="top-start"
-          >
-            <ListItemText
-              primary={`arg(${m[1]})`}
-              secondary={formatAngle(Math.atan2(m[0][1], m[0][0]))}
-            />
-          </Tooltip>
-          <Divider orientation="vertical" flexItem />
-          <Tooltip
-            title={'1/The size of the branch'}
-            aria-label="add"
-            placement="top-start"
-          >
-            <ListItemText
-              primary={`|${m[1]}|`}
-              secondary={`${round(magnitude(m[0]), 1)}`}
-            />
-          </Tooltip>
-        </Grid>
-      ))}
+      <div
+        style={{
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'row',
+          flexShrink: 1,
+        }}
+      >
+        <Button startIcon={<ArrowForwardIcon />}>Goto</Button>
+        <Button startIcon={<ArrowForwardIcon />}>Show animation</Button>
+      </div>
+      <List>
+        <ListItem alignItems="flex-start">
+          <ListItemText
+            primary={`Magnitude`}
+            secondary={`${round(magnitude(focusedPoint), 1)}`}
+          />
+        </ListItem>
+        <Divider component="li" />
+        <ListItem alignItems="flex-start">
+          <ListItemText
+            primary={`Argument`}
+            secondary={formatAngle(Math.atan2(focusedPoint[1], focusedPoint[0]))}
+          />
+        </ListItem>
+        <Divider component="li" />
+        <ListItem alignItems="flex-start">
+          <ListItemText primary={"u'(c)"} secondary={formatComplexNumber(u)} />
+        </ListItem>
+      </List>
     </Card>
   );
 };

@@ -14,6 +14,10 @@ const sub = function (a: [number, number], b: [number, number]): [number, number
   return [a[0] - b[0], a[1] - b[1]];
 };
 
+const mult = function (a: [number, number], b: [number, number]): [number, number] {
+  return [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
+};
+
 const divide = function (x: [number, number], y: [number, number]): [number, number] {
   const d = Math.pow(y[0], 2) + Math.pow(y[1], 2);
   return [(x[0] * y[0] + x[1] * y[1]) / d, (x[1] * y[0] - x[0] * y[1]) / d];
@@ -53,12 +57,8 @@ const orbitDerivative = function (
 ): [number, number] {
   let der: [number, number] = [1, 0];
   for (let i = 0; i < t; i++) {
-    const new_der: [number, number] = [
-      2 * (der[0] * z[0] - der[1] * z[1]),
-      2 * (der[0] * z[1] + der[1] * z[0]),
-    ];
+    der = [2 * mult(der, z)[0], 2 * mult(der, z)[1]];
     z = add(square(z), c);
-    der = new_der;
   }
 
   return der;
@@ -99,7 +99,7 @@ const W = function (c: [number, number], l: number, p: number) {
 };
 
 /**
- * Finds the numerical derivative of the function W at a given point.
+ * Finds the numerical derivative of the function W.
  *
  * @param c - The point we are taking the derivative of
  * @param l - The preperiod of c
@@ -166,11 +166,16 @@ export function round(value: number, precision: number): number {
 }
 
 export function formatComplexNumber(c: [number, number]): string {
-  return `${round(c[0], 2)}${c[1] >= 0 ? '+' : ''}${round(c[1], 2)}j`;
+  return `${round(c[0], 2)}${c[1] >= 0 ? '+' : ''}${round(c[1], 2)}i`;
 }
 
+const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
 export function formatMisiurewiczName(c: [number, number]): string {
-  return `M${prePeriod(c)},${1}`;
+  let pre = prePeriod(c).toString();
+  for (let i = 0; i < 10; i++) {
+    pre = pre.replace(i.toString(), subscripts[i]);
+  }
+  return `M${pre},₁`;
 }
 
 export function formatAngle(angle: number): string {

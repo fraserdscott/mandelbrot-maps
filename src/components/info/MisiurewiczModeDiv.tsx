@@ -54,6 +54,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           position: 'absolute',
           left: 0,
           top: 0,
+          margin: 20,
           width: 'auto',
         }}
       >

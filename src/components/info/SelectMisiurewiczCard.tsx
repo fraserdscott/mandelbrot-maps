@@ -42,18 +42,15 @@ export const misiurewiczPoints: [number, number][] = [
   [0.0016429, -0.8224842],
   [0.3482524, 0.5552302],
   [0.0135779, 0.6556269],
-  // experimental VVVV
-  [0, 1],
-  [-0.77568377, 0.13646737],
 ];
 
-const ITERATEFORJULIA = 0; // c0 is self similar to all of it's iterates in the Mandelbrot set
+const ITERATEFORJULIA = 0; // c0 is similar to all of it's iterates in the Mandelbrot set
 // I'm not sure if this holds for p > 1 as the derivative will be computed differently.
 const INITIALZOOM = 1;
 const PERIOD = 1; // remove when we can compute this
 
 function getSteps() {
-  return ['Translate M', 'Translate J', 'Zoom M', 'Rotate M', 'Rotate J'];
+  return ['Translate M', 'Translate J', 'Zoom M', 'Zoom J', 'Rotate M', 'Rotate J'];
 }
 
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
@@ -93,8 +90,26 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     warpToPoint(props.mandelbrot, { xy: props.focusedPoint[0], z: zoomM, theta: 0 });
   };
 
-  const rotateMandelbrot = () => {
+  const zoomJulia = () => {
     props.setAnimationState(4);
+    const u: [number, number] = findU(
+      props.focusedPoint[0],
+      props.focusedPoint[1],
+      PERIOD,
+    );
+    const a: [number, number] = findA(
+      props.focusedPoint[0],
+      props.focusedPointJulia[0],
+      props.focusedPointJulia[1],
+    );
+
+    const zoomM: number = (magnitude(u) / magnitude(a)) * INITIALZOOM;
+
+    warpToPoint(props.mandelbrot, { xy: props.focusedPoint[0], z: zoomM, theta: 0 });
+  };
+
+  const rotateMandelbrot = () => {
+    props.setAnimationState(5);
     const u: [number, number] = findU(
       props.focusedPoint[0],
       props.focusedPoint[1],
@@ -113,7 +128,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   };
 
   const rotateJulia = () => {
-    props.setAnimationState(5);
+    props.setAnimationState(6);
     const a: [number, number] = findA(
       props.focusedPoint[0],
       props.focusedPointJulia[0],
@@ -193,7 +208,6 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
               <InputLabel htmlFor="select-multiple-native">Misiurewicz points</InputLabel>
               <Select
                 native
-                value={props.focusedPoint.toString()}
                 onChange={handlePointSelection}
                 inputProps={{
                   id: 'select-multiple-native',
@@ -209,7 +223,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
           </Card>
         ) : null}
         {props.animationState === -1
-          ? MisiurewiczPointInfoCard(props.focusedPoint[0], props.focusedPointJulia[0])
+          ? MisiurewiczPointInfoCard(props.focusedPoint[0])
           : null}
         <div
           style={{
@@ -286,7 +300,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 fullWidth
                 style={{ marginBottom: 8, marginTop: 8 }}
                 onClick={() => translateJulia()}
-                startIcon={<ThreeSixtyIcon />}
+                startIcon={<ArrowForwardIcon />}
               >
                 {`Translate Julia set to ${props.focusedPointJulia[0]}`}
               </Button>
@@ -301,7 +315,17 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 {`zoom Mandelbrot set by ${round(
                   magnitude(findU(props.focusedPoint[0], props.focusedPoint[1], PERIOD)),
                   1,
-                )} / ${round(
+                )}x`}
+              </Button>
+            ) : null}
+            {props.animationState === 3 ? (
+              <Button
+                fullWidth
+                style={{ marginBottom: 8, marginTop: 8 }}
+                onClick={() => zoomJulia()}
+                startIcon={<ZoomInIcon />}
+              >
+                {`Zoom Julia set by ${round(
                   magnitude(
                     findA(
                       props.focusedPoint[0],
@@ -313,7 +337,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 )}x`}
               </Button>
             ) : null}
-            {props.animationState === 3 ? (
+            {props.animationState === 4 ? (
               <Button
                 fullWidth
                 style={{ marginBottom: 8, marginTop: 8 }}
@@ -328,7 +352,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 )}`}
               </Button>
             ) : null}
-            {props.animationState === 4 ? (
+            {props.animationState === 5 ? (
               <Button
                 fullWidth
                 style={{ marginBottom: 8, marginTop: 8 }}
@@ -353,7 +377,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             ) : null}
           </Card>
         </div>
-        {props.animationState === 5 ? (
+        {props.animationState === 6 ? (
           <Card
             style={{
               width: 'auto',
