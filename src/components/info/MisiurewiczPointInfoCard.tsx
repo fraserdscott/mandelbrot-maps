@@ -5,9 +5,11 @@ import {
   Typography,
   List,
   ListItem,
-  Button,
+  IconButton,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import CompareIcon from '@material-ui/icons/Compare';
 import React from 'react';
 import {
   magnitude,
@@ -18,10 +20,25 @@ import {
   round,
   formatAngle,
 } from '../tansTheoremUtils';
+import { warpToPoint } from '../utils';
+import { ViewerControls } from '../../common/info';
+
+const useStyles = makeStyles((theme) => ({
+  iconButtonLabel: {
+    width: 60,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+}));
 
 const PERIOD = 1;
 
-const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element => {
+const MisiurewiczPointInfoCard = (
+  focusedPoint: [number, number],
+  setAnimationState: React.Dispatch<React.SetStateAction<number>>,
+  mandelbrot: ViewerControls,
+): JSX.Element => {
+  const classes = useStyles();
   const u = findU(focusedPoint, prePeriod(focusedPoint), PERIOD);
 
   return (
@@ -32,9 +49,6 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
         position: 'relative',
         padding: 8,
         marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        flexShrink: 1,
       }}
     >
       <Typography variant="h4" component="h5" gutterBottom>
@@ -46,17 +60,34 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
 
       <div
         style={{
-          position: 'relative',
           display: 'flex',
           flexDirection: 'row',
-          flexShrink: 1,
         }}
       >
-        <Button startIcon={<ArrowForwardIcon />}>Goto</Button>
-        <Button startIcon={<ArrowForwardIcon />}>Show animation</Button>
+        <IconButton
+          classes={{ label: classes.iconButtonLabel }}
+          onClick={() =>
+            warpToPoint(mandelbrot, {
+              xy: focusedPoint,
+              z: 1,
+              theta: 0,
+            })
+          }
+        >
+          <ArrowForwardIcon />
+          <div>goto</div>
+        </IconButton>
+        <IconButton
+          classes={{ label: classes.iconButtonLabel }}
+          onClick={() => setAnimationState(0)}
+        >
+          <CompareIcon />
+          <div>compare</div>
+        </IconButton>
       </div>
+      <Divider />
       <List>
-        <ListItem alignItems="flex-start">
+        {/*<ListItem alignItems="flex-start">
           <ListItemText
             primary={`Magnitude`}
             secondary={`${round(magnitude(focusedPoint), 1)}`}
@@ -68,7 +99,7 @@ const MisiurewiczPointInfoCard = (focusedPoint: [number, number]): JSX.Element =
             primary={`Argument`}
             secondary={formatAngle(Math.atan2(focusedPoint[1], focusedPoint[0]))}
           />
-        </ListItem>
+        </ListItem>*/}
         <Divider component="li" />
         <ListItem alignItems="flex-start">
           <ListItemText primary={"u'(c)"} secondary={formatComplexNumber(u)} />

@@ -72,11 +72,35 @@ const orbitDerivative = function (
  */
 export const prePeriod = (c: [number, number]) => {
   let z: [number, number] = [0, 0];
-  for (let i = 0; i < 100; i++) {
+  const olds: [number, number][] = [];
+  for (let i = -1; i < 100; i++) {
+    olds.push(z);
     const newZ: [number, number] = add(square(z), c);
-    if (distance(z, newZ) < Math.pow(10, -2)) {
-      // check if we've hit a cycle
-      return i - 1;
+    if (olds.find((elem) => distance(elem, newZ) < 0.01)) {
+      // we've hit a cycle
+      return i;
+    }
+    z = newZ;
+  }
+  return -1;
+};
+
+/**
+ * Find the period of a given point under iteration.
+ *
+ * @param c - The point
+ * @returns If it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
+ */
+export const period = (c: [number, number]) => {
+  let z: [number, number] = [0, 0];
+  const olds: [number, number][] = [];
+  for (let i = -1; i < 100; i++) {
+    olds.push(z);
+    const newZ: [number, number] = add(square(z), c);
+    const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.01);
+    if (similar !== -1) {
+      // we've hit a cycle
+      return i - similar + 2;
     }
     z = newZ;
   }
@@ -171,13 +195,13 @@ export function formatComplexNumber(c: [number, number]): string {
 
 const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
 export function formatMisiurewiczName(c: [number, number]): string {
-  let pre = prePeriod(c).toString();
+  let pre = `M${prePeriod(c).toString()},${period(c)}`;
   for (let i = 0; i < 10; i++) {
-    pre = pre.replace(i.toString(), subscripts[i]);
+    pre = pre.replaceAll(i.toString(), subscripts[i]);
   }
-  return `M${pre},₁`;
+  return pre;
 }
 
 export function formatAngle(angle: number): string {
-  return `${round((180 / Math.PI) * angle, 1)}°`;
+  return `${round((180 / Math.PI) * angle, 0)}°`;
 }
