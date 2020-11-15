@@ -15,12 +15,13 @@ import {
   formatComplexNumber,
   formatMisiurewiczName,
   magnitude,
+  orbit,
 } from '../tansTheoremUtils';
 import { warpToPoint } from '../utils';
-import { ViewerControls } from '../../common/info';
+import { MisiurewiczInfoCardProps } from '../../common/info';
 import { MisiurewiczPoint } from './SelectMisiurewiczCard';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   iconButtonLabel: {
     width: 60,
     display: 'flex',
@@ -28,13 +29,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MisiurewiczPointInfoCard = (
-  focusedPoint: [number, number],
-  setAnimationState: React.Dispatch<React.SetStateAction<number>>,
-  mandelbrot: ViewerControls,
-): JSX.Element => {
+const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element => {
   const classes = useStyles();
-  const u = new MisiurewiczPoint(focusedPoint).u;
 
   return (
     <Card
@@ -43,59 +39,64 @@ const MisiurewiczPointInfoCard = (
         zIndex: 1300,
         position: 'relative',
         padding: 8,
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <Typography variant="h4" component="h5" gutterBottom>
-        {formatMisiurewiczName(focusedPoint)}
+        {formatMisiurewiczName(props.focusedPoint.point)}
       </Typography>
       <Typography variant="h6" gutterBottom>
-        = {formatComplexNumber(focusedPoint)}
+        = {formatComplexNumber(props.focusedPoint.point)}
       </Typography>
-
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
+      <IconButton
+        classes={{ label: classes.iconButtonLabel }}
+        onClick={() =>
+          warpToPoint(props.mandelbrot, {
+            xy: props.focusedPoint.point,
+            z: magnitude(props.focusedPoint.u),
+            theta: 0,
+          })
+        }
+      >
+        <ArrowForwardIcon />
+        goto
+      </IconButton>
+      <IconButton
+        classes={{ label: classes.iconButtonLabel }}
+        onClick={() => {
+          props.setAnimationState(0);
+          props.setFocusedPointJulia(props.focusedPoint);
         }}
       >
-        <IconButton
-          classes={{ label: classes.iconButtonLabel }}
-          onClick={() =>
-            warpToPoint(mandelbrot, {
-              xy: focusedPoint,
-              z: magnitude(u),
-              theta: 0,
-            })
-          }
-        >
-          <ArrowForwardIcon />
-          <div>goto</div>
-        </IconButton>
-        <IconButton
-          classes={{ label: classes.iconButtonLabel }}
-          onClick={() => setAnimationState(0)}
-        >
-          <CompareIcon />
-          <div>compare</div>
-        </IconButton>
-      </div>
+        <CompareIcon />
+        compare c
+      </IconButton>
+      <IconButton
+        classes={{ label: classes.iconButtonLabel }}
+        onClick={() => {
+          props.setAnimationState(0);
+          props.setFocusedPointJulia(
+            new MisiurewiczPoint(
+              orbit(
+                props.focusedPoint.point,
+                props.focusedPoint.point,
+                props.focusedPoint.prePeriod,
+              ),
+            ),
+          );
+        }}
+      >
+        <CompareIcon />
+        compare α
+      </IconButton>
       <Divider />
       <List>
-        {/*<ListItem alignItems="flex-start">
-          <ListItemText
-            primary={`Magnitude`}
-            secondary={`${round(magnitude(focusedPoint), 1)}`}
-          />
-        </ListItem>
-        <Divider component="li" />
         <ListItem alignItems="flex-start">
           <ListItemText
-            primary={`Argument`}
-            secondary={formatAngle(Math.atan2(focusedPoint[1], focusedPoint[0]))}
+            primary={"u'(c)"}
+            secondary={formatComplexNumber(props.focusedPoint.u)}
           />
-        </ListItem>*/}
-        <ListItem alignItems="flex-start">
-          <ListItemText primary={"u'(c)"} secondary={formatComplexNumber(u)} />
         </ListItem>
       </List>
     </Card>

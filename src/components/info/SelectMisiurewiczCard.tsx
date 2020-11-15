@@ -15,7 +15,6 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
-import CancelIcon from '@material-ui/icons/Cancel';
 import React from 'react';
 import MisiurewiczPointInfoCard from './MisiurewiczPointInfoCard';
 import { SelectMisiurewiczCardProps } from '../../common/info';
@@ -29,7 +28,6 @@ import {
   complexNumbersEqual,
   formatMisiurewiczName,
   formatComplexNumber,
-  orbit,
   round,
   formatAngle,
 } from '../tansTheoremUtils';
@@ -1279,11 +1277,9 @@ export const misiurewiczPairs: [number, number][] = [
 ];
 
 export const misiurewiczPoints: MisiurewiczPoint[] = misiurewiczPairs
-  .slice(0, 250)
+  .slice(0, 200)
   .map((p) => new MisiurewiczPoint(p));
 
-const ITERATEFORJULIA = 0; // c0 is similar to all of it's iterates in the Mandelbrot set
-// I'm not sure if this holds for p > 1 as the derivative will be computed differently.
 const INITIALZOOM = 1;
 
 function getSteps(c: MisiurewiczPoint, cj: MisiurewiczPoint) {
@@ -1408,9 +1404,6 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
 
     if (!complexNumbersEqual(chosenPoint, props.focusedPoint.point)) {
       props.setFocusedPoint(new MisiurewiczPoint(chosenPoint));
-      props.setFocusedPointJulia(
-        new MisiurewiczPoint(orbit(chosenPoint, chosenPoint, ITERATEFORJULIA)),
-      );
       props.setMagState(1);
       props.setAnimationState(-1);
     }
@@ -1444,15 +1437,8 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             >
               <Card
                 style={{
-                  width: 'auto',
-                  zIndex: 1300,
-                  position: 'relative',
                   padding: 8,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  flexShrink: 1,
                   backgroundColor: 'DeepSkyBlue',
-                  color: 'white',
                 }}
               >
                 <InputLabel
@@ -1477,11 +1463,18 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                   ))}
                 </Select>
               </Card>
-              {MisiurewiczPointInfoCard(
-                props.focusedPoint.point,
-                props.setAnimationState,
-                props.mandelbrot,
-              )}
+
+              <MisiurewiczPointInfoCard
+                show={props.show}
+                mandelbrot={props.mandelbrot}
+                julia={props.julia}
+                animationState={props.animationState}
+                setAnimationState={props.setAnimationState}
+                focusedPoint={props.focusedPoint}
+                setFocusedPoint={props.setFocusedPoint}
+                focusedPointJulia={props.focusedPointJulia}
+                setFocusedPointJulia={props.setFocusedPointJulia}
+              ></MisiurewiczPointInfoCard>
             </Card>
           </Grid>
         ) : null}
@@ -1489,7 +1482,6 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
           {props.animationState >= 0 ? (
             <Card
               style={{
-                width: '30',
                 zIndex: 1300,
                 position: 'relative',
                 display: 'flex',
@@ -1555,34 +1547,31 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                     position: 'relative',
                     padding: 8,
                     display: 'flex',
-                    marginTop: 8,
                     flexDirection: 'column',
                     flexShrink: 1,
                   }}
                 >
                   <Grid container direction="column" alignItems="center">
-                    <Grid container direction="column" spacing={2}>
-                      <Grid item>
-                        <ZoomInIcon />
-                      </Grid>
-                      <Grid item xs>
-                        <Slider
-                          value={props.mag}
-                          onChange={handleSetMagnification}
-                          style={{
-                            height: '50vh',
-                          }}
-                          min={1}
-                          max={1000}
-                          track={false}
-                          orientation="vertical"
-                          aria-labelledby="continuous-slider"
-                          valueLabelDisplay="auto"
-                        />{' '}
-                      </Grid>
-                      <Grid item>
-                        <ZoomOutIcon />
-                      </Grid>
+                    <Grid item>
+                      <ZoomInIcon />
+                    </Grid>
+                    <Grid item xs>
+                      <Slider
+                        value={props.mag}
+                        onChange={handleSetMagnification}
+                        style={{
+                          height: '50vh',
+                        }}
+                        min={1}
+                        max={1000}
+                        track={false}
+                        orientation="vertical"
+                        aria-labelledby="continuous-slider"
+                        valueLabelDisplay="auto"
+                      />{' '}
+                    </Grid>
+                    <Grid item>
+                      <ZoomOutIcon />
                     </Grid>
                   </Grid>
                 </Card>

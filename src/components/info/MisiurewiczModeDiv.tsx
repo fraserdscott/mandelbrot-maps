@@ -43,15 +43,13 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
                           (1 + (m.point[0] - x * screenScaleMultiplier) * z.getValue()) -
                         3 * (40 / 4);
                       const yPosition: number =
-                        (height / 2) *
-                          (1 + (m.point[1] - y * screenScaleMultiplier) * z.getValue()) -
-                        1 * (40 / 4);
+                        (m.point[1] - y * screenScaleMultiplier) * z.getValue();
 
                       if (
                         xPosition < width &&
                         xPosition > 0 &&
-                        yPosition < height &&
-                        yPosition > 0 &&
+                        yPosition < 1 &&
+                        yPosition > -1 &&
                         magnitude(m.u) < z.getValue() * 8
                       ) {
                         return xPosition;
@@ -65,11 +63,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
                     (x, y) => {
                       const yPosition: number =
                         (height / 2) *
-                          (1 +
-                            (m.point[1] -
-                              props.mandelbrot.xyCtrl[0].xy.getValue()[1] *
-                                screenScaleMultiplier) *
-                              z.getValue()) -
+                          (1 + (m.point[1] - y * screenScaleMultiplier) * z.getValue()) -
                         1 * (40 / 4);
                       return yPosition;
                     },
@@ -79,16 +73,8 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
                 <MisiurewiczPointMarker
                   m={m.point}
                   show={props.show}
-                  mandelbrot={props.mandelbrot}
-                  julia={props.julia}
-                  animationState={animationState}
-                  setAnimationState={setAnimationState}
                   focusedPoint={focusedPoint}
                   setFocusedPoint={setFocusedPoint}
-                  focusedPointJulia={focusedPointJulia}
-                  setFocusedPointJulia={setFocusedPointJulia}
-                  mag={mag}
-                  setMagState={setMagState}
                 />
               </animated.div>
             ))
@@ -99,7 +85,6 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           position: 'absolute',
           left: 0,
           top: 0,
-          width: 'auto',
         }}
       >
         <SelectMisiurewiczCard
