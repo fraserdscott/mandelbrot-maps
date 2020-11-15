@@ -12,16 +12,13 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import CompareIcon from '@material-ui/icons/Compare';
 import React from 'react';
 import {
-  magnitude,
-  prePeriod,
-  findU,
   formatComplexNumber,
   formatMisiurewiczName,
-  round,
-  formatAngle,
+  magnitude,
 } from '../tansTheoremUtils';
 import { warpToPoint } from '../utils';
 import { ViewerControls } from '../../common/info';
+import { MisiurewiczPoint } from './SelectMisiurewiczCard';
 
 const useStyles = makeStyles((theme) => ({
   iconButtonLabel: {
@@ -31,15 +28,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PERIOD = 1;
-
 const MisiurewiczPointInfoCard = (
   focusedPoint: [number, number],
   setAnimationState: React.Dispatch<React.SetStateAction<number>>,
   mandelbrot: ViewerControls,
 ): JSX.Element => {
   const classes = useStyles();
-  const u = findU(focusedPoint, prePeriod(focusedPoint), PERIOD);
+  const u = new MisiurewiczPoint(focusedPoint).u;
 
   return (
     <Card
@@ -48,7 +43,6 @@ const MisiurewiczPointInfoCard = (
         zIndex: 1300,
         position: 'relative',
         padding: 8,
-        marginTop: 8,
       }}
     >
       <Typography variant="h4" component="h5" gutterBottom>
@@ -61,7 +55,7 @@ const MisiurewiczPointInfoCard = (
       <div
         style={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'column',
         }}
       >
         <IconButton
@@ -69,7 +63,7 @@ const MisiurewiczPointInfoCard = (
           onClick={() =>
             warpToPoint(mandelbrot, {
               xy: focusedPoint,
-              z: 1,
+              z: magnitude(u),
               theta: 0,
             })
           }
@@ -100,7 +94,6 @@ const MisiurewiczPointInfoCard = (
             secondary={formatAngle(Math.atan2(focusedPoint[1], focusedPoint[0]))}
           />
         </ListItem>*/}
-        <Divider component="li" />
         <ListItem alignItems="flex-start">
           <ListItemText primary={"u'(c)"} secondary={formatComplexNumber(u)} />
         </ListItem>

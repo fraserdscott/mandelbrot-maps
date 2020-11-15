@@ -57,7 +57,7 @@ const orbitDerivative = function (
 ): [number, number] {
   let der: [number, number] = [1, 0];
   for (let i = 0; i < t; i++) {
-    der = [2 * mult(der, z)[0], 2 * mult(der, z)[1]];
+    der = mult([2, 0], mult(der, z));
     z = add(square(z), c);
   }
 
@@ -68,7 +68,7 @@ const orbitDerivative = function (
  * Find the preperiod of a given point under iteration.
  *
  * @param c - The point
- * @returns If it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
+ * @returns `If `it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
  */
 export const prePeriod = (c: [number, number]) => {
   let z: [number, number] = [0, 0];
@@ -163,6 +163,14 @@ export const findA = function (
   return orbitDerivative(z, c, l);
 };
 
+export const orbitEigenvalue = function (
+  z: [number, number],
+  c: [number, number],
+  p: number,
+): [number, number] {
+  return orbitDerivative(z, c, p);
+};
+
 /**
  * Find (1/the size) of a branch in the Mandelbrot set.
  *
@@ -181,7 +189,7 @@ export const findU = function (
   l: number,
   p: number,
 ): [number, number] {
-  return divide(findWPrime(c, l, p), sub(orbitDerivative(orbit(c, c, l), c, p), [1, 0]));
+  return divide(findWPrime(c, l, p), sub(orbitEigenvalue(orbit(c, c, l), c, p), [1, 0]));
 };
 
 export function round(value: number, precision: number): number {

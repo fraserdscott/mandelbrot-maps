@@ -9,23 +9,24 @@ import {
   formatMisiurewiczName,
   orbit,
 } from '../tansTheoremUtils';
+import { MisiurewiczPoint } from './SelectMisiurewiczCard';
 
 const gotoAlpha = false;
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
   const handlePointSelection = (chosenPoint: [number, number]) => {
     if (
-      !complexNumbersEqual(chosenPoint, props.focusedPoint[0]) ||
+      !complexNumbersEqual(chosenPoint, props.focusedPoint.point) ||
       props.animationState === 0
     ) {
       if (gotoAlpha) {
         const alpha = orbit(chosenPoint, chosenPoint, prePeriod(chosenPoint));
-        props.setFocusedPointJulia([alpha, 0]);
+        props.setFocusedPointJulia(new MisiurewiczPoint(alpha));
       } else {
-        props.setFocusedPointJulia([chosenPoint, prePeriod(chosenPoint)]);
+        props.setFocusedPointJulia(new MisiurewiczPoint(chosenPoint));
       }
       props.setAnimationState(-1);
-      props.setFocusedPoint([chosenPoint, prePeriod(chosenPoint)]);
+      props.setFocusedPoint(new MisiurewiczPoint(chosenPoint));
     }
   };
 
@@ -37,7 +38,9 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
             handlePointSelection(props.m);
           }}
           color={
-            complexNumbersEqual(props.m, props.focusedPoint[0]) ? 'primary' : 'secondary'
+            complexNumbersEqual(props.m, props.focusedPoint.point)
+              ? 'primary'
+              : 'secondary'
           }
         >
           <RoomIcon style={{ width: 40, height: 40 }} />

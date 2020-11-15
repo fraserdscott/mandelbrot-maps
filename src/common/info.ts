@@ -1,5 +1,6 @@
 import { CardProps } from '@material-ui/core';
 import { OpaqueInterpolation } from 'react-spring';
+import { MisiurewiczPoint } from '../components/info/SelectMisiurewiczCard';
 import {
   ThetaType,
   ViewerRotationControlSpring,
@@ -51,10 +52,10 @@ export interface SelectMisiurewiczCardProps extends CardProps {
   julia: ViewerControls;
   animationState: number;
   setAnimationState: React.Dispatch<React.SetStateAction<number>>;
-  focusedPoint: [[number, number], number];
-  setFocusedPoint: React.Dispatch<React.SetStateAction<[[number, number], number]>>;
-  focusedPointJulia: [[number, number], number];
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<[[number, number], number]>>;
+  focusedPoint: MisiurewiczPoint;
+  setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
+  focusedPointJulia: MisiurewiczPoint;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
   mag: number;
   setMagState: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -66,10 +67,10 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
   julia: ViewerControls;
   animationState: number;
   setAnimationState: React.Dispatch<React.SetStateAction<number>>;
-  focusedPoint: [[number, number], number];
-  setFocusedPoint: React.Dispatch<React.SetStateAction<[[number, number], number]>>;
-  focusedPointJulia: [[number, number], number];
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<[[number, number], number]>>;
+  focusedPoint: MisiurewiczPoint;
+  setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
+  focusedPointJulia: MisiurewiczPoint;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
   mag: number;
   setMagState: React.Dispatch<React.SetStateAction<number>>;
 }
