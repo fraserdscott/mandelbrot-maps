@@ -5,6 +5,7 @@ import { misiurewiczPoints, MisiurewiczPoint } from './SelectMisiurewiczCard';
 import MisiurewiczPointMarker from './MisiurewiczPointMarker';
 import { screenScaleMultiplier } from '../../common/values';
 import { animated } from 'react-spring';
+import { useWindowSize } from '../../common/utils';
 
 const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
   const [animationState, setAnimationState] = React.useState(-1);
@@ -18,8 +19,10 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
     Dispatch<SetStateAction<MisiurewiczPoint>>,
   ] = React.useState(misiurewiczPoints[0]);
 
-  const width = window.innerWidth / 2; // this is the width of the mandelbrot box
-  const height = window.innerHeight;
+  const size = useWindowSize();
+
+  const width = size.width ? size.width / 2 : -1; // this is the width of the mandelbrot box
+  const height = size.height || -1;
   const [{ z }] = props.mandelbrot.zoomCtrl;
 
   return (
@@ -50,8 +53,8 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
 
                       if (
                         animationState === -1 &&
-                        xPosition < 1 &&
-                        yPosition < 1 &&
+                        xPosition < width / height &&
+                        yPosition < width / height &&
                         m.uMagnitude < z.getValue() * 8
                       ) {
                         return 'visible';
@@ -67,12 +70,11 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
                       const theta = props.mandelbrot.rotCtrl[0].theta.getValue();
 
                       return (
-                        (width / 2) *
-                          (1 +
-                            ((m.point[0] - x * screenScaleMultiplier) * Math.cos(-theta) -
-                              (m.point[1] - y * screenScaleMultiplier) *
-                                Math.sin(-theta)) *
-                              z.getValue()) -
+                        (width / ((width / height) * 2)) *
+                          (((m.point[0] - x * screenScaleMultiplier) * Math.cos(-theta) -
+                            (m.point[1] - y * screenScaleMultiplier) * Math.sin(-theta)) *
+                            z.getValue() +
+                            width / height) -
                         3 * (40 / 4)
                       );
                     },
@@ -84,11 +86,10 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
 
                       return (
                         (height / 2) *
-                          (1 +
-                            ((m.point[0] - x * screenScaleMultiplier) * Math.sin(-theta) +
-                              (m.point[1] - y * screenScaleMultiplier) *
-                                Math.cos(-theta)) *
-                              z.getValue()) -
+                          (((m.point[0] - x * screenScaleMultiplier) * Math.sin(-theta) +
+                            (m.point[1] - y * screenScaleMultiplier) * Math.cos(-theta)) *
+                            z.getValue() +
+                            1) -
                         1 * (40 / 4)
                       );
                     },
