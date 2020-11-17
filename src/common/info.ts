@@ -1,6 +1,7 @@
 import { CardProps } from '@material-ui/core';
 import { OpaqueInterpolation } from 'react-spring';
 import { MisiurewiczPoint } from '../components/info/SelectMisiurewiczCard';
+import { AnimationStatus } from '../components/info/MisiurewiczModeDiv';
 import {
   ThetaType,
   ViewerRotationControlSpring,
@@ -50,8 +51,8 @@ export interface SelectMisiurewiczCardProps extends CardProps {
   // screenScaleMultiplier: number;
   mandelbrot: ViewerControls;
   julia: ViewerControls;
-  animationState: number;
-  setAnimationState: React.Dispatch<React.SetStateAction<number>>;
+  animationState: AnimationStatus;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   focusedPoint: MisiurewiczPoint;
   setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
   focusedPointJulia: MisiurewiczPoint;
@@ -61,7 +62,7 @@ export interface SelectMisiurewiczCardProps extends CardProps {
 }
 
 export interface MisiurewiczPointMarkerProps extends CardProps {
-  m: [number, number];
+  m: MisiurewiczPoint;
   show: boolean;
   focusedPoint: MisiurewiczPoint;
   setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
@@ -71,8 +72,8 @@ export interface MisiurewiczInfoCardProps extends CardProps {
   show: boolean;
   mandelbrot: ViewerControls;
   julia: ViewerControls;
-  animationState: number;
-  setAnimationState: React.Dispatch<React.SetStateAction<number>>;
+  animationState: AnimationStatus;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   focusedPoint: MisiurewiczPoint;
   setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
   focusedPointJulia: MisiurewiczPoint;

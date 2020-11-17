@@ -4,18 +4,17 @@ import RoomIcon from '@material-ui/icons/Room';
 import IconButton from '@material-ui/core/IconButton';
 import { MisiurewiczPointMarkerProps } from '../../common/info';
 import { complexNumbersEqual } from '../tansTheoremUtils';
-import { MisiurewiczPoint } from './SelectMisiurewiczCard';
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
   return (
     <Grow in={props.show}>
-      <Tooltip title={new MisiurewiczPoint(props.m, props.m).toString()} placement="top">
+      <Tooltip title={props.m.toString()} placement="top">
         <IconButton
           onClick={() => {
-            props.setFocusedPoint(new MisiurewiczPoint(props.m, props.m));
+            props.setFocusedPoint(props.m);
           }}
           color={
-            complexNumbersEqual(props.m, props.focusedPoint.point)
+            complexNumbersEqual(props.m.point, props.focusedPoint.point)
               ? 'primary'
               : 'secondary'
           }

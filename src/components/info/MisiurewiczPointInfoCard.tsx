@@ -15,6 +15,7 @@ import { formatComplexNumber, orbit } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
 import { MisiurewiczInfoCardProps } from '../../common/info';
 import { MisiurewiczPoint } from './SelectMisiurewiczCard';
+import { AnimationStatus } from './MisiurewiczModeDiv';
 
 const useStyles = makeStyles(() => ({
   iconButtonLabel: {
@@ -45,6 +46,7 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         = {formatComplexNumber(props.focusedPoint.point)}
       </Typography>
       <IconButton
+        size="small"
         classes={{ label: classes.iconButtonLabel }}
         onClick={() =>
           warpToPoint(props.mandelbrot, {
@@ -58,43 +60,15 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         goto
       </IconButton>
       <IconButton
+        size="small"
         classes={{ label: classes.iconButtonLabel }}
         onClick={() => {
-          props.setAnimationState(0);
-          props.setFocusedPointJulia(props.focusedPoint);
+          props.setAnimationState(AnimationStatus.SELECT_JULIA_POINT);
         }}
       >
         <CompareIcon />
-        compare with {props.focusedPoint.toString()}
+        Compare Mandelbrot and Julia set
       </IconButton>
-      <IconButton
-        classes={{ label: classes.iconButtonLabel }}
-        onClick={() => {
-          props.setAnimationState(0);
-          props.setFocusedPointJulia(
-            new MisiurewiczPoint(
-              orbit(
-                props.focusedPoint.point,
-                props.focusedPoint.point,
-                props.focusedPoint.prePeriod,
-              ),
-              props.focusedPoint.point,
-            ),
-          );
-        }}
-      >
-        <CompareIcon />
-        compare with α
-      </IconButton>
-      <Divider />
-      <List>
-        <ListItem alignItems="flex-start">
-          <ListItemText
-            primary={"u'(c)"}
-            secondary={formatComplexNumber(props.focusedPoint.u)}
-          />
-        </ListItem>
-      </List>
     </Card>
   );
 };

@@ -70,10 +70,9 @@ const orbitDerivative = function (
  * @param c - The point
  * @returns `If `it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
  */
-export const prePeriod = (c: [number, number]) => {
-  let z: [number, number] = [0, 0];
+export const prePeriod = (z: [number, number], c: [number, number]) => {
   const olds: [number, number][] = [];
-  for (let i = -1; i < 100; i++) {
+  for (let i = 1; i < 100; i++) {
     olds.push(z);
     const newZ: [number, number] = add(square(z), c);
     if (olds.find((elem) => distance(elem, newZ) < 0.01)) {
@@ -91,16 +90,15 @@ export const prePeriod = (c: [number, number]) => {
  * @param c - The point
  * @returns If it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
  */
-export const period = (c: [number, number]) => {
-  let z: [number, number] = [0, 0];
+export const period = (z: [number, number], c: [number, number]) => {
   const olds: [number, number][] = [];
-  for (let i = -1; i < 100; i++) {
+  for (let i = 1; i < 100; i++) {
     olds.push(z);
     const newZ: [number, number] = add(square(z), c);
     const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.01);
     if (similar !== -1) {
       // we've hit a cycle
-      return i - similar + 2;
+      return i - similar;
     }
     z = newZ;
   }

@@ -7,8 +7,22 @@ import { screenScaleMultiplier } from '../../common/values';
 import { animated } from 'react-spring';
 import { useWindowSize } from '../../common/utils';
 
+export enum AnimationStatus {
+  NO_ANIMATION = -1,
+  SELECT_JULIA_POINT = 45,
+  TRANSLATE_M = 0,
+  TRANSLATE_J = 1,
+  ZOOM_M = 2,
+  ZOOM_J = 3,
+  ROTATE_M = 4,
+  ROTATE_J = 5,
+  PLAY = 6,
+}
+
 const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
-  const [animationState, setAnimationState] = React.useState(-1);
+  const [animationState, setAnimationState] = React.useState(
+    AnimationStatus.NO_ANIMATION,
+  );
   const [mag, setMagState] = React.useState<number>(1);
   const [focusedPoint, setFocusedPoint]: [
     MisiurewiczPoint,
@@ -32,7 +46,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           zIndex: 100,
         }}
       >
-        {animationState === -1
+        {animationState === AnimationStatus.NO_ANIMATION
           ? misiurewiczPoints.map((m) => (
               <animated.div
                 style={{
@@ -52,7 +66,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
                         ) * z.getValue();
 
                       if (
-                        animationState === -1 &&
+                        animationState === AnimationStatus.NO_ANIMATION &&
                         xPosition < width / height &&
                         yPosition < width / height &&
                         m.uMagnitude < z.getValue() * 8
@@ -70,11 +84,12 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
                       const theta = props.mandelbrot.rotCtrl[0].theta.getValue();
 
                       return (
-                        (width / ((width / height) * 2)) *
-                          (((m.point[0] - x * screenScaleMultiplier) * Math.cos(-theta) -
-                            (m.point[1] - y * screenScaleMultiplier) * Math.sin(-theta)) *
-                            z.getValue() +
-                            width / height) -
+                        (((m.point[0] - x * screenScaleMultiplier) * Math.cos(-theta) -
+                          (m.point[1] - y * screenScaleMultiplier) * Math.sin(-theta)) *
+                          z.getValue() *
+                          height +
+                          width) /
+                          2 -
                         3 * (40 / 4)
                       );
                     },
@@ -97,7 +112,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
                 }}
               >
                 <MisiurewiczPointMarker
-                  m={m.point}
+                  m={m}
                   show={props.show}
                   focusedPoint={focusedPoint}
                   setFocusedPoint={setFocusedPoint}
