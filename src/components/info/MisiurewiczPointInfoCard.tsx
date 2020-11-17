@@ -12,7 +12,7 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import CompareIcon from '@material-ui/icons/Compare';
 import React from 'react';
 import { formatComplexNumber, orbit } from '../tansTheoremUtils';
-import { warpToPoint } from '../utils';
+import { warpToPoint } from '../../common/utils';
 import { MisiurewiczInfoCardProps } from '../../common/info';
 import { MisiurewiczPoint } from './SelectMisiurewiczCard';
 

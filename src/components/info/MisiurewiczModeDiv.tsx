@@ -18,8 +18,8 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
     Dispatch<SetStateAction<MisiurewiczPoint>>,
   ] = React.useState(misiurewiczPoints[0]);
 
-  const width = 640;
-  const height = 610;
+  const width = window.innerWidth / 2; // this is the width of the mandelbrot box
+  const height = window.innerHeight;
   const [{ z }] = props.mandelbrot.zoomCtrl;
 
   return (
@@ -39,8 +39,8 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
                       const theta = props.mandelbrot.rotCtrl[0].theta.getValue();
                       const xPosition: number =
                         Math.abs(
-                          (m.point[0] - x * screenScaleMultiplier) * Math.cos(theta) -
-                            (m.point[1] - y * screenScaleMultiplier) * Math.sin(theta),
+                          (m.point[0] - x * screenScaleMultiplier) * Math.cos(-theta) -
+                            (m.point[1] - y * screenScaleMultiplier) * Math.sin(-theta),
                         ) * z.getValue();
                       const yPosition: number =
                         Math.abs(

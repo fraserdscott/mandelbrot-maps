@@ -18,7 +18,7 @@ import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import React from 'react';
 import MisiurewiczPointInfoCard from './MisiurewiczPointInfoCard';
 import { SelectMisiurewiczCardProps } from '../../common/info';
-import { warpToPoint } from '../utils';
+import { warpToPoint } from '../../common/utils';
 import {
   prePeriod,
   period,
@@ -1293,7 +1293,7 @@ export const misiurewiczPairs: [number, number][] = [
 ];
 
 export const misiurewiczPoints: MisiurewiczPoint[] = misiurewiczPairs
-  .slice(0, 100)
+  .slice(0, 150)
   .map((p) => new MisiurewiczPoint(p, p));
 
 const INITIALZOOM = 1;
