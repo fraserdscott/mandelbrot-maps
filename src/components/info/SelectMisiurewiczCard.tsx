@@ -26,25 +26,41 @@ import {
   findA,
   findU,
   complexNumbersEqual,
-  formatMisiurewiczName,
   formatComplexNumber,
   round,
   formatAngle,
 } from '../tansTheoremUtils';
 
+const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
 export class MisiurewiczPoint {
   point: [number, number];
   u: [number, number];
+  a: [number, number];
   prePeriod: number;
   period: number;
   uMagnitude: number;
+  uAngle: number;
+  aMagnitude: number;
+  aAngle: number;
 
-  constructor(point: [number, number]) {
-    this.point = point;
-    this.prePeriod = prePeriod(point);
-    this.period = period(point);
+  constructor(z: [number, number], c: [number, number]) {
+    this.point = z;
+    this.prePeriod = prePeriod(z);
+    this.period = period(z);
     this.u = findU(this.point, this.prePeriod, this.period);
     this.uMagnitude = magnitude(this.u);
+    this.uAngle = Math.atan2(this.u[1], this.u[0]);
+    this.a = findA(c, z, this.prePeriod);
+    this.aMagnitude = magnitude(this.a);
+    this.aAngle = Math.atan2(this.a[1], this.a[0]);
+  }
+
+  toString(): string {
+    let pre = `M${this.prePeriod},${this.period}`;
+    for (let i = 0; i < 10; i++) {
+      pre = pre.replaceAll(i.toString(), subscripts[i]);
+    }
+    return pre;
   }
 }
 
@@ -1277,8 +1293,8 @@ export const misiurewiczPairs: [number, number][] = [
 ];
 
 export const misiurewiczPoints: MisiurewiczPoint[] = misiurewiczPairs
-  .slice(0, 200)
-  .map((p) => new MisiurewiczPoint(p));
+  .slice(0, 100)
+  .map((p) => new MisiurewiczPoint(p, p));
 
 const INITIALZOOM = 1;
 
@@ -1286,18 +1302,10 @@ function getSteps(c: MisiurewiczPoint, cj: MisiurewiczPoint) {
   return [
     ['Translate M', `to ${formatComplexNumber(c.point)}`],
     ['Translate J', `to ${formatComplexNumber(cj.point)}`],
-    ['Zoom M', `by ${round(magnitude(c.u), 1)}x`],
-    ['Zoom J', `by ${round(magnitude(findA(c.point, cj.point, cj.prePeriod)), 1)}x`],
-    ['Rotate M', `by ${formatAngle(Math.atan2(c.u[1], c.u[0]))}`],
-    [
-      'Rotate J',
-      `by ${formatAngle(
-        Math.atan2(
-          findA(c.point, cj.point, cj.prePeriod)[1],
-          findA(c.point, cj.point, cj.prePeriod)[0],
-        ),
-      )}`,
-    ],
+    ['Zoom M', `by ${round(c.uMagnitude, 1)}x`],
+    ['Zoom J', `by ${round(magnitude(cj.a), 1)}x`],
+    ['Rotate M', `by ${formatAngle(c.uAngle)}`],
+    ['Rotate J', `by ${formatAngle(cj.aAngle)}`],
   ];
 }
 
@@ -1322,30 +1330,24 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
 
   const zoomMandelbrot = () => {
     props.setAnimationState(3);
-    const zoomM: number = magnitude(props.focusedPoint.u) * INITIALZOOM;
+    const zoomM: number = props.focusedPoint.uMagnitude * INITIALZOOM;
 
     warpToPoint(props.mandelbrot, { xy: props.focusedPoint.point, z: zoomM, theta: 0 });
   };
 
   const zoomJulia = () => {
     props.setAnimationState(4);
-    const a: [number, number] = findA(
-      props.focusedPoint.point,
-      props.focusedPointJulia.point,
-      props.focusedPointJulia.prePeriod,
-    );
 
-    const zoomJ: number = magnitude(a) * INITIALZOOM;
+    const zoomJ: number = props.focusedPointJulia.aMagnitude * INITIALZOOM;
 
     warpToPoint(props.julia, { xy: props.focusedPointJulia.point, z: zoomJ, theta: 0 });
   };
 
   const rotateMandelbrot = () => {
     props.setAnimationState(5);
-    const u: [number, number] = props.focusedPoint.u;
 
-    const zoomM: number = magnitude(u) * INITIALZOOM;
-    const thetaM = -Math.atan2(u[1], u[0]);
+    const zoomM: number = props.focusedPoint.uMagnitude * INITIALZOOM;
+    const thetaM = -props.focusedPoint.uAngle;
 
     warpToPoint(props.mandelbrot, {
       xy: props.focusedPoint.point,
@@ -1356,14 +1358,9 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
 
   const rotateJulia = () => {
     props.setAnimationState(6);
-    const a: [number, number] = findA(
-      props.focusedPoint.point,
-      props.focusedPointJulia.point,
-      props.focusedPointJulia.prePeriod,
-    );
 
-    const zoomJ: number = magnitude(a) * INITIALZOOM;
-    const thetaJ = -Math.atan2(a[1], a[0]);
+    const zoomJ: number = props.focusedPointJulia.aMagnitude * INITIALZOOM;
+    const thetaJ = -props.focusedPointJulia.aAngle;
 
     warpToPoint(props.julia, {
       xy: props.focusedPointJulia.point,
@@ -1375,16 +1372,10 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   const rotateAndZoom = (mag: number) => {
     props.setMagState(mag);
 
-    const a: [number, number] = findA(
-      props.focusedPoint.point,
-      props.focusedPointJulia.point,
-      props.focusedPointJulia.prePeriod,
-    );
-
-    const zoomM: number = magnitude(props.focusedPoint.u) * mag;
-    const zoomJ: number = magnitude(a) * mag;
-    const thetaM = -Math.atan2(props.focusedPoint.u[1], props.focusedPoint.u[0]);
-    const thetaJ = -Math.atan2(a[1], a[0]);
+    const zoomM: number = props.focusedPoint.uMagnitude * mag;
+    const zoomJ: number = props.focusedPointJulia.aMagnitude * mag;
+    const thetaM = -props.focusedPoint.uAngle;
+    const thetaJ = -props.focusedPointJulia.aAngle;
 
     warpToPoint(props.mandelbrot, {
       xy: props.focusedPoint.point,
@@ -1402,14 +1393,15 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     const posStr = (event.target.value as string).split(',');
     const chosenPoint: [number, number] = [parseFloat(posStr[0]), parseFloat(posStr[1])];
 
-    if (!complexNumbersEqual(chosenPoint, props.focusedPoint.point)) {
-      props.setFocusedPoint(new MisiurewiczPoint(chosenPoint));
+    const chosenMisiurewicz = new MisiurewiczPoint(chosenPoint, chosenPoint);
+    if (!complexNumbersEqual(chosenMisiurewicz.point, props.focusedPoint.point)) {
+      props.setFocusedPoint(chosenMisiurewicz);
       props.setMagState(1);
       props.setAnimationState(-1);
     }
     warpToPoint(props.mandelbrot, {
-      xy: new MisiurewiczPoint(chosenPoint).point,
-      z: magnitude(new MisiurewiczPoint(chosenPoint).u),
+      xy: chosenMisiurewicz.point,
+      z: chosenMisiurewicz.uMagnitude,
       theta: 0,
     });
   };
@@ -1458,7 +1450,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 >
                   {misiurewiczPoints.map((m) => (
                     <option key={m.point.toString()} value={m.point.toString()}>
-                      {formatMisiurewiczName(m.point)} = {formatComplexNumber(m.point)}
+                      {m.toString()} = {formatComplexNumber(m.point)}
                     </option>
                   ))}
                 </Select>
@@ -1560,7 +1552,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                         value={props.mag}
                         onChange={handleSetMagnification}
                         style={{
-                          height: '50vh',
+                          height: '60vh',
                         }}
                         min={1}
                         max={1000}

@@ -201,15 +201,6 @@ export function formatComplexNumber(c: [number, number]): string {
   return `${round(c[0], 2)}${c[1] >= 0 ? '+' : ''}${round(c[1], 2)}i`;
 }
 
-const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
-export function formatMisiurewiczName(c: [number, number]): string {
-  let pre = `M${prePeriod(c).toString()},${period(c)}`;
-  for (let i = 0; i < 10; i++) {
-    pre = pre.replaceAll(i.toString(), subscripts[i]);
-  }
-  return pre;
-}
-
 export function formatAngle(angle: number): string {
   return `${round((180 / Math.PI) * angle, 0)}°`;
 }

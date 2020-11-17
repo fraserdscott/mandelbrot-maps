@@ -3,7 +3,6 @@ import { MisiurewiczModeDivProps } from '../../common/info';
 import SelectMisiurewiczCard from './SelectMisiurewiczCard';
 import { misiurewiczPoints, MisiurewiczPoint } from './SelectMisiurewiczCard';
 import MisiurewiczPointMarker from './MisiurewiczPointMarker';
-import { magnitude } from '../tansTheoremUtils';
 import { screenScaleMultiplier } from '../../common/values';
 import { animated } from 'react-spring';
 
@@ -34,38 +33,64 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           ? misiurewiczPoints.map((m) => (
               <animated.div
                 style={{
+                  visibility: props.mandelbrot.xyCtrl[0].xy.interpolate(
+                    // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
+                    (x, y) => {
+                      const theta = props.mandelbrot.rotCtrl[0].theta.getValue();
+                      const xPosition: number =
+                        Math.abs(
+                          (m.point[0] - x * screenScaleMultiplier) * Math.cos(theta) -
+                            (m.point[1] - y * screenScaleMultiplier) * Math.sin(theta),
+                        ) * z.getValue();
+                      const yPosition: number =
+                        Math.abs(
+                          (m.point[0] - x * screenScaleMultiplier) * Math.sin(-theta) +
+                            (m.point[1] - y * screenScaleMultiplier) * Math.cos(-theta),
+                        ) * z.getValue();
+
+                      if (
+                        animationState === -1 &&
+                        xPosition < 1 &&
+                        yPosition < 1 &&
+                        m.uMagnitude < z.getValue() * 8
+                      ) {
+                        return 'visible';
+                      } else {
+                        return 'hidden';
+                      }
+                    },
+                  ),
                   position: 'absolute',
                   left: props.mandelbrot.xyCtrl[0].xy.interpolate(
                     // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
                     (x, y) => {
-                      const xPosition: number =
-                        (width / 2) *
-                          (1 + (m.point[0] - x * screenScaleMultiplier) * z.getValue()) -
-                        3 * (40 / 4);
-                      const yPosition: number =
-                        (m.point[1] - y * screenScaleMultiplier) * z.getValue();
+                      const theta = props.mandelbrot.rotCtrl[0].theta.getValue();
 
-                      if (
-                        xPosition < width &&
-                        xPosition > 0 &&
-                        yPosition < 1 &&
-                        yPosition > -1 &&
-                        magnitude(m.u) < z.getValue() * 8
-                      ) {
-                        return xPosition;
-                      } else {
-                        return -1000;
-                      }
+                      return (
+                        (width / 2) *
+                          (1 +
+                            ((m.point[0] - x * screenScaleMultiplier) * Math.cos(-theta) -
+                              (m.point[1] - y * screenScaleMultiplier) *
+                                Math.sin(-theta)) *
+                              z.getValue()) -
+                        3 * (40 / 4)
+                      );
                     },
                   ),
                   bottom: props.mandelbrot.xyCtrl[0].xy.interpolate(
                     // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
                     (x, y) => {
-                      const yPosition: number =
+                      const theta = props.mandelbrot.rotCtrl[0].theta.getValue();
+
+                      return (
                         (height / 2) *
-                          (1 + (m.point[1] - y * screenScaleMultiplier) * z.getValue()) -
-                        1 * (40 / 4);
-                      return yPosition;
+                          (1 +
+                            ((m.point[0] - x * screenScaleMultiplier) * Math.sin(-theta) +
+                              (m.point[1] - y * screenScaleMultiplier) *
+                                Math.cos(-theta)) *
+                              z.getValue()) -
+                        1 * (40 / 4)
+                      );
                     },
                   ),
                 }}

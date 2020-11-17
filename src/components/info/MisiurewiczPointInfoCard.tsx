@@ -11,12 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import CompareIcon from '@material-ui/icons/Compare';
 import React from 'react';
-import {
-  formatComplexNumber,
-  formatMisiurewiczName,
-  magnitude,
-  orbit,
-} from '../tansTheoremUtils';
+import { formatComplexNumber, orbit } from '../tansTheoremUtils';
 import { warpToPoint } from '../utils';
 import { MisiurewiczInfoCardProps } from '../../common/info';
 import { MisiurewiczPoint } from './SelectMisiurewiczCard';
@@ -44,7 +39,7 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
       }}
     >
       <Typography variant="h4" component="h5" gutterBottom>
-        {formatMisiurewiczName(props.focusedPoint.point)}
+        {props.focusedPoint.toString()}
       </Typography>
       <Typography variant="h6" gutterBottom>
         = {formatComplexNumber(props.focusedPoint.point)}
@@ -54,8 +49,8 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         onClick={() =>
           warpToPoint(props.mandelbrot, {
             xy: props.focusedPoint.point,
-            z: magnitude(props.focusedPoint.u),
-            theta: 0,
+            z: props.focusedPoint.uMagnitude,
+            theta: props.mandelbrot.rotCtrl[0].theta.getValue(),
           })
         }
       >
@@ -70,7 +65,7 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         }}
       >
         <CompareIcon />
-        compare c
+        compare with {props.focusedPoint.toString()}
       </IconButton>
       <IconButton
         classes={{ label: classes.iconButtonLabel }}
@@ -83,12 +78,13 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
                 props.focusedPoint.point,
                 props.focusedPoint.prePeriod,
               ),
+              props.focusedPoint.point,
             ),
           );
         }}
       >
         <CompareIcon />
-        compare α
+        compare with α
       </IconButton>
       <Divider />
       <List>

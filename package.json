@@ -2,7 +2,7 @@
   "name": "mandelbrot-maps",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://jmaio.github.io/mandelbrot-maps/",
+  "homepage": "https://fraserdscott.github.io/mandelbrot-maps/",
   "dependencies": {
     "@material-ui/core": "^4.4.2",
     "@material-ui/icons": "^4.9.1",
