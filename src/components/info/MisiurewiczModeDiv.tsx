@@ -8,8 +8,8 @@ import { animated } from 'react-spring';
 import { useWindowSize } from '../../common/utils';
 
 export enum AnimationStatus {
-  NO_ANIMATION = -1,
-  SELECT_JULIA_POINT = 45,
+  NO_ANIMATION = -2,
+  SELECT_JULIA_POINT = -1,
   TRANSLATE_M = 0,
   TRANSLATE_J = 1,
   ZOOM_M = 2,
@@ -69,7 +69,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
                         animationState === AnimationStatus.NO_ANIMATION &&
                         xPosition < width / height &&
                         yPosition < width / height &&
-                        m.uMagnitude < z.getValue() * 8
+                        m.uMagnitude * m.period < z.getValue() * 7
                       ) {
                         return 'visible';
                       } else {

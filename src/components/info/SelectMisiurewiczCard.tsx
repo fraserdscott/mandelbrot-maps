@@ -11,9 +11,11 @@ import {
   Stepper,
   IconButton,
   Typography,
+  Tooltip,
 } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
+import InfoIcon from '@material-ui/icons/Info';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import React from 'react';
@@ -1274,15 +1276,17 @@ export class MisiurewiczPoint {
   aMagnitude: number;
   aAngle: number;
 
+  // TODO THEY ARE FLIPPED 180 DEGREES BY THE MODULUS 2 OF THE ITERATE. Possibly :/
   constructor(c: [number, number], iters: number) {
     this.point = orbit([0, 0], c, iters);
 
-    this.prePeriod = iters === 1 ? prePeriod(this.point, c) : 0;
+    this.prePeriod = prePeriod(this.point, c);
     this.period = period(this.point, c);
 
     this.u = findU(c, this.prePeriod, this.period);
     this.uMagnitude = magnitude(this.u);
     this.uAngle = Math.atan2(this.u[1], this.u[0]);
+
     this.a = findA(c, this.point, this.prePeriod);
     this.aMagnitude = magnitude(this.a);
     this.aAngle = Math.atan2(this.a[1], this.a[0]);
@@ -1298,7 +1302,7 @@ export class MisiurewiczPoint {
 }
 
 export const misiurewiczPoints: MisiurewiczPoint[] = misiurewiczPairs
-  .slice(0, 150)
+  .slice(0, 250)
   .map((p) => new MisiurewiczPoint(p, 1));
 
 const INITIALZOOM = 1;
@@ -1315,7 +1319,7 @@ function getSteps(c: MisiurewiczPoint, cj: MisiurewiczPoint) {
 }
 
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
-  const hello = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const selectPointInJulia = (event: React.ChangeEvent<{ value: unknown }>) => {
     const posStr = event.target.value as string;
 
     props.setFocusedPointJulia(
@@ -1323,7 +1327,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     );
   };
 
-  const hi = [1, props.focusedPoint.prePeriod + 1];
+  const iterates = [...Array(props.focusedPoint.prePeriod + 1).keys()].slice(1);
 
   const translateMandelbrot = () => {
     props.setAnimationState(AnimationStatus.TRANSLATE_J);
@@ -1497,13 +1501,20 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
               }}
             >
               <IconButton
-                onClick={() => props.setAnimationState(AnimationStatus.NO_ANIMATION)}
+                onClick={() =>
+                  props.setAnimationState(
+                    props.animationState === AnimationStatus.SELECT_JULIA_POINT
+                      ? AnimationStatus.NO_ANIMATION
+                      : AnimationStatus.SELECT_JULIA_POINT,
+                  )
+                }
               >
                 <ArrowBackwardIcon />
               </IconButton>
               {props.animationState === AnimationStatus.SELECT_JULIA_POINT ? (
                 <Card
                   style={{
+                    width: 250,
                     padding: 8,
                     zIndex: 1300,
                     position: 'relative',
@@ -1512,9 +1523,26 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                     flexShrink: 1,
                   }}
                 >
-                  <Typography variant="h4" gutterBottom>
-                    Comparing the points
-                  </Typography>
+                  <div
+                    style={{
+                      marginBottom: 8,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      flexShrink: 1,
+                    }}
+                  >
+                    <Typography variant="h4" gutterBottom>
+                      Comparing...
+                    </Typography>
+                    <Tooltip
+                      title={`There are at least ${
+                        iterates.length
+                      } points in the Julia set for ${props.focusedPoint.toString()} that are similar to the point ${props.focusedPoint.toString()} in the Mandelbrot set!`}
+                      placement="top"
+                    >
+                      <InfoIcon />
+                    </Tooltip>
+                  </div>
                   <Select
                     native
                     inputProps={{
@@ -1530,29 +1558,30 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                     </option>
                     ))
                   </Select>
-                  <div>in the Mandelbrot set</div> with
+                  <div style={{ marginBottom: 12 }}>in the Mandelbrot set</div>
                   <Select
                     native
-                    onChange={hello}
+                    onChange={selectPointInJulia}
                     inputProps={{
                       id: 'select-multiple-native',
                     }}
                   >
-                    {hi.map((m) => (
+                    {iterates.map((m) => (
                       <option key={m} value={m}>
-                        {m}
+                        {formatComplexNumber(
+                          new MisiurewiczPoint(props.focusedPoint.point, m).point,
+                        )}
                       </option>
                     ))}
                   </Select>
-                  <div>in the Julia set</div>
+                  <div style={{ marginBottom: 12 }}>in the Julia set</div>
                   <Button
-                    fullWidth
                     variant="contained"
                     onClick={() => {
                       props.setAnimationState(AnimationStatus.TRANSLATE_M);
                     }}
                   >
-                    Next
+                    GO
                   </Button>
                 </Card>
               ) : null}

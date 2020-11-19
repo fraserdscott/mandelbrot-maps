@@ -11,10 +11,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import CompareIcon from '@material-ui/icons/Compare';
 import React from 'react';
-import { formatComplexNumber, orbit } from '../tansTheoremUtils';
+import { formatComplexNumber } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
 import { MisiurewiczInfoCardProps } from '../../common/info';
-import { MisiurewiczPoint } from './SelectMisiurewiczCard';
 import { AnimationStatus } from './MisiurewiczModeDiv';
 
 const useStyles = makeStyles(() => ({
