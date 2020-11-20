@@ -1,41 +1,39 @@
-export function magnitude(p: [number, number]): number {
+import { XYType } from '../common/types';
+
+export function magnitude(p: XYType): number {
   return Math.sqrt(p[0] * p[0] + p[1] * p[1]);
 }
 
-const distance = (a: [number, number], b: [number, number]) => {
+const distance = (a: XYType, b: XYType) => {
   return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
 };
 
-const add = function (a: [number, number], b: [number, number]): [number, number] {
+const add = function (a: XYType, b: XYType): XYType {
   return [a[0] + b[0], a[1] + b[1]];
 };
 
-const sub = function (a: [number, number], b: [number, number]): [number, number] {
+const sub = function (a: XYType, b: XYType): XYType {
   return [a[0] - b[0], a[1] - b[1]];
 };
 
-const mult = function (a: [number, number], b: [number, number]): [number, number] {
+const mult = function (a: XYType, b: XYType): XYType {
   return [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
 };
 
-const divide = function (x: [number, number], y: [number, number]): [number, number] {
+const divide = function (x: XYType, y: XYType): XYType {
   const d = Math.pow(y[0], 2) + Math.pow(y[1], 2);
   return [(x[0] * y[0] + x[1] * y[1]) / d, (x[1] * y[0] - x[0] * y[1]) / d];
 };
 
-const square = (c: [number, number]): [number, number] => {
+const square = (c: XYType): XYType => {
   return [Math.pow(c[0], 2) - Math.pow(c[1], 2), 2.0 * c[0] * c[1]];
 };
 
-export function complexNumbersEqual(a: [number, number], b: [number, number]): boolean {
+export function complexNumbersEqual(a: XYType, b: XYType): boolean {
   return a[0] === b[0] && a[1] === b[1];
 }
 
-export const orbit = function (
-  z: [number, number],
-  c: [number, number],
-  t: number,
-): [number, number] {
+export const orbit = function (z: XYType, c: XYType, t: number): XYType {
   for (let i = 0; i < t; i++) {
     z = add(square(z), c);
   }
@@ -50,12 +48,8 @@ export const orbit = function (
  * @param t - How many iterations to go for
  * @returns The derivative of W at c
  */
-const orbitDerivative = function (
-  z: [number, number],
-  c: [number, number],
-  t: number,
-): [number, number] {
-  let der: [number, number] = [1, 0];
+const orbitDerivative = function (z: XYType, c: XYType, t: number): XYType {
+  let der: XYType = [1, 0];
   for (let i = 0; i < t; i++) {
     der = mult([2, 0], mult(der, z));
     z = add(square(z), c);
@@ -70,11 +64,11 @@ const orbitDerivative = function (
  * @param c - The point
  * @returns `If `it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
  */
-export const prePeriod = (z: [number, number], c: [number, number]) => {
-  const olds: [number, number][] = [[0, 0]];
+export const prePeriod = (z: XYType, c: XYType): number => {
+  const olds: XYType[] = [[0, 0]];
   for (let i = 0; i < 100; i++) {
     olds.push(z);
-    const newZ: [number, number] = add(square(z), c);
+    const newZ: XYType = add(square(z), c);
     const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.005);
     if (similar !== -1) {
       // we've hit a cycle
@@ -91,11 +85,11 @@ export const prePeriod = (z: [number, number], c: [number, number]) => {
  * @param c - The point
  * @returns If it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
  */
-export const period = (z: [number, number], c: [number, number]) => {
-  const olds: [number, number][] = [];
+export const period = (z: XYType, c: XYType): number => {
+  const olds: XYType[] = [];
   for (let i = 1; i < 100; i++) {
     olds.push(z);
-    const newZ: [number, number] = add(square(z), c);
+    const newZ: XYType = add(square(z), c);
     const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.01);
     if (similar !== -1) {
       // we've hit a cycle
@@ -114,7 +108,7 @@ export const period = (z: [number, number], c: [number, number]) => {
  * @param l - The period of c
  * @returns The derivative of W at c
  */
-const W = function (c: [number, number], l: number, p: number) {
+const W = function (c: XYType, l: number, p: number) {
   const endOfCycle = orbit([0, 0], c, 1 + l + p);
   const startOfCycle = orbit([0, 0], c, 1 + l);
 
@@ -129,11 +123,7 @@ const W = function (c: [number, number], l: number, p: number) {
  * @param p - The period of c
  * @returns The derivative of W at c
  */
-const findWPrime = function (
-  c: [number, number],
-  l: number,
-  p: number,
-): [number, number] {
+const findWPrime = function (c: XYType, l: number, p: number): XYType {
   const h = 1e-8;
   const withoutH = W(c, l, p);
   const withH = W([c[0] + h, c[1]], l, p);
@@ -154,19 +144,11 @@ const findWPrime = function (
  * @param l - The preperiod of z
  * @returns The size of the branch
  */
-export const findA = function (
-  c: [number, number],
-  z: [number, number],
-  l: number,
-): [number, number] {
+export const findA = function (c: XYType, z: XYType, l: number): XYType {
   return orbitDerivative(z, c, l);
 };
 
-export const orbitEigenvalue = function (
-  z: [number, number],
-  c: [number, number],
-  p: number,
-): [number, number] {
+export const orbitEigenvalue = function (z: XYType, c: XYType, p: number): XYType {
   return orbitDerivative(z, c, p);
 };
 
@@ -183,11 +165,7 @@ export const orbitEigenvalue = function (
  * @param p - The period of z
  * @returns The size of the branch
  */
-export const findU = function (
-  c: [number, number],
-  l: number,
-  p: number,
-): [number, number] {
+export const findU = function (c: XYType, l: number, p: number): XYType {
   return divide(findWPrime(c, l, p), sub(orbitEigenvalue(orbit(c, c, l), c, p), [1, 0]));
 };
 
@@ -196,7 +174,7 @@ export function round(value: number, precision: number): number {
   return Math.round(value * multiplier) / multiplier;
 }
 
-export function formatComplexNumber(c: [number, number]): string {
+export function formatComplexNumber(c: XYType): string {
   return `${round(c[0], 2)}${c[1] >= 0 ? '+' : ''}${round(c[1], 2)}i`;
 }
 

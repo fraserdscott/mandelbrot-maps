@@ -62,10 +62,19 @@ export interface SelectMisiurewiczCardProps extends CardProps {
 }
 
 export interface MisiurewiczPointMarkerProps extends CardProps {
-  m: MisiurewiczPoint;
   show: boolean;
+  width: number;
+  height: number;
+  m: MisiurewiczPoint;
+  mandelbrot: ViewerControls;
+  julia: ViewerControls;
+  animationState: AnimationStatus;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   focusedPoint: MisiurewiczPoint;
   setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
+  focusedPointJulia: MisiurewiczPoint;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
+  mag: number;
 }
 
 export interface MisiurewiczInfoCardProps extends CardProps {

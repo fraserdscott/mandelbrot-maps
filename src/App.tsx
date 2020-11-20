@@ -1,5 +1,5 @@
 import { Grid, ThemeProvider } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { OpaqueInterpolation, useSpring } from 'react-spring';
 import { vScale } from 'vec-la-fp';
 import './App.css';
@@ -19,7 +19,9 @@ import {
 } from './common/values';
 import ChangeCoordinatesCard from './components/info/ChangeCoordinatesCard';
 import CoordinatesCard from './components/info/CoordinatesCard';
-import MisiurewiczModeDiv from './components/info/MisiurewiczModeDiv';
+import MisiurewiczModeDiv, {
+  AnimationStatus,
+} from './components/info/MisiurewiczModeDiv';
 import InfoDialog from './components/info/InfoDialog';
 import JuliaRenderer from './components/render/JuliaRenderer';
 // import 'typeface-roboto';
@@ -29,9 +31,19 @@ import SettingsProvider, { SettingsContext } from './components/settings/Setting
 import SettingsMenu from './components/settings/SettingsMenu';
 import { useWindowSize, warpToPoint } from './common/utils';
 import theme from './theme/theme';
+import MisiurewiczPointMarker from './components/info/MisiurewiczPointMarker';
+import { MisiurewiczPoint } from './components/info/SelectMisiurewiczCard';
 
 function App(): JSX.Element {
   const size = useWindowSize();
+
+  const [focusedPoint, setFocusedPoint]: [
+    MisiurewiczPoint,
+    Dispatch<SetStateAction<MisiurewiczPoint>>,
+  ] = React.useState(new MisiurewiczPoint([0.34982273901315925, -0.7017236471431629], 1));
+  const [animationState, setAnimationState] = React.useState(
+    AnimationStatus.NO_ANIMATION,
+  );
 
   // this multiplier subdivides the screen space into smaller increments
   // to allow for velocity calculations to not immediately decay, due to the
@@ -135,6 +147,29 @@ function App(): JSX.Element {
                   julia={juliaControls}
                 />
                 <Grid item xs className="renderer">
+                  <MisiurewiczPointMarker
+                    m={focusedPoint}
+                    width={
+                      (size.width || 1) < (size.height || 0)
+                        ? size.width || 1
+                        : (size.width || 1) / 2
+                    }
+                    height={
+                      (size.width || 1) < (size.height || 0)
+                        ? (size.height || 0) / 2
+                        : size.height || 0
+                    }
+                    show={true}
+                    mandelbrot={mandelbrotControls}
+                    julia={mandelbrotControls}
+                    animationState={animationState}
+                    setAnimationState={setAnimationState}
+                    focusedPoint={focusedPoint}
+                    setFocusedPoint={setFocusedPoint}
+                    focusedPointJulia={focusedPoint}
+                    setFocusedPointJulia={setFocusedPoint}
+                    mag={1}
+                  />
                   <MandelbrotRenderer controls={mandelbrotControls} {...settings} />
                 </Grid>
                 <Grid item xs className="renderer">
