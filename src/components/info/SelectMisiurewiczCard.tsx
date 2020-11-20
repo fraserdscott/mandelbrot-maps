@@ -186,11 +186,13 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     const chosenPoint: XYType = [parseFloat(posStr[0]), parseFloat(posStr[1])];
 
     const chosenMisiurewicz = new MisiurewiczPoint(chosenPoint, 1);
-    if (!complexNumbersEqual(chosenMisiurewicz.point, props.focusedPoint.point)) {
-      props.setFocusedPoint(chosenMisiurewicz);
-      props.setMagState(1);
-      props.setAnimationState(AnimationStatus.NO_ANIMATION);
-    }
+    props.setFocusedPoint(chosenMisiurewicz);
+    props.setMagState(1);
+    props.setAnimationState(AnimationStatus.NO_ANIMATION);
+
+    props.setFocusedPointJulia(
+      new MisiurewiczPoint(chosenMisiurewicz.point, iterates[0]),
+    );
     warpToPoint(props.mandelbrot, {
       xy: chosenMisiurewicz.point,
       z: chosenMisiurewicz.uMagnitude,
@@ -274,13 +276,13 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
               }}
             >
               <IconButton
-                onClick={() =>
+                onClick={() => {
                   props.setAnimationState(
                     props.animationState === AnimationStatus.SELECT_JULIA_POINT
                       ? AnimationStatus.NO_ANIMATION
                       : AnimationStatus.SELECT_JULIA_POINT,
-                  )
-                }
+                  );
+                }}
               >
                 <ArrowBackwardIcon />
               </IconButton>
@@ -304,8 +306,8 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                       flexShrink: 1,
                     }}
                   >
-                    <Typography variant="h4" gutterBottom>
-                      Comparing...
+                    <Typography variant="h5" gutterBottom>
+                      Show me the similarity between...
                     </Typography>
                     <Tooltip
                       title={`There are at least ${
@@ -332,6 +334,9 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                     ))
                   </Select>
                   <div style={{ marginBottom: 12 }}>in the Mandelbrot set</div>
+                  <Typography variant="h6" component="h5" gutterBottom>
+                    and
+                  </Typography>
                   <Select
                     native
                     onChange={selectPointInJulia}
@@ -376,7 +381,6 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                       );
                     })}
                   </Stepper>
-                  <div>{props.focusedPointJulia.prePeriod}</div>
                   <Button
                     fullWidth
                     variant="contained"

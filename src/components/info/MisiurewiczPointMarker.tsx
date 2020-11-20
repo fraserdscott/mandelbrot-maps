@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grow, Tooltip } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import IconButton from '@material-ui/core/IconButton';
 import { MisiurewiczPointMarkerProps } from '../../common/info';
@@ -34,7 +34,9 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
               ) * z.getValue();
 
             if (
-              props.animationState === AnimationStatus.NO_ANIMATION &&
+              props.show &&
+              (props.animationState === AnimationStatus.NO_ANIMATION ||
+                props.animationState === AnimationStatus.SELECT_JULIA_POINT) &&
               xPosition < props.width / props.height &&
               yPosition < props.width / props.height &&
               props.m.uMagnitude * props.m.period < z.getValue() * 7
@@ -83,6 +85,7 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
         <IconButton
           onClick={() => {
             props.setFocusedPoint(props.m);
+            props.setFocusedPointJulia(props.m);
           }}
           color={
             complexNumbersEqual(props.m.point, props.focusedPoint.point)

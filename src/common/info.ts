@@ -74,7 +74,6 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
   setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
   focusedPointJulia: MisiurewiczPoint;
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
-  mag: number;
 }
 
 export interface MisiurewiczInfoCardProps extends CardProps {

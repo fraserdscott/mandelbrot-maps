@@ -35,7 +35,8 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
 
   return (
     <>
-      {animationState === AnimationStatus.NO_ANIMATION
+      {animationState === AnimationStatus.NO_ANIMATION ||
+      animationState === AnimationStatus.SELECT_JULIA_POINT
         ? misiurewiczPoints.map((m) => (
             <MisiurewiczPointMarker
               m={m}
@@ -58,7 +59,6 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
               setFocusedPoint={setFocusedPoint}
               focusedPointJulia={focusedPointJulia}
               setFocusedPointJulia={setFocusedPointJulia}
-              mag={mag}
             />
           ))
         : null}
