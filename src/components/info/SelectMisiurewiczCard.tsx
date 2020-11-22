@@ -29,7 +29,6 @@ import {
   magnitude,
   findA,
   findU,
-  complexNumbersEqual,
   formatComplexNumber,
   round,
   formatAngle,
@@ -75,10 +74,10 @@ export class MisiurewiczPoint {
 }
 
 export const misiurewiczPoints: MisiurewiczPoint[] = misiurewiczPairs
-  .slice(0, 250)
+  .slice(0, 300)
   .map((p) => new MisiurewiczPoint(p, 1));
 
-const INITIALZOOM: ZoomType = 1;
+const INITIAL_ZOOM: ZoomType = 1;
 
 function getSteps(c: MisiurewiczPoint, cj: MisiurewiczPoint) {
   return [
@@ -92,21 +91,13 @@ function getSteps(c: MisiurewiczPoint, cj: MisiurewiczPoint) {
 }
 
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
-  const selectPointInJulia = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const posStr = event.target.value as string;
-
-    props.setFocusedPointJulia(
-      new MisiurewiczPoint(props.focusedPoint.point, parseFloat(posStr)),
-    );
-  };
-
   const iterates = [...Array(props.focusedPoint.prePeriod + 1).keys()].slice(1);
 
   const translateMandelbrot = () => {
     props.setAnimationState(AnimationStatus.TRANSLATE_J);
     warpToPoint(props.mandelbrot, {
       xy: props.focusedPoint.point,
-      z: INITIALZOOM,
+      z: INITIAL_ZOOM,
       theta: 0,
     });
   };
@@ -115,14 +106,14 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     props.setAnimationState(AnimationStatus.ZOOM_M);
     warpToPoint(props.julia, {
       xy: props.focusedPointJulia.point,
-      z: INITIALZOOM,
+      z: INITIAL_ZOOM,
       theta: 0,
     });
   };
 
   const zoomMandelbrot = () => {
     props.setAnimationState(AnimationStatus.ZOOM_J);
-    const zoomM: ZoomType = props.focusedPoint.uMagnitude * INITIALZOOM;
+    const zoomM: ZoomType = props.focusedPoint.uMagnitude * INITIAL_ZOOM;
 
     warpToPoint(props.mandelbrot, { xy: props.focusedPoint.point, z: zoomM, theta: 0 });
   };
@@ -130,7 +121,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   const zoomJulia = () => {
     props.setAnimationState(AnimationStatus.ROTATE_M);
 
-    const zoomJ: ZoomType = props.focusedPointJulia.aMagnitude * INITIALZOOM;
+    const zoomJ: ZoomType = props.focusedPointJulia.aMagnitude * INITIAL_ZOOM;
 
     warpToPoint(props.julia, { xy: props.focusedPointJulia.point, z: zoomJ, theta: 0 });
   };
@@ -138,7 +129,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   const rotateMandelbrot = () => {
     props.setAnimationState(AnimationStatus.ROTATE_J);
 
-    const zoomM: ZoomType = props.focusedPoint.uMagnitude * INITIALZOOM;
+    const zoomM: ZoomType = props.focusedPoint.uMagnitude * INITIAL_ZOOM;
     const thetaM: ThetaType = -props.focusedPoint.uAngle;
 
     warpToPoint(props.mandelbrot, {
@@ -151,7 +142,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   const rotateJulia = () => {
     props.setAnimationState(AnimationStatus.PLAY);
 
-    const zoomJ: ZoomType = props.focusedPointJulia.aMagnitude * INITIALZOOM;
+    const zoomJ: ZoomType = props.focusedPointJulia.aMagnitude * INITIAL_ZOOM;
     const thetaJ: ThetaType = -props.focusedPointJulia.aAngle;
 
     warpToPoint(props.julia, {
@@ -181,14 +172,15 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     });
   };
 
-  const handlePointSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleMandelbrotPointSelection = (
+    event: React.ChangeEvent<{ value: unknown }>,
+  ) => {
     const posStr = (event.target.value as string).split(',');
     const chosenPoint: XYType = [parseFloat(posStr[0]), parseFloat(posStr[1])];
 
     const chosenMisiurewicz = new MisiurewiczPoint(chosenPoint, 1);
     props.setFocusedPoint(chosenMisiurewicz);
     props.setMagState(1);
-    props.setAnimationState(AnimationStatus.NO_ANIMATION);
 
     props.setFocusedPointJulia(
       new MisiurewiczPoint(chosenMisiurewicz.point, iterates[0]),
@@ -198,6 +190,14 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
       z: chosenMisiurewicz.uMagnitude,
       theta: 0,
     });
+  };
+
+  const handleJuliaPointSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const posStr = event.target.value as string;
+
+    props.setFocusedPointJulia(
+      new MisiurewiczPoint(props.focusedPoint.point, parseFloat(posStr)),
+    );
   };
 
   const handleSetMagnification = (event: any, newValue: number | number[]) => {
@@ -228,7 +228,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 }}
               >
                 <InputLabel
-                  htmlFor="select-multiple-native"
+                  htmlFor="select-native"
                   style={{
                     color: 'white',
                   }}
@@ -237,13 +237,15 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 </InputLabel>
                 <Select
                   native
-                  onChange={handlePointSelection}
+                  value={props.focusedPoint.point}
+                  onChange={handleMandelbrotPointSelection}
                   inputProps={{
+                    name: 'mandelbrot',
                     id: 'select-multiple-native',
                   }}
                 >
                   {misiurewiczPoints.map((m) => (
-                    <option key={m.point.toString()} value={m.point.toString()}>
+                    <option value={m.point.toString()}>
                       {m.toString()} = {formatComplexNumber(m.point)}
                     </option>
                   ))}
@@ -320,18 +322,18 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                   </div>
                   <Select
                     native
+                    value={props.focusedPoint.point}
+                    onChange={handleMandelbrotPointSelection}
                     inputProps={{
+                      name: 'mandelbrot',
                       id: 'select-multiple-native',
                     }}
                   >
-                    <option
-                      key={props.focusedPoint.point.toString()}
-                      value={props.focusedPoint.point.toString()}
-                    >
-                      {props.focusedPoint.toString()} ={' '}
-                      {formatComplexNumber(props.focusedPoint.point)}
-                    </option>
-                    ))
+                    {misiurewiczPoints.map((m) => (
+                      <option value={m.point.toString()}>
+                        {m.toString()} = {formatComplexNumber(m.point)}
+                      </option>
+                    ))}
                   </Select>
                   <div style={{ marginBottom: 12 }}>in the Mandelbrot set</div>
                   <Typography variant="h6" component="h5" gutterBottom>
@@ -339,13 +341,16 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                   </Typography>
                   <Select
                     native
-                    onChange={selectPointInJulia}
+                    value={
+                      props.focusedPoint.prePeriod - props.focusedPointJulia.prePeriod + 1
+                    }
+                    onChange={handleJuliaPointSelection}
                     inputProps={{
                       id: 'select-multiple-native',
                     }}
                   >
                     {iterates.map((m) => (
-                      <option key={m} value={m}>
+                      <option value={m}>
                         {formatComplexNumber(
                           new MisiurewiczPoint(props.focusedPoint.point, m).point,
                         )}

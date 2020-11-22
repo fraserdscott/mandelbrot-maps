@@ -7,39 +7,44 @@ import { complexNumbersEqual } from '../tansTheoremUtils';
 import { animated } from 'react-spring';
 import { screenScaleMultiplier } from '../../common/values';
 import { AnimationStatus } from './MisiurewiczModeDiv';
-import { ThetaType } from '../../common/types';
+
+const BUTTON_SIZE = 40;
+const BUTTON_SIZE_OVER_4 = BUTTON_SIZE / 4;
+const THREE_BUTTON_SIZE_OVER_4 = 3 * BUTTON_SIZE_OVER_4;
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
-  const [{ z }] = props.mandelbrot.zoomCtrl;
+  const [{ z }] = props.viewerControl.zoomCtrl;
+  const [{ theta }] = props.viewerControl.rotCtrl;
 
-  const BUTTON_SIZE = 40;
+  const HEIGHT_OVER_2 = props.mapHeight / 2;
+  const ASPECT_RATIO = props.mapWidth / props.mapHeight;
 
   return (
     <animated.div
       style={{
         zIndex: 100,
-        visibility: props.mandelbrot.xyCtrl[0].xy.interpolate(
+        visibility: props.viewerControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
-            const theta = props.mandelbrot.rotCtrl[0].theta.getValue();
-            const xPosition: number =
-              Math.abs(
-                (props.m.point[0] - x * screenScaleMultiplier) * Math.cos(-theta) -
-                  (props.m.point[1] - y * screenScaleMultiplier) * Math.sin(-theta),
-              ) * z.getValue();
-            const yPosition: number =
-              Math.abs(
-                (props.m.point[0] - x * screenScaleMultiplier) * Math.sin(-theta) +
-                  (props.m.point[1] - y * screenScaleMultiplier) * Math.cos(-theta),
-              ) * z.getValue();
+            const negTheta = -theta.getValue();
 
+            const hiX = props.m.point[0] - x * screenScaleMultiplier;
+            const hiY = props.m.point[1] - y * screenScaleMultiplier;
+
+            const horizontalDistanceFromCentre: number =
+              z.getValue() *
+              Math.abs(hiX * Math.cos(negTheta) - hiY * Math.sin(negTheta));
+            const verticalDistanceFromCentre: number =
+              z.getValue() *
+              Math.abs(hiX * Math.sin(negTheta) + hiY * Math.cos(negTheta));
             if (
               props.show &&
               (props.animationState === AnimationStatus.NO_ANIMATION ||
                 props.animationState === AnimationStatus.SELECT_JULIA_POINT) &&
-              xPosition < props.width / props.height &&
-              yPosition < props.width / props.height &&
-              props.m.uMagnitude * props.m.period < z.getValue() * 7
+              horizontalDistanceFromCentre < ASPECT_RATIO &&
+              verticalDistanceFromCentre < 1 &&
+              props.m.uMagnitude * props.m.period <
+                props.SHOW_POINT_THRESHOLD * z.getValue()
             ) {
               return 'visible';
             } else {
@@ -48,34 +53,35 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
           },
         ),
         position: 'absolute',
-        left: props.mandelbrot.xyCtrl[0].xy.interpolate(
+        left: props.viewerControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
-            const theta = props.mandelbrot.rotCtrl[0].theta.getValue();
+            const negTheta = -theta.getValue();
 
             return (
-              (((props.m.point[0] - x * screenScaleMultiplier) * Math.cos(-theta) -
-                (props.m.point[1] - y * screenScaleMultiplier) * Math.sin(-theta)) *
-                z.getValue() *
-                props.height +
-                props.width) /
-                2 -
-              3 * (BUTTON_SIZE / 4)
+              props.offsetX +
+              HEIGHT_OVER_2 *
+                (((props.m.point[0] - x * screenScaleMultiplier) * Math.cos(negTheta) -
+                  (props.m.point[1] - y * screenScaleMultiplier) * Math.sin(negTheta)) *
+                  z.getValue() +
+                  ASPECT_RATIO) -
+              THREE_BUTTON_SIZE_OVER_4
             );
           },
         ),
-        bottom: props.mandelbrot.xyCtrl[0].xy.interpolate(
+        bottom: props.viewerControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
-            const theta: ThetaType = props.mandelbrot.rotCtrl[0].theta.getValue();
+            const negTheta = -theta.getValue();
 
             return (
-              (props.height / 2) *
-                (((props.m.point[0] - x * screenScaleMultiplier) * Math.sin(-theta) +
-                  (props.m.point[1] - y * screenScaleMultiplier) * Math.cos(-theta)) *
+              props.offsetY +
+              HEIGHT_OVER_2 *
+                (((props.m.point[0] - x * screenScaleMultiplier) * Math.sin(negTheta) +
+                  (props.m.point[1] - y * screenScaleMultiplier) * Math.cos(negTheta)) *
                   z.getValue() +
                   1) -
-              1 * (BUTTON_SIZE / 4)
+              BUTTON_SIZE_OVER_4
             );
           },
         ),
@@ -85,7 +91,6 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
         <IconButton
           onClick={() => {
             props.setFocusedPoint(props.m);
-            props.setFocusedPointJulia(props.m);
           }}
           color={
             complexNumbersEqual(props.m.point, props.focusedPoint.point)
