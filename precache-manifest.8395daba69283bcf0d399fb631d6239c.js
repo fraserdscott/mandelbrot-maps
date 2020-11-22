@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "553d43f0e5e0992d6713ce212fcd20f1",
+    "revision": "a8d4e4d73b86f18a235f5b73a0d86f50",
     "url": "/mandelbrot-maps/index.html"
   },
   {
-    "revision": "64d7b924824edc372f77",
+    "revision": "8119f32b46a9dd37035a",
     "url": "/mandelbrot-maps/static/css/main.34588e55.chunk.css"
   },
   {
-    "revision": "3d0c1f7fc58c74141015",
-    "url": "/mandelbrot-maps/static/js/2.676e5e12.chunk.js"
+    "revision": "b4ade6d9b915a4c46f94",
+    "url": "/mandelbrot-maps/static/js/2.fd8be617.chunk.js"
   },
   {
     "revision": "c651e2d9cc340a18c6deb736546c3722",
-    "url": "/mandelbrot-maps/static/js/2.676e5e12.chunk.js.LICENSE.txt"
+    "url": "/mandelbrot-maps/static/js/2.fd8be617.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "64d7b924824edc372f77",
-    "url": "/mandelbrot-maps/static/js/main.4a6082c8.chunk.js"
+    "revision": "8119f32b46a9dd37035a",
+    "url": "/mandelbrot-maps/static/js/main.8bf40d03.chunk.js"
   },
   {
     "revision": "3340220f7fd06ebb1983",
