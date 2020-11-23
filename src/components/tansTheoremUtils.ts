@@ -43,12 +43,14 @@ export const orbit = function (z: XYType, c: XYType, t: number): XYType {
 /**
  * Take the derivative of f sub c with respect to z
  *
+ * This value depends not on z per se., but the orbit of z.
+ *
  * @param z - The point we're taking the derivative w.r.t
  * @param c - The fixed constant +c of iteration
  * @param t - How many iterations to go for
  * @returns The derivative of W at c
  */
-const orbitDerivative = function (z: XYType, c: XYType, t: number): XYType {
+const orbitEigenvalue = function (z: XYType, c: XYType, t: number): XYType {
   let der: XYType = [1, 0];
   for (let i = 0; i < t; i++) {
     der = mult([2, 0], mult(der, z));
@@ -58,15 +60,19 @@ const orbitDerivative = function (z: XYType, c: XYType, t: number): XYType {
   return der;
 };
 
+export const periodEigenvalue = function (z: XYType, c: XYType, period: number): XYType {
+  return orbitEigenvalue(z, c, period);
+};
+
 /**
- * Find the preperiod of a given point under iteration.
+ * Find the preperiod of a given point under iteration. This assumes it is preperiodic
  *
  * @param c - The point
  * @returns `If `it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
  */
 export const prePeriod = (z: XYType, c: XYType): number => {
   const olds: XYType[] = [[0, 0]];
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 50; i++) {
     olds.push(z);
     const newZ: XYType = add(square(z), c);
     const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.005);
@@ -87,7 +93,7 @@ export const prePeriod = (z: XYType, c: XYType): number => {
  */
 export const period = (z: XYType, c: XYType): number => {
   const olds: XYType[] = [];
-  for (let i = 1; i < 100; i++) {
+  for (let i = 1; i < 50; i++) {
     olds.push(z);
     const newZ: XYType = add(square(z), c);
     const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.01);
@@ -109,64 +115,59 @@ export const period = (z: XYType, c: XYType): number => {
  * @returns The derivative of W at c
  */
 const W = function (c: XYType, l: number, p: number) {
-  const endOfCycle = orbit([0, 0], c, 1 + l + p);
-  const startOfCycle = orbit([0, 0], c, 1 + l);
+  const endOfCycle = orbit(c, c, l + p);
+  const startOfCycle = orbit(c, c, l);
 
   return sub(endOfCycle, startOfCycle);
 };
 
 /**
- * Finds the numerical derivative of the function W.
+ * Finds the numerical derivative of a function.
  *
  * @param c - The point we are taking the derivative of
- * @param l - The preperiod of c
- * @param p - The period of c
  * @returns The derivative of W at c
  */
-const findWPrime = function (c: XYType, l: number, p: number): XYType {
-  const h = 1e-8;
-  const withoutH = W(c, l, p);
-  const withH = W([c[0] + h, c[1]], l, p);
+const numericalDerivative = function (c: XYType, f: (c: XYType) => XYType): XYType {
+  const h = 1e-9;
+  const withoutH = f(c);
+  const withH = f(add(c, [h, 0]));
 
   return [sub(withH, withoutH)[0] / h, sub(withH, withoutH)[1] / h];
 };
 
 /**
- * Find (1/the size) of a branch in a given Julia set.
- *
- * This is given by looking at the rate of change around z -
- * how different is the behaviour of nearby points under iteration?
- *
- * In this sense, the larger the rate of change, the smaller the branch is.
- *
- * @param c - The point that defines the Julia set
- * @param z - The point at the centre of the branch
- * @param l - The preperiod of z
- * @returns The size of the branch
- */
-export const findA = function (c: XYType, z: XYType, l: number): XYType {
-  return orbitDerivative(z, c, l);
-};
-
-export const orbitEigenvalue = function (z: XYType, c: XYType, p: number): XYType {
-  return orbitDerivative(z, c, p);
-};
-
-/**
- * Find (1/the size) of a branch in the Mandelbrot set.
- *
- * This is given by looking at the rate of change around c -
- * how different is the behaviour of nearby points under iteration?
- *
- * In this sense, the larger the rate of change, the smaller the branch is.
  *
  * @param c - The point at the centre of the branch
  * @param l - The preperiod of c
  * @param p - The period of z
  * @returns The size of the branch
  */
-export const findU = function (c: XYType, l: number, p: number): XYType {
-  return divide(findWPrime(c, l, p), sub(orbitEigenvalue(orbit(c, c, l), c, p), [1, 0]));
+export const magnificationRotationMandelbrot = function (
+  c: XYType,
+  l: number,
+  p: number,
+): XYType {
+  return divide(
+    numericalDerivative(c, function (x: XYType) {
+      return W(x, l, p);
+    }),
+    sub(periodEigenvalue(orbit(c, c, l), c, p), [1, 0]),
+  );
+};
+
+/**
+ *
+ * @param c - The point that defines the Julia set
+ * @param z - The point at the centre of the branch
+ * @param l - The preperiod of z
+ * @returns The size of the branch
+ */
+export const magnificationRotationJulia = function (
+  c: XYType,
+  z: XYType,
+  prePeriod: number,
+): XYType {
+  return orbitEigenvalue(z, c, prePeriod);
 };
 
 export function round(value: number, precision: number): number {

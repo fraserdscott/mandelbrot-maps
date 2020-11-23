@@ -27,8 +27,8 @@ import {
   prePeriod,
   period,
   magnitude,
-  findA,
-  findU,
+  magnificationRotationJulia,
+  magnificationRotationMandelbrot,
   formatComplexNumber,
   round,
   formatAngle,
@@ -55,11 +55,11 @@ export class MisiurewiczPoint {
     this.prePeriod = prePeriod(this.point, c);
     this.period = period(this.point, c);
 
-    this.u = findU(c, this.prePeriod, this.period);
+    this.u = magnificationRotationMandelbrot(c, this.prePeriod, this.period);
     this.uMagnitude = magnitude(this.u);
     this.uAngle = Math.atan2(this.u[1], this.u[0]);
 
-    this.a = findA(c, this.point, this.prePeriod);
+    this.a = magnificationRotationJulia(c, this.point, this.prePeriod);
     this.aMagnitude = magnitude(this.a);
     this.aAngle = Math.atan2(this.a[1], this.a[0]);
   }

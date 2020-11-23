@@ -70,6 +70,7 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
   SHOW_POINT_THRESHOLD: number;
   m: MisiurewiczPoint;
   viewerControl: ViewerControls;
+  mandelbrotControl: ViewerControls;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   focusedPoint: MisiurewiczPoint;

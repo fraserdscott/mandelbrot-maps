@@ -38,13 +38,14 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
               z.getValue() *
               Math.abs(hiX * Math.sin(negTheta) + hiY * Math.cos(negTheta));
             if (
-              props.show &&
-              (props.animationState === AnimationStatus.NO_ANIMATION ||
-                props.animationState === AnimationStatus.SELECT_JULIA_POINT) &&
-              horizontalDistanceFromCentre < ASPECT_RATIO &&
-              verticalDistanceFromCentre < 1 &&
-              props.m.uMagnitude * props.m.period <
-                props.SHOW_POINT_THRESHOLD * z.getValue()
+              complexNumbersEqual(props.m.point, props.focusedPoint.point) ||
+              (props.show &&
+                (props.animationState === AnimationStatus.NO_ANIMATION ||
+                  props.animationState === AnimationStatus.SELECT_JULIA_POINT) &&
+                horizontalDistanceFromCentre < ASPECT_RATIO &&
+                verticalDistanceFromCentre < 1 &&
+                props.m.uMagnitude * props.m.period <
+                  props.SHOW_POINT_THRESHOLD * z.getValue())
             ) {
               return 'visible';
             } else {
@@ -59,12 +60,12 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
             const negTheta = -theta.getValue();
 
             return (
-              props.offsetX +
               HEIGHT_OVER_2 *
                 (((props.m.point[0] - x * screenScaleMultiplier) * Math.cos(negTheta) -
                   (props.m.point[1] - y * screenScaleMultiplier) * Math.sin(negTheta)) *
                   z.getValue() +
-                  ASPECT_RATIO) -
+                  ASPECT_RATIO) +
+              props.offsetX -
               THREE_BUTTON_SIZE_OVER_4
             );
           },
@@ -75,12 +76,12 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
             const negTheta = -theta.getValue();
 
             return (
-              props.offsetY +
               HEIGHT_OVER_2 *
                 (((props.m.point[0] - x * screenScaleMultiplier) * Math.sin(negTheta) +
                   (props.m.point[1] - y * screenScaleMultiplier) * Math.cos(negTheta)) *
                   z.getValue() +
-                  1) -
+                  1) +
+              props.offsetY -
               BUTTON_SIZE_OVER_4
             );
           },
@@ -91,6 +92,8 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
         <IconButton
           onClick={() => {
             props.setFocusedPoint(props.m);
+            // this is needed when you click on a mandelbrot marker during julia selection
+            //props.setFocusedPointJulia(new MisiurewiczPoint(props.m, 0));
           }}
           color={
             complexNumbersEqual(props.m.point, props.focusedPoint.point)

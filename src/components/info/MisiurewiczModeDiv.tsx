@@ -35,7 +35,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
 
   const iterates = [...Array(focusedPoint.prePeriod + 1).keys()].slice(1);
 
-  const x = iterates.map((m) => {
+  const iteratesPoints = iterates.map((m) => {
     return new MisiurewiczPoint(focusedPoint.point, m);
   });
 
@@ -58,6 +58,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
               }
               show={props.show}
               viewerControl={props.mandelbrot}
+              mandelbrotControl={props.mandelbrot}
               animationState={animationState}
               setAnimationState={setAnimationState}
               focusedPoint={focusedPoint}
@@ -70,7 +71,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
         : null}
 
       {animationState === AnimationStatus.SELECT_JULIA_POINT
-        ? x.map((m) => (
+        ? iteratesPoints.map((m) => (
             <MisiurewiczPointMarker
               m={m}
               offsetX={(size.width || 1) < (size.height || 0) ? 0 : (size.width || 1) / 2}
@@ -89,6 +90,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
               }
               show={props.show}
               viewerControl={props.julia}
+              mandelbrotControl={props.mandelbrot}
               animationState={animationState}
               setAnimationState={setAnimationState}
               focusedPoint={focusedPointJulia}

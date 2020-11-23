@@ -11,9 +11,10 @@ import { MisiurewiczPoint } from './SelectMisiurewiczCard';
 
 const useStyles = makeStyles(() => ({
   iconButtonLabel: {
-    width: 60,
+    width: 120,
     display: 'flex',
     flexDirection: 'column',
+    marginBottom: 10,
   },
 }));
 
@@ -55,7 +56,7 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         }
       >
         <ArrowForwardIcon />
-        Goto
+        Go to
       </IconButton>
       <IconButton
         size="small"
