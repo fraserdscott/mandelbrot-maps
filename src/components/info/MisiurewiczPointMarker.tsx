@@ -23,6 +23,7 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
     <animated.div
       style={{
         zIndex: 100,
+        position: 'absolute',
         visibility: props.viewerControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
@@ -38,14 +39,14 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
               z.getValue() *
               Math.abs(hiX * Math.sin(negTheta) + hiY * Math.cos(negTheta));
             if (
-              complexNumbersEqual(props.m.point, props.focusedPoint.point) ||
-              (props.show &&
-                (props.animationState === AnimationStatus.NO_ANIMATION ||
-                  props.animationState === AnimationStatus.SELECT_JULIA_POINT) &&
-                horizontalDistanceFromCentre < ASPECT_RATIO &&
-                verticalDistanceFromCentre < 1 &&
-                props.m.uMagnitude * props.m.period <
-                  props.SHOW_POINT_THRESHOLD * z.getValue())
+              props.show &&
+              (props.animationState === AnimationStatus.NO_ANIMATION ||
+                props.animationState === AnimationStatus.SELECT_JULIA_POINT) &&
+              (complexNumbersEqual(props.m.point, props.focusedPoint.point) ||
+                (horizontalDistanceFromCentre < ASPECT_RATIO &&
+                  verticalDistanceFromCentre < 1 &&
+                  props.m.uMagnitude * props.m.period <
+                    props.SHOW_POINT_THRESHOLD * z.getValue()))
             ) {
               return 'visible';
             } else {
@@ -53,7 +54,6 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
             }
           },
         ),
-        position: 'absolute',
         left: props.viewerControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {

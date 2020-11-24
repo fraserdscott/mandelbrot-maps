@@ -60,15 +60,11 @@ const orbitEigenvalue = function (z: XYType, c: XYType, t: number): XYType {
   return der;
 };
 
-export const periodEigenvalue = function (z: XYType, c: XYType, period: number): XYType {
-  return orbitEigenvalue(z, c, period);
-};
-
 /**
  * Find the preperiod of a given point under iteration. This assumes it is preperiodic
  *
  * @param c - The point
- * @returns `If `it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
+ * @returns If it's preperiodic: the preperiod, if it's periodic: nonsense, otherwise: -1.
  */
 export const prePeriod = (z: XYType, c: XYType): number => {
   const olds: XYType[] = [[0, 0]];
@@ -89,7 +85,7 @@ export const prePeriod = (z: XYType, c: XYType): number => {
  * Find the period of a given point under iteration.
  *
  * @param c - The point
- * @returns If it's preperiodic: the preperiod, if it's periodic: 0, otherwise: -1.
+ * @returns The period, otherwise: -1.
  */
 export const period = (z: XYType, c: XYType): number => {
   const olds: XYType[] = [];
@@ -107,7 +103,7 @@ export const period = (z: XYType, c: XYType): number => {
 };
 
 /**
- * Subtract the end of a cycle from the start.
+ * Subtract the first iterate in a cycle from the last.
  *
  * @param c - The point we care about. Must be periodic or preperiodic
  * @param z - The preperiod of c
@@ -125,7 +121,7 @@ const W = function (c: XYType, l: number, p: number) {
  * Finds the numerical derivative of a function.
  *
  * @param c - The point we are taking the derivative of
- * @returns The derivative of W at c
+ * @returns The derivative of f at c
  */
 const numericalDerivative = function (c: XYType, f: (c: XYType) => XYType): XYType {
   const h = 1e-9;
@@ -147,11 +143,12 @@ export const magnificationRotationMandelbrot = function (
   l: number,
   p: number,
 ): XYType {
+  const firstIterateInCycle = orbit(c, c, l);
+  const cycleEigenvalue = orbitEigenvalue(firstIterateInCycle, c, p);
+
   return divide(
-    numericalDerivative(c, function (x: XYType) {
-      return W(x, l, p);
-    }),
-    sub(periodEigenvalue(orbit(c, c, l), c, p), [1, 0]),
+    numericalDerivative(c, (x: XYType) => W(x, l, p)),
+    sub(cycleEigenvalue, [1, 0]),
   );
 };
 
