@@ -7,6 +7,7 @@ import newSmoothMandelbrotShader, {
   miniCrosshair,
   standardCrosshair,
 } from '../../shaders/newSmoothMandelbrotShader';
+import misiurewiczDomainsMandelbrotShader from '../../shaders/misiurewiczDomainsMandelbrotShader';
 import FPSCard from '../info/FPSCard';
 import { SettingsContext } from '../settings/SettingsContext';
 import MinimapViewer from './MinimapViewer';
@@ -38,6 +39,14 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
   const maxI = props.maxI; // -> global
   const AA = props.useAA ? 2 : 1; // -> global
 
+  const fragShaderDomain = misiurewiczDomainsMandelbrotShader(
+    {
+      maxI: maxI,
+      AA: AA,
+    },
+    props.showCrosshair,
+    standardCrosshair,
+  );
   const fragShader = newSmoothMandelbrotShader(
     {
       maxI: maxI,
@@ -91,7 +100,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
 
           <WebGLCanvas
             id="mandelbrot"
-            fragShader={fragShader}
+            fragShader={settings.shadeMisiurewiczDomains ? fragShaderDomain : fragShader}
             useDPR={settings.useDPR}
             // touchBind={touchBind}
             u={{

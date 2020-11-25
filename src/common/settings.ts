@@ -7,6 +7,7 @@ export type settingsDefinitionsType = {
   showCrosshair: boolean;
   showCoordinates: boolean;
   showMisiurewiczPoints: boolean;
+  shadeMisiurewiczDomains: boolean;
   showFPS: boolean;
   maxI: number;
   useDPR: boolean;

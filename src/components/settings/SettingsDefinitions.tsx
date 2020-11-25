@@ -11,6 +11,7 @@ export const defaultSettings = {
   showCrosshair: true,
   showCoordinates: true,
   showMisiurewiczPoints: false,
+  shadeMisiurewiczDomains: false,
   maxI: 250,
   showFPS: false,
   useDPR: false,
@@ -42,6 +43,12 @@ export const settingsWidgets = (
     k: 'showMisiurewiczPoints',
     label: 'Show Misiurewicz points',
     checked: settings.showMisiurewiczPoints,
+    control: <Switch />,
+  },
+  shadeMisiurewiczDomains: {
+    k: 'shadeMisiurewiczDomains',
+    label: 'Shade Misiurewicz Domains',
+    checked: settings.shadeMisiurewiczDomains,
     control: <Switch />,
   },
   maxI: {
@@ -106,6 +113,7 @@ export const getSettingsWidgetsGrouping = (
       settingsWidgets.showCrosshair,
       settingsWidgets.showCoordinates,
       settingsWidgets.showMisiurewiczPoints,
+      settingsWidgets.shadeMisiurewiczDomains,
     ],
   },
   {
