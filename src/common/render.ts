@@ -1,5 +1,6 @@
 import { CanvasHTMLAttributes } from 'react';
 import { OpaqueInterpolation } from 'react-spring';
+import { AnimationStatus } from '../components/info/MisiurewiczModeDiv';
 import { ViewerControls } from './info';
 import { MandelbrotMapsWebGLUniforms, XYType } from './types';
 
@@ -23,6 +24,7 @@ export interface WebGLCanvasProps extends CanvasHTMLAttributes<HTMLCanvasElement
 export interface MandelbrotRendererProps {
   // screenScaleMultiplier: number;
   controls: ViewerControls;
+  animationState: AnimationStatus;
   maxI: number;
   useDPR: boolean;
   useAA: boolean;

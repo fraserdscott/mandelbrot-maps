@@ -7,7 +7,7 @@ import { formatComplexNumber } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
 import { MisiurewiczInfoCardProps } from '../../common/info';
 import { AnimationStatus } from './MisiurewiczModeDiv';
-import { MisiurewiczPoint } from './SelectMisiurewiczCard';
+import { getBack, MisiurewiczPoint } from './SelectMisiurewiczCard';
 
 const useStyles = makeStyles(() => ({
   iconButtonLabel: {
@@ -21,10 +21,9 @@ const useStyles = makeStyles(() => ({
 const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element => {
   const classes = useStyles();
 
-  const iterates = [...Array(props.focusedPoint.prePeriod + 1).keys()].slice(1);
-
-  const selectPointInJulia2 = (x: number) => {
-    props.setFocusedPointJulia(new MisiurewiczPoint(props.focusedPoint.point, x));
+  const similarPoints = getBack(props.focusedPoint);
+  const selectPointInJulia2 = (x: MisiurewiczPoint) => {
+    props.setFocusedPointJulia(x);
   };
 
   return (
@@ -62,7 +61,7 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         size="small"
         classes={{ label: classes.iconButtonLabel }}
         onClick={() => {
-          selectPointInJulia2(iterates[0]);
+          selectPointInJulia2(similarPoints[0]);
           props.setAnimationState(AnimationStatus.SELECT_JULIA_POINT);
         }}
       >

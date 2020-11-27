@@ -29,9 +29,29 @@ const square = (c: XYType): XYType => {
   return [Math.pow(c[0], 2) - Math.pow(c[1], 2), 2.0 * c[0] * c[1]];
 };
 
+const sqrt = (c: XYType): XYType => {
+  const theta = Math.atan2(c[1], c[0]);
+  const r2 = Math.sqrt(magnitude(c));
+  return [r2 * Math.cos(theta / 2), r2 * Math.sin(theta / 2)];
+};
+
 export function complexNumbersEqual(a: XYType, b: XYType): boolean {
   return a[0] === b[0] && a[1] === b[1];
 }
+
+export const backwardsOrbit = function (z: XYType, c: XYType, t: number): XYType {
+  for (let i = 0; i < t; i++) {
+    z = sqrt(sub(z, c));
+  }
+  return z;
+};
+
+export const backwardsOrbitNeg = function (z: XYType, c: XYType, t: number): XYType {
+  for (let i = 0; i < t; i++) {
+    z = [-sqrt(sub(z, c))[0], -sqrt(sub(z, c))[1]];
+  }
+  return z;
+};
 
 export const orbit = function (z: XYType, c: XYType, t: number): XYType {
   for (let i = 0; i < t; i++) {
@@ -67,15 +87,13 @@ const orbitEigenvalue = function (z: XYType, c: XYType, t: number): XYType {
  * @returns If it's preperiodic: the preperiod, if it's periodic: nonsense, otherwise: -1.
  */
 export const prePeriod = (z: XYType, c: XYType): number => {
-  const olds: XYType[] = [[0, 0]];
+  const olds: XYType[] = [];
   for (let i = 0; i < 50; i++) {
     olds.push(z);
     const newZ: XYType = add(square(z), c);
-    const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.005);
-    if (similar !== -1) {
-      // we've hit a cycle
-      return similar;
-    }
+    const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.001);
+    if (similar !== -1) return similar;
+
     z = newZ;
   }
   return -1;
@@ -143,8 +161,8 @@ export const magnificationRotationMandelbrot = function (
   l: number,
   p: number,
 ): XYType {
-  const firstIterateInCycle = orbit(c, c, l);
-  const cycleEigenvalue = orbitEigenvalue(firstIterateInCycle, c, p);
+  const firstIterateInCycle: XYType = orbit(c, c, l);
+  const cycleEigenvalue: XYType = orbitEigenvalue(firstIterateInCycle, c, p);
 
   return divide(
     numericalDerivative(c, (x: XYType) => W(x, l, p)),
@@ -173,7 +191,7 @@ export function round(value: number, precision: number): number {
 }
 
 export function formatComplexNumber(c: XYType): string {
-  return `${round(c[0], 2)}${c[1] >= 0 ? '+' : ''}${round(c[1], 2)}i`;
+  return `${round(c[0], 3)}${c[1] >= 0 ? '+' : ''}${round(c[1], 3)}i`;
 }
 
 export function formatAngle(angle: number): string {

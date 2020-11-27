@@ -19,7 +19,9 @@ import {
 } from './common/values';
 import ChangeCoordinatesCard from './components/info/ChangeCoordinatesCard';
 import CoordinatesCard from './components/info/CoordinatesCard';
-import MisiurewiczModeDiv from './components/info/MisiurewiczModeDiv';
+import MisiurewiczModeDiv, {
+  AnimationStatus,
+} from './components/info/MisiurewiczModeDiv';
 import InfoDialog from './components/info/InfoDialog';
 import JuliaRenderer from './components/render/JuliaRenderer';
 // import 'typeface-roboto';
@@ -86,6 +88,10 @@ function App(): JSX.Element {
 
   // const { settings } = useSettings();
 
+  const [animationState, setAnimationState] = React.useState(
+    AnimationStatus.NO_ANIMATION,
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <ServiceWorkerWrapper />
@@ -130,12 +136,19 @@ function App(): JSX.Element {
                   />
                 </div>
                 <MisiurewiczModeDiv
+                  animationState={animationState}
+                  setAnimationState={setAnimationState}
+                  canon={settings.shadeMisiurewiczDomains}
                   show={settings.showMisiurewiczPoints}
                   mandelbrot={mandelbrotControls}
                   julia={juliaControls}
                 />
                 <Grid item xs className="renderer">
-                  <MandelbrotRenderer controls={mandelbrotControls} {...settings} />
+                  <MandelbrotRenderer
+                    controls={mandelbrotControls}
+                    animationState={animationState}
+                    {...settings}
+                  />
                 </Grid>
                 <Grid item xs className="renderer">
                   <JuliaRenderer

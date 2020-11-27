@@ -41,6 +41,9 @@ export interface ChangeCoordinatesCardProps extends CardProps {
 }
 
 export interface MisiurewiczModeDivProps extends CardProps {
+  animationState: AnimationStatus;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
+  canon: boolean;
   show: boolean;
   mandelbrot: ViewerControls;
   julia: ViewerControls;
@@ -48,6 +51,7 @@ export interface MisiurewiczModeDivProps extends CardProps {
 
 export interface SelectMisiurewiczCardProps extends CardProps {
   show: boolean;
+  canon: boolean;
   // screenScaleMultiplier: number;
   mandelbrot: ViewerControls;
   julia: ViewerControls;
