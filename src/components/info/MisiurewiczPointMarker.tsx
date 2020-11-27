@@ -42,12 +42,12 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
               props.show &&
               (props.animationState === AnimationStatus.NO_ANIMATION ||
                 props.animationState === AnimationStatus.SELECT_JULIA_POINT) &&
-              (complexNumbersEqual(props.m.point, props.focusedPoint.point) ||
-                (props.offsetX === 0 &&
-                  horizontalDistanceFromCentre < ASPECT_RATIO &&
-                  verticalDistanceFromCentre < 1 &&
-                  props.m.uMagnitude * props.m.period <
-                    props.SHOW_POINT_THRESHOLD * z.getValue()) ||
+              ((horizontalDistanceFromCentre < ASPECT_RATIO &&
+                verticalDistanceFromCentre < 1 &&
+                (complexNumbersEqual(props.m.point, props.focusedPoint.point) ||
+                  (props.offsetX === 0 &&
+                    props.m.uMagnitude * props.m.period <
+                      props.SHOW_POINT_THRESHOLD * z.getValue()))) ||
                 (props.offsetX > 0 &&
                   horizontalDistanceFromCentre < ASPECT_RATIO &&
                   verticalDistanceFromCentre < 1 &&

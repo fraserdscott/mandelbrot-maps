@@ -197,3 +197,37 @@ export function formatComplexNumber(c: XYType): string {
 export function formatAngle(angle: number): string {
   return `${round((180 / Math.PI) * angle, 0)}°`;
 }
+
+function findPotentialPreperiod(c: XYType): number {
+  let z: XYType = c;
+  let minNumber = 4;
+  let minp = -1;
+  for (let i = 0; i < 50; i++) {
+    const newZ: XYType = add(square(z), c);
+    const x = sub(newZ, z);
+    if (magnitude(x) < minNumber) {
+      minNumber = magnitude(x);
+      minp = i;
+    }
+    z = newZ;
+  }
+  return minp;
+}
+
+const Wfried = function (c: XYType, l: number, p: number) {
+  const endOfCycle = orbitEigenvalue(c, c, l + p);
+  const startOfCycle = orbitEigenvalue(c, c, l);
+
+  return sub(endOfCycle, startOfCycle);
+};
+
+export const findMisiurewicz = function (c: XYType): XYType {
+  const q = findPotentialPreperiod(c);
+  const p = 1;
+  for (let i = 0; i < 1000; i++) {
+    const F = W(c, q, p);
+    const Fdash = Wfried(c, q, p);
+    c = sub(c, mult([0.01, 0], divide(F, Fdash)));
+  }
+  return c;
+};

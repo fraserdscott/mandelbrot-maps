@@ -29,6 +29,7 @@ import {
   orbit,
   backwardsOrbit,
   backwardsOrbitNeg,
+  findMisiurewicz,
 } from '../tansTheoremUtils';
 import { ThetaType, XYType, ZoomType } from '../../common/types';
 import { misiurewiczPairs } from '../MPoints';
@@ -175,15 +176,11 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   };
 
   const _onMouseMove = () => {
-    props.setFocusedPoint(
-      new MisiurewiczPoint(
-        [
-          props.mandelbrot.xyCtrl[0].xy.getValue()[0] * screenScaleMultiplier,
-          props.mandelbrot.xyCtrl[0].xy.getValue()[1] * screenScaleMultiplier,
-        ],
-        1,
-      ),
-    );
+    const mPoint = findMisiurewicz([
+      props.mandelbrot.xyCtrl[0].xy.getValue()[0] * screenScaleMultiplier,
+      props.mandelbrot.xyCtrl[0].xy.getValue()[1] * screenScaleMultiplier,
+    ]);
+    props.setFocusedPoint(new MisiurewiczPoint(mPoint, 1));
   };
 
   return (
