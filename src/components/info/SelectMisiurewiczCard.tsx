@@ -30,6 +30,7 @@ import {
   backwardsOrbit,
   backwardsOrbitNeg,
   findMisiurewicz,
+  mult,
 } from '../tansTheoremUtils';
 import { ThetaType, XYType, ZoomType } from '../../common/types';
 import { misiurewiczPairs } from '../MPoints';
@@ -83,11 +84,11 @@ export const misiurewiczPoints: MisiurewiczPoint[] = misiurewiczPairs
 const expand = (
   c: MisiurewiczPoint,
   focusedPoint: MisiurewiczPoint,
-  listy: MisiurewiczPoint[],
+  similarPoints: MisiurewiczPoint[],
   count: number,
 ) => {
   if (magnitude(c.point) > 0.001) {
-    listy.push(c);
+    similarPoints.push(c);
     if (count > 0) {
       const back = new MisiurewiczPoint(
         focusedPoint.point,
@@ -99,30 +100,48 @@ const expand = (
         0,
         backwardsOrbitNeg(c.point, focusedPoint.point, 1),
       );
-      expand(back, focusedPoint, listy, count - 1);
-      expand(backNeg, focusedPoint, listy, count - 1);
+      expand(back, focusedPoint, similarPoints, count - 1);
+      expand(backNeg, focusedPoint, similarPoints, count - 1);
     }
   }
-  return listy;
+  return similarPoints;
 };
-// for each in list. take the backwards and neg of it
-export const getBack = (focusedPoint: MisiurewiczPoint) => {
-  const listy: MisiurewiczPoint[] = [];
-  const depth: number = 5 / focusedPoint.prePeriod;
-  for (let i = 0; i < focusedPoint.prePeriod; i++) {
-    const iterate = orbit(focusedPoint.point, focusedPoint.point, i);
+
+export const getSimilarsInJulia = (
+  focusedPoint: MisiurewiczPoint,
+): MisiurewiczPoint[] => {
+  const similarPoints: MisiurewiczPoint[] = [];
+  const depth = 4;
+
+  for (
+    let i = focusedPoint.prePeriod;
+    i < focusedPoint.prePeriod + focusedPoint.period;
+    i++
+  ) {
+    similarPoints.push(
+      new MisiurewiczPoint(
+        focusedPoint.point,
+        0,
+        orbit(focusedPoint.point, focusedPoint.point, i),
+      ),
+    );
     expand(
-      new MisiurewiczPoint(focusedPoint.point, 0, iterate),
+      new MisiurewiczPoint(
+        focusedPoint.point,
+        0,
+        mult([-1, 0], orbit(focusedPoint.point, focusedPoint.point, i)),
+      ),
       focusedPoint,
-      listy,
+      similarPoints,
       depth,
-    ); //make this cap
+    );
   }
-  return listy;
+  return similarPoints;
 };
 
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
-  const similarPoints = getBack(props.focusedPoint);
+  const similarPoints = getSimilarsInJulia(props.focusedPoint);
+
   const rotateAndZoom = (mag: ZoomType) => {
     props.setMagState(mag);
 
@@ -161,7 +180,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     });
   };
 
-  const handleJuliaBackSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleJuliaSimilarSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
     const posStr = (event.target.value as string).split(',');
 
     const chosenPoint: XYType = [parseFloat(posStr[0]), parseFloat(posStr[1])];
@@ -175,7 +194,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     rotateAndZoom(newValue as ZoomType);
   };
 
-  const _onMouseMove = () => {
+  const handlePickDomain = () => {
     const mPoint = findMisiurewicz([
       props.mandelbrot.xyCtrl[0].xy.getValue()[0] * screenScaleMultiplier,
       props.mandelbrot.xyCtrl[0].xy.getValue()[1] * screenScaleMultiplier,
@@ -198,7 +217,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 flexShrink: 1,
               }}
             >
-              {!props.canon ? (
+              {!props.shadeDomains ? (
                 <Card
                   style={{
                     padding: 8,
@@ -229,9 +248,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                     ))}
                   </Select>
                 </Card>
-              ) : (
-                <Button onClick={() => _onMouseMove()}>go</Button>
-              )}
+              ) : null}
 
               <MisiurewiczPointInfoCard
                 show={props.show}
@@ -258,29 +275,21 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 flexShrink: 1,
               }}
             >
-              <IconButton
-                onClick={() => {
-                  props.setAnimationState(
-                    props.animationState === AnimationStatus.SELECT_JULIA_POINT
-                      ? AnimationStatus.NO_ANIMATION
-                      : AnimationStatus.SELECT_JULIA_POINT,
-                  );
-                }}
-              >
-                <ArrowBackwardIcon />
-              </IconButton>
               {props.animationState === AnimationStatus.SELECT_JULIA_POINT ? (
                 <Card
                   style={{
-                    width: 250,
-                    padding: 8,
-                    zIndex: 1300,
-                    position: 'relative',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexShrink: 1,
+                    width: 200,
+                    padding: 12,
+                    zIndex: 100,
                   }}
                 >
+                  <IconButton
+                    onClick={() => {
+                      props.setAnimationState(AnimationStatus.NO_ANIMATION);
+                    }}
+                  >
+                    <ArrowBackwardIcon />
+                  </IconButton>
                   <div
                     style={{
                       marginBottom: 8,
@@ -289,33 +298,31 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                       flexShrink: 1,
                     }}
                   >
-                    <Typography variant="h5" gutterBottom>
+                    <Typography variant="h6" gutterBottom>
                       Show me the similarity between...
                     </Typography>
-                    <Tooltip
-                      title={`There are at least ${
-                        similarPoints.length
-                      } points in the Julia set for ${props.focusedPoint.toString()} that are similar to the point ${props.focusedPoint.toString()} in the Mandelbrot set!`}
-                      placement="top"
-                    >
-                      <InfoIcon />
-                    </Tooltip>
                   </div>
-                  <Select
-                    native
-                    value={props.focusedPoint.point}
-                    onChange={handleMandelbrotPointSelection}
-                    inputProps={{
-                      name: 'mandelbrot',
-                      id: 'select-multiple-native',
-                    }}
-                  >
-                    {misiurewiczPoints.map((m) => (
-                      <option value={m.point.toString()}>
-                        {m.toString()} = {formatComplexNumber(m.point)}
-                      </option>
-                    ))}
-                  </Select>
+                  {props.shadeDomains ? (
+                    `${props.focusedPoint.toString()} = ${formatComplexNumber(
+                      props.focusedPoint.point,
+                    )}`
+                  ) : (
+                    <Select
+                      native
+                      value={props.focusedPoint.point}
+                      onChange={handleMandelbrotPointSelection}
+                      inputProps={{
+                        name: 'mandelbrot',
+                        id: 'select-multiple-native',
+                      }}
+                    >
+                      {misiurewiczPoints.map((m) => (
+                        <option value={m.point.toString()}>
+                          {m.toString()} = {formatComplexNumber(m.point)}
+                        </option>
+                      ))}
+                    </Select>
+                  )}
                   <div style={{ marginBottom: 12 }}>in the Mandelbrot set</div>
                   <Typography variant="h6" component="h5" gutterBottom>
                     and
@@ -323,11 +330,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                   <Select
                     native
                     value={props.focusedPointJulia.point}
-                    onChange={handleJuliaBackSelection}
-                    inputProps={{
-                      name: 'mandelbrot',
-                      id: 'select-multiple-native',
-                    }}
+                    onChange={handleJuliaSimilarSelection}
                   >
                     {similarPoints.map((m) => (
                       <option value={m.point.toString()}>
@@ -335,9 +338,20 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                       </option>
                     ))}
                   </Select>
+                  <Tooltip
+                    title={`There are at least ${
+                      similarPoints.length
+                    } points in the Julia set for ${props.focusedPoint.toString()} that are similar to the point ${props.focusedPoint.toString()} in the Mandelbrot set!`}
+                    placement="top"
+                  >
+                    <InfoIcon />
+                  </Tooltip>
                   <div style={{ marginBottom: 12 }}>in the Julia set</div>
                   <Button
                     variant="contained"
+                    style={{
+                      float: 'right',
+                    }}
                     onClick={() => {
                       props.setAnimationState(AnimationStatus.TRANSLATE_M);
                     }}
@@ -365,13 +379,16 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                   style={{
                     width: 'auto',
                     zIndex: 1300,
-                    position: 'relative',
-                    padding: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexShrink: 1,
                   }}
                 >
+                  <IconButton
+                    onClick={() => {
+                      props.setAnimationState(AnimationStatus.TRANSLATE_M);
+                      //props.setMagState(1);
+                    }}
+                  >
+                    <ArrowBackwardIcon />
+                  </IconButton>
                   <Grid container direction="column" alignItems="center">
                     <Grid item>
                       <ZoomInIcon />

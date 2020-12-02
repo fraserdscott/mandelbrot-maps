@@ -1,10 +1,13 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { MisiurewiczModeDivProps } from '../../common/info';
-import SelectMisiurewiczCard, { getBack } from './SelectMisiurewiczCard';
+import SelectMisiurewiczCard, { getSimilarsInJulia } from './SelectMisiurewiczCard';
 import { misiurewiczPoints, MisiurewiczPoint } from './SelectMisiurewiczCard';
 import MisiurewiczPointMarker from './MisiurewiczPointMarker';
 import { useWindowSize } from '../../common/utils';
 
+import { Button } from '@material-ui/core';
+import { screenScaleMultiplier } from '../../common/values';
+import { complexNumbersEqual, findMisiurewicz, orbitList } from '../tansTheoremUtils';
 export enum AnimationStatus {
   NO_ANIMATION = -2,
   SELECT_JULIA_POINT = -1,
@@ -28,13 +31,37 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
     Dispatch<SetStateAction<MisiurewiczPoint>>,
   ] = React.useState(misiurewiczPoints[0]);
 
+  const handlePickDomain = () => {
+    const mPoint = findMisiurewicz([
+      props.mandelbrot.xyCtrl[0].xy.getValue()[0] * screenScaleMultiplier,
+      props.mandelbrot.xyCtrl[0].xy.getValue()[1] * screenScaleMultiplier,
+    ]);
+    setFocusedPoint(new MisiurewiczPoint(mPoint, 1));
+  };
+
   const size = useWindowSize();
 
-  const similarPoints = getBack(focusedPoint);
+  const similarPoints = getSimilarsInJulia(focusedPoint);
 
   return (
     <>
-      {!props.canon &&
+      <Button
+        style={{
+          visibility:
+            props.shadeDomains && props.animationState === AnimationStatus.NO_ANIMATION
+              ? 'visible'
+              : 'hidden',
+          position: 'absolute',
+          bottom: 0,
+          left: (size.width || 1) / 4 - 100,
+          zIndex: 1000,
+        }}
+        variant="contained"
+        onClick={() => handlePickDomain()}
+      >
+        SELECT NEAREST MISIUREWICZ
+      </Button>
+      {!props.shadeDomains &&
       (props.animationState === AnimationStatus.NO_ANIMATION ||
         props.animationState === AnimationStatus.SELECT_JULIA_POINT)
         ? misiurewiczPoints.map((m) => (
@@ -57,13 +84,17 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
               setAnimationState={props.setAnimationState}
               focusedPoint={focusedPoint}
               setFocusedPoint={setFocusedPoint}
+              setFocusedPointJulia={setFocusedPointJulia}
               offsetX={0}
               offsetY={0}
               SHOW_POINT_THRESHOLD={7}
+              color={
+                complexNumbersEqual(m.point, focusedPoint.point) ? 'primary' : 'secondary'
+              }
             />
           ))
         : null}
-      {props.canon &&
+      {props.shadeDomains &&
       (props.animationState === AnimationStatus.NO_ANIMATION ||
         props.animationState === AnimationStatus.SELECT_JULIA_POINT) ? (
         <MisiurewiczPointMarker
@@ -85,9 +116,11 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           setAnimationState={props.setAnimationState}
           focusedPoint={focusedPoint}
           setFocusedPoint={setFocusedPoint}
+          setFocusedPointJulia={setFocusedPointJulia}
           offsetX={0}
           offsetY={0}
           SHOW_POINT_THRESHOLD={7}
+          color={'primary'}
         />
       ) : null}
 
@@ -116,10 +149,47 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
               setAnimationState={props.setAnimationState}
               focusedPoint={focusedPointJulia}
               setFocusedPoint={setFocusedPointJulia}
-              SHOW_POINT_THRESHOLD={100000}
+              setFocusedPointJulia={setFocusedPointJulia}
+              SHOW_POINT_THRESHOLD={20}
+              color={
+                complexNumbersEqual(m.point, focusedPointJulia.point)
+                  ? 'primary'
+                  : 'secondary'
+              }
             />
           ))
         : null}
+      {orbitList(
+        [0, 0],
+        focusedPoint.point,
+        focusedPoint.prePeriod + focusedPoint.period,
+      ).map((m) => (
+        <MisiurewiczPointMarker
+          m={new MisiurewiczPoint(focusedPoint.point, 0, m)}
+          mapWidth={
+            (size.width || 1) < (size.height || 0)
+              ? size.width || 1
+              : (size.width || 1) / 2
+          }
+          mapHeight={
+            (size.width || 1) < (size.height || 0)
+              ? (size.height || 0) / 2
+              : size.height || 0
+          }
+          show={props.show}
+          viewerControl={props.mandelbrot}
+          mandelbrotControl={props.mandelbrot}
+          animationState={props.animationState}
+          setAnimationState={props.setAnimationState}
+          focusedPoint={focusedPoint}
+          setFocusedPoint={setFocusedPoint}
+          setFocusedPointJulia={setFocusedPointJulia}
+          offsetX={0}
+          offsetY={0}
+          SHOW_POINT_THRESHOLD={7}
+          color={'default'}
+        />
+      ))}
       <div
         style={{
           position: 'absolute',
@@ -129,7 +199,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
       >
         <SelectMisiurewiczCard
           show={props.show}
-          canon={props.canon}
+          shadeDomains={props.shadeDomains}
           mandelbrot={props.mandelbrot}
           julia={props.julia}
           animationState={props.animationState}

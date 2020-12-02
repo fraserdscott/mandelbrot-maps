@@ -1,5 +1,7 @@
 import { XYType } from '../common/types';
 
+const TOLERANCE = 0.001;
+
 export function magnitude(p: XYType): number {
   return Math.sqrt(p[0] * p[0] + p[1] * p[1]);
 }
@@ -16,7 +18,7 @@ const sub = function (a: XYType, b: XYType): XYType {
   return [a[0] - b[0], a[1] - b[1]];
 };
 
-const mult = function (a: XYType, b: XYType): XYType {
+export const mult = function (a: XYType, b: XYType): XYType {
   return [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
 };
 
@@ -60,6 +62,15 @@ export const orbit = function (z: XYType, c: XYType, t: number): XYType {
   return z;
 };
 
+export const orbitList = function (z: XYType, c: XYType, t: number): XYType[] {
+  const points = [];
+  for (let i = 0; i < t; i++) {
+    points.push(z);
+    z = add(square(z), c);
+  }
+  return points;
+};
+
 /**
  * Take the derivative of f sub c with respect to z
  *
@@ -70,7 +81,7 @@ export const orbit = function (z: XYType, c: XYType, t: number): XYType {
  * @param t - How many iterations to go for
  * @returns The derivative of W at c
  */
-const orbitEigenvalue = function (z: XYType, c: XYType, t: number): XYType {
+export const orbitEigenvalue = function (z: XYType, c: XYType, t: number): XYType {
   let der: XYType = [1, 0];
   for (let i = 0; i < t; i++) {
     der = mult([2, 0], mult(der, z));
@@ -91,7 +102,7 @@ export const prePeriod = (z: XYType, c: XYType): number => {
   for (let i = 0; i < 50; i++) {
     olds.push(z);
     const newZ: XYType = add(square(z), c);
-    const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.001);
+    const similar = olds.findIndex((elem) => distance(elem, newZ) < TOLERANCE);
     if (similar !== -1) return similar;
 
     z = newZ;
@@ -171,18 +182,39 @@ export const magnificationRotationMandelbrot = function (
 };
 
 /**
+ * the point where zero enters a cycle
  *
- * @param c - The point that defines the Julia set
- * @param z - The point at the centre of the branch
- * @param l - The preperiod of z
- * @returns The size of the branch
+ * @param c - The point
+ * @returns If it's preperiodic: the preperiod, if it's periodic: nonsense, otherwise: -1.
  */
+export const getAlpha = (z: XYType, c: XYType): XYType => {
+  const olds: XYType[] = [];
+  for (let i = 0; i < 50; i++) {
+    olds.push(z);
+    const newZ: XYType = add(square(z), c);
+    const similar = olds.findIndex((elem) => distance(elem, newZ) < TOLERANCE);
+    if (similar !== -1) return newZ;
+
+    z = newZ;
+  }
+  return [-7, -7];
+};
+
+export const reachAlpha = function (c: XYType, z: XYType): number {
+  const alpha = getAlpha([0, 0], c);
+  for (let i = 0; i < 50; i++) {
+    if (distance(alpha, z) < TOLERANCE) return i;
+    z = add(square(z), c);
+  }
+  return -1;
+};
+
 export const magnificationRotationJulia = function (
   c: XYType,
   z: XYType,
-  prePeriod: number,
+  q: number,
 ): XYType {
-  return orbitEigenvalue(z, c, prePeriod);
+  return orbitEigenvalue(z, c, reachAlpha(c, z));
 };
 
 export function round(value: number, precision: number): number {
@@ -224,10 +256,11 @@ const Wfried = function (c: XYType, l: number, p: number) {
 export const findMisiurewicz = function (c: XYType): XYType {
   const q = findPotentialPreperiod(c);
   const p = 1;
+  const learningRate: XYType = [0.01, 0];
   for (let i = 0; i < 1000; i++) {
     const F = W(c, q, p);
     const Fdash = Wfried(c, q, p);
-    c = sub(c, mult([0.01, 0], divide(F, Fdash)));
+    c = sub(c, mult(learningRate, divide(F, Fdash)));
   }
   return c;
 };

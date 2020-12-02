@@ -138,7 +138,7 @@ function App(): JSX.Element {
                 <MisiurewiczModeDiv
                   animationState={animationState}
                   setAnimationState={setAnimationState}
-                  canon={settings.shadeMisiurewiczDomains}
+                  shadeDomains={settings.shadeMisiurewiczDomains}
                   show={settings.showMisiurewiczPoints}
                   mandelbrot={mandelbrotControls}
                   julia={juliaControls}

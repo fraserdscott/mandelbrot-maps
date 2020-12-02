@@ -1,4 +1,13 @@
-import { Card, Typography, IconButton } from '@material-ui/core';
+import {
+  Card,
+  Typography,
+  IconButton,
+  ListItem,
+  ListItemText,
+  Grid,
+  List,
+  Divider,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import CompareIcon from '@material-ui/icons/Compare';
@@ -7,7 +16,7 @@ import { formatComplexNumber } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
 import { MisiurewiczInfoCardProps } from '../../common/info';
 import { AnimationStatus } from './MisiurewiczModeDiv';
-import { getBack, MisiurewiczPoint } from './SelectMisiurewiczCard';
+import { getSimilarsInJulia } from './SelectMisiurewiczCard';
 
 const useStyles = makeStyles(() => ({
   iconButtonLabel: {
@@ -21,10 +30,7 @@ const useStyles = makeStyles(() => ({
 const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element => {
   const classes = useStyles();
 
-  const similarPoints = getBack(props.focusedPoint);
-  const selectPointInJulia2 = (x: MisiurewiczPoint) => {
-    props.setFocusedPointJulia(x);
-  };
+  const similarPoints = getSimilarsInJulia(props.focusedPoint);
 
   return (
     <Card
@@ -37,14 +43,38 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         flexDirection: 'column',
       }}
     >
-      <Typography variant="h4" component="h5" gutterBottom>
-        {props.focusedPoint.toString()}
+      <Typography component="span" variant="h6">
+        {formatComplexNumber(props.focusedPoint.point)}
       </Typography>
-      <Typography variant="h6" gutterBottom>
-        = {formatComplexNumber(props.focusedPoint.point)}
-      </Typography>
+      <Divider style={{ marginTop: 8, marginBottom: 8 }}></Divider>
+      <Grid id="top-row" container spacing={8}>
+        <Grid item xs={4}>
+          <Typography component="span" variant="body1" color="textSecondary">
+            Preperiod
+          </Typography>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography component="span" variant="body1" color="textPrimary">
+            {props.focusedPoint.prePeriod}
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid id="bottom-row" container spacing={8}>
+        <Grid item xs={4}>
+          <Typography component="span" variant="body1" color="textSecondary">
+            Period
+          </Typography>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography component="span" variant="body1" color="textPrimary">
+            {props.focusedPoint.period}
+          </Typography>
+        </Grid>
+      </Grid>
+      <Divider style={{ marginTop: 8, marginBottom: 8 }}></Divider>
       <IconButton
         size="small"
+        style={{ marginBottom: 8 }}
         classes={{ label: classes.iconButtonLabel }}
         onClick={() =>
           warpToPoint(props.mandelbrot, {
@@ -61,7 +91,17 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         size="small"
         classes={{ label: classes.iconButtonLabel }}
         onClick={() => {
-          selectPointInJulia2(similarPoints[0]);
+          warpToPoint(props.mandelbrot, {
+            xy: props.focusedPoint.point,
+            z: props.focusedPoint.uMagnitude,
+            theta: 0,
+          });
+          warpToPoint(props.julia, {
+            xy: [0, 0],
+            z: 0.5,
+            theta: 0,
+          });
+          props.setFocusedPointJulia(similarPoints[0]);
           props.setAnimationState(AnimationStatus.SELECT_JULIA_POINT);
         }}
       >
