@@ -103,7 +103,6 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
             id="mandelbrot"
             fragShader={
               settings.shadeMisiurewiczDomains &&
-              settings.showMisiurewiczPoints &&
               props.animationState === AnimationStatus.NO_ANIMATION
                 ? fragShaderDomain
                 : fragShader

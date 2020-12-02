@@ -20,123 +20,25 @@ import { SelectMisiurewiczCardProps } from '../../common/info';
 import { warpToPoint } from '../../common/utils';
 import { AnimationStatus } from './MisiurewiczModeDiv';
 import {
-  prePeriod,
-  period,
-  magnitude,
-  magnificationRotationJulia,
-  magnificationRotationMandelbrot,
   formatComplexNumber,
-  orbit,
-  backwardsOrbit,
-  backwardsOrbitNeg,
-  findMisiurewicz,
-  mult,
+  getSimilarsInJulia,
+  MisiurewiczPoint,
 } from '../tansTheoremUtils';
 import { ThetaType, XYType, ZoomType } from '../../common/types';
 import { misiurewiczPairs } from '../MPoints';
-import { screenScaleMultiplier } from '../../common/values';
 import SimilarityAnimationCard from './SimilarityAnimationCard';
-
-const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
-export class MisiurewiczPoint {
-  point: XYType;
-  u: XYType;
-  a: XYType;
-  prePeriod: number;
-  period: number;
-  uMagnitude: number;
-  uAngle: number;
-  aMagnitude: number;
-  aAngle: number;
-
-  constructor(c: XYType, iters: number, z?: XYType) {
-    if (z) {
-      this.point = z;
-    } else {
-      this.point = orbit([0, 0], c, iters);
-    }
-
-    this.prePeriod = prePeriod(this.point, c);
-    this.period = period(this.point, c);
-
-    this.u = magnificationRotationMandelbrot(c, this.prePeriod, this.period);
-    this.uMagnitude = magnitude(this.u);
-    this.uAngle = Math.atan2(this.u[1], this.u[0]);
-
-    this.a = magnificationRotationJulia(c, this.point, this.prePeriod);
-    this.aMagnitude = magnitude(this.a);
-    this.aAngle = Math.atan2(this.a[1], this.a[0]);
-  }
-
-  toString(): string {
-    let pre = `M${this.prePeriod},${this.period}`;
-    for (let i = 0; i < 10; i++) {
-      pre = pre.replaceAll(i.toString(), subscripts[i]);
-    }
-    return pre;
-  }
-}
+import {
+  handleJuliaSelection,
+  handleMandelbrotSelection,
+} from './MisiurewiczPointMarker';
 
 export const misiurewiczPoints: MisiurewiczPoint[] = misiurewiczPairs
   .slice(0, 300)
-  .map((p) => new MisiurewiczPoint(p, 1));
+  .map((p) => new MisiurewiczPoint(p, p));
 
-const expand = (
-  c: MisiurewiczPoint,
-  focusedPoint: MisiurewiczPoint,
-  similarPoints: MisiurewiczPoint[],
-  count: number,
-) => {
-  if (magnitude(c.point) > 0.001) {
-    similarPoints.push(c);
-    if (count > 0) {
-      const back = new MisiurewiczPoint(
-        focusedPoint.point,
-        0,
-        backwardsOrbit(c.point, focusedPoint.point, 1),
-      );
-      const backNeg = new MisiurewiczPoint(
-        focusedPoint.point,
-        0,
-        backwardsOrbitNeg(c.point, focusedPoint.point, 1),
-      );
-      expand(back, focusedPoint, similarPoints, count - 1);
-      expand(backNeg, focusedPoint, similarPoints, count - 1);
-    }
-  }
-  return similarPoints;
-};
-
-export const getSimilarsInJulia = (
-  focusedPoint: MisiurewiczPoint,
-): MisiurewiczPoint[] => {
-  const similarPoints: MisiurewiczPoint[] = [];
-  const depth = 4;
-
-  for (
-    let i = focusedPoint.prePeriod;
-    i < focusedPoint.prePeriod + focusedPoint.period;
-    i++
-  ) {
-    similarPoints.push(
-      new MisiurewiczPoint(
-        focusedPoint.point,
-        0,
-        orbit(focusedPoint.point, focusedPoint.point, i),
-      ),
-    );
-    expand(
-      new MisiurewiczPoint(
-        focusedPoint.point,
-        0,
-        mult([-1, 0], orbit(focusedPoint.point, focusedPoint.point, i)),
-      ),
-      focusedPoint,
-      similarPoints,
-      depth,
-    );
-  }
-  return similarPoints;
+const parsePoint = (s: string): XYType => {
+  const posStr = s.split(',');
+  return [parseFloat(posStr[0]), parseFloat(posStr[1])];
 };
 
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
@@ -165,14 +67,17 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   const handleMandelbrotPointSelection = (
     event: React.ChangeEvent<{ value: unknown }>,
   ) => {
-    const posStr = (event.target.value as string).split(',');
-    const chosenPoint: XYType = [parseFloat(posStr[0]), parseFloat(posStr[1])];
+    const chosenPoint: XYType = parsePoint(event.target.value as string);
 
-    const chosenMisiurewicz = new MisiurewiczPoint(chosenPoint, 1);
-    props.setFocusedPoint(chosenMisiurewicz);
+    const chosenMisiurewicz = new MisiurewiczPoint(chosenPoint, chosenPoint);
     props.setMagState(1);
 
-    props.setFocusedPointJulia(similarPoints[0]);
+    handleMandelbrotSelection(
+      chosenMisiurewicz,
+      props.setFocusedPoint,
+      chosenMisiurewicz,
+      props.setFocusedPointJulia,
+    );
     warpToPoint(props.mandelbrot, {
       xy: chosenMisiurewicz.point,
       z: chosenMisiurewicz.uMagnitude,
@@ -181,12 +86,11 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   };
 
   const handleJuliaSimilarSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const posStr = (event.target.value as string).split(',');
+    const chosenPoint: XYType = parsePoint(event.target.value as string);
 
-    const chosenPoint: XYType = [parseFloat(posStr[0]), parseFloat(posStr[1])];
-
-    props.setFocusedPointJulia(
-      new MisiurewiczPoint(props.focusedPoint.point, 0, chosenPoint),
+    handleJuliaSelection(
+      new MisiurewiczPoint(props.focusedPoint.point, chosenPoint),
+      props.setFocusedPointJulia,
     );
   };
 
@@ -194,75 +98,103 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     rotateAndZoom(newValue as ZoomType);
   };
 
-  const handlePickDomain = () => {
-    const mPoint = findMisiurewicz([
-      props.mandelbrot.xyCtrl[0].xy.getValue()[0] * screenScaleMultiplier,
-      props.mandelbrot.xyCtrl[0].xy.getValue()[1] * screenScaleMultiplier,
-    ]);
-    props.setFocusedPoint(new MisiurewiczPoint(mPoint, 1));
+  const misiurewiczPointsList = (): JSX.Element => {
+    return (
+      <Select
+        native
+        value={props.focusedPoint.point}
+        onChange={handleMandelbrotPointSelection}
+        inputProps={{
+          name: 'mandelbrot',
+          id: 'select-multiple-native',
+        }}
+      >
+        {misiurewiczPoints.map((m) => (
+          <option value={m.point.toString()}>
+            {m.toString()} = {formatComplexNumber(m.point)}
+          </option>
+        ))}
+      </Select>
+    );
+  };
+
+  const zoomBar = (): JSX.Element => {
+    return (
+      <Grid container direction="column" alignItems="center">
+        <Grid item>
+          <ZoomInIcon />
+        </Grid>
+        <Grid item xs>
+          <Slider
+            value={props.mag}
+            onChange={handleSetMagnification}
+            style={{
+              height: '60vh',
+            }}
+            min={1}
+            max={1000}
+            track={false}
+            orientation="vertical"
+            aria-labelledby="continuous-slider"
+            valueLabelDisplay="auto"
+          />{' '}
+        </Grid>
+        <Grid item>
+          <ZoomOutIcon />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const searchBar = () => {
+    return (
+      <Card
+        style={{
+          padding: 8,
+          backgroundColor: 'DeepSkyBlue',
+        }}
+      >
+        <InputLabel
+          htmlFor="select-native"
+          style={{
+            color: 'white',
+          }}
+        >
+          Misiurewicz points
+        </InputLabel>
+        {misiurewiczPointsList()}
+      </Card>
+    );
   };
 
   return (
     <Grow in={props.show}>
       <Grid container direction="column" alignItems="flex-start">
         {props.animationState === AnimationStatus.NO_ANIMATION ? (
-          <Grid container direction="column" alignItems="center">
-            <Card
-              style={{
-                width: 'auto',
-                zIndex: 1300,
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                flexShrink: 1,
-              }}
-            >
-              {!props.shadeDomains ? (
-                <Card
-                  style={{
-                    padding: 8,
-                    backgroundColor: 'DeepSkyBlue',
-                  }}
-                >
-                  <InputLabel
-                    htmlFor="select-native"
-                    style={{
-                      color: 'white',
-                    }}
-                  >
-                    Misiurewicz points
-                  </InputLabel>
-                  <Select
-                    native
-                    value={props.focusedPoint.point}
-                    onChange={handleMandelbrotPointSelection}
-                    inputProps={{
-                      name: 'mandelbrot',
-                      id: 'select-multiple-native',
-                    }}
-                  >
-                    {misiurewiczPoints.map((m) => (
-                      <option value={m.point.toString()}>
-                        {m.toString()} = {formatComplexNumber(m.point)}
-                      </option>
-                    ))}
-                  </Select>
-                </Card>
-              ) : null}
+          <Card
+            style={{
+              width: 'auto',
+              zIndex: 1300,
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              flexShrink: 1,
+            }}
+          >
+            {!props.shadeDomains ? searchBar() : null}
 
-              <MisiurewiczPointInfoCard
-                show={props.show}
-                mandelbrot={props.mandelbrot}
-                julia={props.julia}
-                animationState={props.animationState}
-                setAnimationState={props.setAnimationState}
-                focusedPoint={props.focusedPoint}
-                setFocusedPoint={props.setFocusedPoint}
-                focusedPointJulia={props.focusedPointJulia}
-                setFocusedPointJulia={props.setFocusedPointJulia}
-              ></MisiurewiczPointInfoCard>
-            </Card>
-          </Grid>
+            <MisiurewiczPointInfoCard
+              show={props.show}
+              mandelbrot={props.mandelbrot}
+              julia={props.julia}
+              animationState={props.animationState}
+              setAnimationState={props.setAnimationState}
+              focusedPoint={props.focusedPoint}
+              setFocusedPoint={props.setFocusedPoint}
+              focusedPointJulia={props.focusedPointJulia}
+              setFocusedPointJulia={props.setFocusedPointJulia}
+            ></MisiurewiczPointInfoCard>
+          </Card>
         ) : null}
         <div>
           {props.animationState !== AnimationStatus.NO_ANIMATION ? (
@@ -302,27 +234,11 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                       Show me the similarity between...
                     </Typography>
                   </div>
-                  {props.shadeDomains ? (
-                    `${props.focusedPoint.toString()} = ${formatComplexNumber(
-                      props.focusedPoint.point,
-                    )}`
-                  ) : (
-                    <Select
-                      native
-                      value={props.focusedPoint.point}
-                      onChange={handleMandelbrotPointSelection}
-                      inputProps={{
-                        name: 'mandelbrot',
-                        id: 'select-multiple-native',
-                      }}
-                    >
-                      {misiurewiczPoints.map((m) => (
-                        <option value={m.point.toString()}>
-                          {m.toString()} = {formatComplexNumber(m.point)}
-                        </option>
-                      ))}
-                    </Select>
-                  )}
+                  {props.shadeDomains
+                    ? `${props.focusedPoint.toString()} = ${formatComplexNumber(
+                        props.focusedPoint.point,
+                      )}`
+                    : misiurewiczPointsList()}
                   <div style={{ marginBottom: 12 }}>in the Mandelbrot set</div>
                   <Typography variant="h6" component="h5" gutterBottom>
                     and
@@ -375,43 +291,25 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
                 ></SimilarityAnimationCard>
               ) : null}
               {props.animationState === AnimationStatus.PLAY ? (
-                <Card
-                  style={{
-                    width: 'auto',
-                    zIndex: 1300,
-                  }}
-                >
+                <Card>
                   <IconButton
                     onClick={() => {
-                      props.setAnimationState(AnimationStatus.TRANSLATE_M);
-                      //props.setMagState(1);
+                      props.setAnimationState(AnimationStatus.SELECT_JULIA_POINT);
+                      warpToPoint(props.mandelbrot, {
+                        xy: props.focusedPoint.point,
+                        z: props.focusedPoint.uMagnitude,
+                        theta: 0,
+                      });
+                      warpToPoint(props.julia, {
+                        xy: [0, 0],
+                        z: 0.5,
+                        theta: 0,
+                      });
                     }}
                   >
                     <ArrowBackwardIcon />
                   </IconButton>
-                  <Grid container direction="column" alignItems="center">
-                    <Grid item>
-                      <ZoomInIcon />
-                    </Grid>
-                    <Grid item xs>
-                      <Slider
-                        value={props.mag}
-                        onChange={handleSetMagnification}
-                        style={{
-                          height: '60vh',
-                        }}
-                        min={1}
-                        max={1000}
-                        track={false}
-                        orientation="vertical"
-                        aria-labelledby="continuous-slider"
-                        valueLabelDisplay="auto"
-                      />{' '}
-                    </Grid>
-                    <Grid item>
-                      <ZoomOutIcon />
-                    </Grid>
-                  </Grid>
+                  {zoomBar()}
                 </Card>
               ) : null}
             </Card>

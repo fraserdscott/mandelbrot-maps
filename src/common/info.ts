@@ -1,7 +1,7 @@
 import { CardProps } from '@material-ui/core';
 import { OpaqueInterpolation } from 'react-spring';
-import { MisiurewiczPoint } from '../components/info/SelectMisiurewiczCard';
 import { AnimationStatus } from '../components/info/MisiurewiczModeDiv';
+import { MisiurewiczPoint } from '../components/tansTheoremUtils';
 import {
   ThetaType,
   ViewerRotationControlSpring,

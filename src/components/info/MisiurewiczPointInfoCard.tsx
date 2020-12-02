@@ -1,22 +1,12 @@
-import {
-  Card,
-  Typography,
-  IconButton,
-  ListItem,
-  ListItemText,
-  Grid,
-  List,
-  Divider,
-} from '@material-ui/core';
+import { Card, Typography, IconButton, Grid, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import CompareIcon from '@material-ui/icons/Compare';
 import React from 'react';
-import { formatComplexNumber } from '../tansTheoremUtils';
+import { formatComplexNumber, getSimilarsInJulia } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
 import { MisiurewiczInfoCardProps } from '../../common/info';
 import { AnimationStatus } from './MisiurewiczModeDiv';
-import { getSimilarsInJulia } from './SelectMisiurewiczCard';
 
 const useStyles = makeStyles(() => ({
   iconButtonLabel: {

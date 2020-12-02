@@ -50,7 +50,7 @@ export const backwardsOrbit = function (z: XYType, c: XYType, t: number): XYType
 
 export const backwardsOrbitNeg = function (z: XYType, c: XYType, t: number): XYType {
   for (let i = 0; i < t; i++) {
-    z = [-sqrt(sub(z, c))[0], -sqrt(sub(z, c))[1]];
+    z = mult([-1, 0], sqrt(sub(z, c)));
   }
   return z;
 };
@@ -264,3 +264,87 @@ export const findMisiurewicz = function (c: XYType): XYType {
   }
   return c;
 };
+
+const expand = (
+  iterate: MisiurewiczPoint,
+  c: XYType,
+  similarPoints: MisiurewiczPoint[],
+  count: number,
+) => {
+  if (magnitude(iterate.point) > 0.01) {
+    similarPoints.push(iterate);
+    if (count > 0) {
+      const back = new MisiurewiczPoint(c, backwardsOrbit(iterate.point, c, 1));
+      const backNeg = new MisiurewiczPoint(c, backwardsOrbitNeg(iterate.point, c, 1));
+      expand(back, c, similarPoints, count - 1);
+      expand(backNeg, c, similarPoints, count - 1);
+    }
+  }
+  return similarPoints;
+};
+
+export const getSimilarsInJulia = (
+  focusedPoint: MisiurewiczPoint,
+): MisiurewiczPoint[] => {
+  const similarPoints: MisiurewiczPoint[] = [];
+  const depth = 4;
+
+  for (
+    let i = focusedPoint.prePeriod;
+    i < focusedPoint.prePeriod + focusedPoint.period;
+    i++
+  ) {
+    similarPoints.push(
+      new MisiurewiczPoint(
+        focusedPoint.point,
+        orbit(focusedPoint.point, focusedPoint.point, i),
+      ),
+    );
+    expand(
+      new MisiurewiczPoint(
+        focusedPoint.point,
+        mult([-1, 0], orbit(focusedPoint.point, focusedPoint.point, i)),
+      ),
+      focusedPoint.point,
+      similarPoints,
+      depth,
+    );
+  }
+  return similarPoints;
+};
+
+const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
+export class MisiurewiczPoint {
+  point: XYType;
+  u: XYType;
+  a: XYType;
+  prePeriod: number;
+  period: number;
+  uMagnitude: number;
+  uAngle: number;
+  aMagnitude: number;
+  aAngle: number;
+
+  constructor(c: XYType, z: XYType) {
+    this.point = z;
+
+    this.prePeriod = prePeriod(this.point, c);
+    this.period = period(this.point, c);
+
+    this.u = magnificationRotationMandelbrot(c, this.prePeriod, this.period);
+    this.uMagnitude = magnitude(this.u);
+    this.uAngle = Math.atan2(this.u[1], this.u[0]);
+
+    this.a = magnificationRotationJulia(c, this.point, this.prePeriod);
+    this.aMagnitude = magnitude(this.a);
+    this.aAngle = Math.atan2(this.a[1], this.a[0]);
+  }
+
+  toString(): string {
+    let pre = `M${this.prePeriod},${this.period}`;
+    for (let i = 0; i < 10; i++) {
+      pre = pre.replaceAll(i.toString(), subscripts[i]);
+    }
+    return pre;
+  }
+}

@@ -3,21 +3,40 @@ import { Tooltip } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import IconButton from '@material-ui/core/IconButton';
 import { MisiurewiczPointMarkerProps } from '../../common/info';
-import {
-  complexNumbersEqual,
-  magnitude,
-  orbit,
-  orbitEigenvalue,
-} from '../tansTheoremUtils';
+import { complexNumbersEqual, MisiurewiczPoint } from '../tansTheoremUtils';
 import { animated } from 'react-spring';
 import { screenScaleMultiplier } from '../../common/values';
 import { AnimationStatus } from './MisiurewiczModeDiv';
-import { MisiurewiczPoint } from './SelectMisiurewiczCard';
-import { XYType } from '../../common/types';
 
 const BUTTON_SIZE = 40;
 const BUTTON_SIZE_OVER_4 = BUTTON_SIZE / 4;
 const THREE_BUTTON_SIZE_OVER_4 = 3 * BUTTON_SIZE_OVER_4;
+
+export const handleJuliaSelection = (
+  focusedPointJulia: MisiurewiczPoint,
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>,
+) => {
+  setFocusedPointJulia(focusedPointJulia);
+};
+
+export const handleMandelbrotSelection = (
+  focusedPointMandelbrot: MisiurewiczPoint,
+  setFocusedPointMandelbrot: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>,
+  focusedPointJulia: MisiurewiczPoint,
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>,
+) => {
+  setFocusedPointMandelbrot(focusedPointMandelbrot);
+  setFocusedPointJulia(
+    new MisiurewiczPoint(focusedPointMandelbrot.point, focusedPointJulia.point),
+  );
+};
+
+export const animationNotTakingPlace = (animationState: AnimationStatus): boolean => {
+  return (
+    animationState === AnimationStatus.NO_ANIMATION ||
+    animationState === AnimationStatus.SELECT_JULIA_POINT
+  );
+};
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
   const [{ z }] = props.viewerControl.zoomCtrl;
@@ -62,19 +81,6 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
         visibility: props.viewerControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
-            const firstIterateInCycle = orbit(
-              props.focusedPoint.point,
-              props.focusedPoint.point,
-              props.focusedPoint.prePeriod,
-            );
-            const limit = magnitude(
-              orbitEigenvalue(
-                firstIterateInCycle,
-                props.focusedPoint.point,
-                props.focusedPoint.period,
-              ),
-            );
-
             const negTheta = -theta.getValue();
 
             const hiX = props.m.point[0] - x * screenScaleMultiplier;
@@ -86,9 +92,7 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
             const verticalDistanceFromCentre: number =
               z.getValue() *
               Math.abs(hiX * Math.sin(negTheta) + hiY * Math.cos(negTheta));
-            const animationTakingPlace =
-              props.animationState === AnimationStatus.NO_ANIMATION ||
-              props.animationState === AnimationStatus.SELECT_JULIA_POINT;
+
             const withinBox =
               horizontalDistanceFromCentre < ASPECT_RATIO &&
               verticalDistanceFromCentre < 1;
@@ -96,14 +100,14 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
             const atCorrectZoom = mandelbrot
               ? props.m.uMagnitude * props.m.period <
                 props.SHOW_POINT_THRESHOLD * z.getValue()
-              : props.m.aMagnitude < props.SHOW_POINT_THRESHOLD * limit * z.getValue();
+              : props.m.aMagnitude < props.SHOW_POINT_THRESHOLD * z.getValue();
             const thisIsFocused = complexNumbersEqual(
               props.m.point,
               props.focusedPoint.point,
             );
             if (
               props.show &&
-              animationTakingPlace &&
+              animationNotTakingPlace(props.animationState) &&
               withinBox &&
               (atCorrectZoom || thisIsFocused)
             ) {
@@ -130,10 +134,16 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
       <Tooltip title={props.m.toString()} placement="top">
         <IconButton
           onClick={() => {
-            props.setFocusedPoint(props.m);
-            props.setFocusedPointJulia(
-              new MisiurewiczPoint(props.focusedPoint.point, 0, props.m.point),
-            );
+            if (props.offsetX === 0) {
+              handleMandelbrotSelection(
+                props.m,
+                props.setFocusedPoint,
+                props.m,
+                props.setFocusedPointJulia,
+              );
+            } else {
+              handleJuliaSelection(props.m, props.setFocusedPointJulia);
+            }
           }}
           color={props.color}
         >
