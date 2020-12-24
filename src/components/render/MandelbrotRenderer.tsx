@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { useGesture } from 'react-use-gesture';
 import { MandelbrotRendererProps } from '../../common/render';
-import { genericTouchBind } from '../../common/utils';
-import { screenScaleMultiplier } from '../../common/values';
+import { MandelbrotMapsWebGLUniforms } from '../../common/types';
+import { genericTouchBind, Rgb255ColourToFloat } from '../../common/utils';
 import newSmoothMandelbrotShader, {
   miniCrosshair,
   standardCrosshair,
@@ -29,7 +29,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
 
   // temporary bounds to prevent excessive panning
   // eslint-disable-next-line
-  const radialBound = 1;
+  // const radialBound = 1;
   // const relativeRadialBound = radialBound;// / -screenScaleMultiplier;
 
   // read incoming props
@@ -65,13 +65,20 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
     miniCrosshair,
   );
 
+  const u: MandelbrotMapsWebGLUniforms = {
+    zoom: z,
+    xy: xy,
+    theta: theta,
+    maxI: maxI,
+    colour: Rgb255ColourToFloat(props.colour), // vec3(0.0,0.6,1.0)
+    // screenScaleMultiplier: screenScaleMultiplier,
+  };
+
   const [dragging, setDragging] = useState(false);
 
   const gtb = genericTouchBind({
     domTarget: canvasRef,
     controls: props.controls,
-    screenScaleMultiplier:
-      screenScaleMultiplier / (props.useDPR ? window.devicePixelRatio : 1), // -> global
     // gl: gl,
     setDragging: setDragging,
   });
@@ -98,7 +105,6 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
           }}
         >
           <FPSCard fps={fps} show={settings.showFPS} />
-
           <WebGLCanvas
             id="mandelbrot"
             fragShader={
@@ -109,29 +115,17 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
             }
             useDPR={settings.useDPR}
             // touchBind={touchBind}
-            u={{
-              zoom: z,
-              xy: xy,
-              theta: theta,
-              maxI: maxI,
-              // screenScaleMultiplier: screenScaleMultiplier,
-            }}
+            u={u}
             ref={canvasRef}
             // glRef={gl}
             fps={setFps}
             dragging={dragging}
           />
-
           <MinimapViewer
+            id="mandelbrot-minimap-canvas"
             fragShader={miniFragShader}
             useDPR={settings.useDPR}
-            u={{
-              zoom: z,
-              xy: xy,
-              theta: theta,
-              maxI: maxI,
-              // screenScaleMultiplier: screenScaleMultiplier,
-            }}
+            u={u}
             canvasRef={miniCanvasRef}
             // glRef={miniGl}
             show={settings.showMinimap}

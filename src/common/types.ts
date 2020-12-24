@@ -17,6 +17,9 @@ export type XYType = [number, number];
 export type ZoomType = number;
 export type ThetaType = number;
 
+/** An RGB colour in range [0, 255], maps to range [0, 1] by applying (x / 255) */
+export type RgbFloatColour = [number, number, number];
+
 /**
  * Holds viewer location data (can be used to control a view)
  */
@@ -56,9 +59,7 @@ export type SpringAnimatedValueWithSetter<T> = [
 
 export type ViewerXYControlSpring = SpringAnimatedValueWithSetter<ViewerXYControl>;
 export type ViewerZoomControlSpring = SpringAnimatedValueWithSetter<ViewerZoomControl>;
-export type ViewerRotationControlSpring = SpringAnimatedValueWithSetter<
-  ViewerRotationControl
->;
+export type ViewerRotationControlSpring = SpringAnimatedValueWithSetter<ViewerRotationControl>;
 
 export interface ViewerControlSprings {
   xyCtrl: ViewerXYControlSpring;
@@ -72,8 +73,11 @@ export interface MandelbrotMapsWebGLUniforms {
   maxI: number;
   c?: { getValue: () => XYType };
   theta: OpaqueInterpolation<ThetaType>;
+  colour: RgbFloatColour;
 }
 
 export interface DefaultRendererProps {
   controls: ViewerControls;
 }
+
+export type ReactUseStateType<T> = [T, React.Dispatch<React.SetStateAction<T>>];

@@ -2,8 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useGesture } from 'react-use-gesture';
 import { JuliaRendererProps } from '../../common/render';
 import { MandelbrotMapsWebGLUniforms } from '../../common/types';
-import { genericTouchBind } from '../../common/utils';
-import { screenScaleMultiplier } from '../../common/values';
+import { genericTouchBind, Rgb255ColourToFloat } from '../../common/utils';
 import newSmoothJuliaShader from '../../shaders/newSmoothJuliaShader';
 import { SettingsContext } from '../settings/SettingsContext';
 import MinimapViewer from './MinimapViewer';
@@ -35,6 +34,7 @@ export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
     c: props.c,
     theta: theta,
     maxI: maxI,
+    colour: Rgb255ColourToFloat(props.colour),
   };
 
   const [dragging, setDragging] = useState(false);
@@ -42,8 +42,6 @@ export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
   const gtb = genericTouchBind({
     domTarget: canvasRef,
     controls: props.controls,
-    screenScaleMultiplier:
-      screenScaleMultiplier / (props.useDPR ? window.devicePixelRatio : 1),
     setDragging: setDragging,
   });
 
@@ -59,7 +57,7 @@ export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
           }}
         >
           <WebGLCanvas
-            id="julia"
+            id="julia-canvas"
             fragShader={fragShader}
             useDPR={props.useDPR}
             u={u}
@@ -67,6 +65,7 @@ export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
             dragging={dragging}
           />
           <MinimapViewer
+            id="julia-minimap-canvas"
             fragShader={miniFragShader}
             useDPR={settings.useDPR}
             u={u}

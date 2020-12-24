@@ -1,13 +1,14 @@
 {
-    "files.exclude": {
-        "**/.classpath": true,
-        "**/.project": true,
-        "**/.settings": true,
-        "**/.factorypath": true
-    },
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        // "source.organizeImports": true,
-    },
-    "editor.tabSize": 2,
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true,
+    "**/.git": false
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+    // "source.organizeImports": true,
+  },
+  "editor.tabSize": 2
 }

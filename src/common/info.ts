@@ -2,14 +2,7 @@ import { CardProps } from '@material-ui/core';
 import { OpaqueInterpolation } from 'react-spring';
 import { AnimationStatus } from '../components/info/MisiurewiczModeDiv';
 import { PreperiodicPoint } from '../components/tansTheoremUtils';
-import {
-  ThetaType,
-  ViewerRotationControlSpring,
-  ViewerXYControlSpring,
-  ViewerZoomControlSpring,
-  XYType,
-  ZoomType,
-} from './types';
+import { ThetaType, ViewerControlSprings, XYType, ZoomType } from './types';
 
 export interface FPSCardProps {
   fps: string;
@@ -17,8 +10,6 @@ export interface FPSCardProps {
 }
 
 export interface CoordinatesCardProps extends CardProps {
-  show: boolean;
-  // screenScaleMultiplier: number;
   mandelbrot: {
     xy: OpaqueInterpolation<XYType>;
     zoom: OpaqueInterpolation<ZoomType>;
@@ -27,16 +18,8 @@ export interface CoordinatesCardProps extends CardProps {
   julia?: OpaqueInterpolation<XYType>;
 }
 
-export interface ViewerControls {
-  xyCtrl: ViewerXYControlSpring;
-  rotCtrl: ViewerRotationControlSpring;
-  zoomCtrl: ViewerZoomControlSpring;
-}
-
 export interface ChangeCoordinatesCardProps extends CardProps {
-  show: boolean;
-  // screenScaleMultiplier: number;
-  mandelbrot: ViewerControls;
+  mandelbrot: ViewerControlSprings;
   julia?: OpaqueInterpolation<XYType>;
 }
 
@@ -45,16 +28,16 @@ export interface MisiurewiczModeDivProps extends CardProps {
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   shadeDomains: boolean;
   show: boolean;
-  mandelbrot: ViewerControls;
-  julia: ViewerControls;
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
 }
 
 export interface SelectMisiurewiczCardProps extends CardProps {
   show: boolean;
   shadeDomains: boolean;
   // screenScaleMultiplier: number;
-  mandelbrot: ViewerControls;
-  julia: ViewerControls;
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   focusedPoint: PreperiodicPoint;
@@ -73,8 +56,8 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
   offsetY: number;
   SHOW_POINT_THRESHOLD: number;
   m: PreperiodicPoint;
-  viewerControl: ViewerControls;
-  mandelbrotControl: ViewerControls;
+  viewerControl: ViewerControlSprings;
+  mandelbrotControl: ViewerControlSprings;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   focusedPoint: PreperiodicPoint;
@@ -85,12 +68,16 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
 
 export interface MisiurewiczInfoCardProps extends CardProps {
   show: boolean;
-  mandelbrot: ViewerControls;
-  julia: ViewerControls;
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   focusedPoint: PreperiodicPoint;
   setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   focusedPointJulia: PreperiodicPoint;
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+}
+export interface InfoDialogProps {
+  // control whether the info dialog should be displayed
+  ctrl: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 }

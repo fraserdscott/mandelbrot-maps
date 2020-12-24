@@ -1,5 +1,7 @@
 // TODO set max iterations as parameter, crosshair as parameter
 
+import { RendererRenderValues } from '../common/render';
+
 const makeCrosshair = (stroke: number, radius: number) => ({
   stroke,
   radius,
@@ -17,7 +19,7 @@ export interface MandelbrotShaderParams {
 }
 
 const newSmoothMandelbrotShader = (
-  { maxI = 300, AA = 1, B = 64 },
+  { maxI = 300, AA = 1, B = 64 }: RendererRenderValues,
   showCrosshair = true,
   crosshairShape = {
     stroke: 2,
@@ -55,6 +57,7 @@ uniform int   u_maxI;
 uniform vec2  u_xy;
 uniform float u_zoom;
 uniform float u_theta;
+uniform vec3  u_colour;
 
 bool crosshair( float x, float y ) {
   float abs_x = abs(2.0*x - resolution.x);
@@ -119,7 +122,8 @@ void main() {
     vec2 c = u_xy + xy/u_zoom;
     
     float l = mandelbrot(c);
-    col += 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
+    // col += 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
+    col += 0.5 + 0.5*cos( 3.0 + l*0.15 + u_colour);
 
     // antialiasing
     #if AA>1

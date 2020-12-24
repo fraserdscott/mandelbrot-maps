@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useMemo, useState } from 'react';
 import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -25,10 +25,12 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { surveyLink } from '../surveyLink.json';
+import MandelbrotMapsLogo from '../../img/logo-192.png';
 
 // for evaluating build time
 import preval from 'preval.macro';
 import clientDetect from '../../dist/clientDetect';
+import { InfoDialogProps } from '../../common/info';
 
 const dateTimeStamp = preval`module.exports = new Date();`;
 
@@ -66,7 +68,11 @@ const DialogTitle = withStyles(styles)(
   ({ children, classes, onClose, ...other }: DialogTitleProps) => {
     return (
       <MuiDialogTitle disableTypography className={classes.root} {...other}>
-        <img src="logo-512.png" alt="Mandelbrot Maps logo" className={classes.image} />
+        <img
+          src={MandelbrotMapsLogo}
+          alt="Mandelbrot Maps logo"
+          className={classes.image}
+        />
         <Typography
           variant="h1"
           style={{ fontSize: 24, marginTop: 'auto', marginBottom: 'auto' }}
@@ -104,7 +110,7 @@ function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function InfoDialog(props: any) {
+export default function InfoDialog(props: InfoDialogProps): JSX.Element {
   const [open, setOpen] = props.ctrl;
   const [snackBarOpen, setSnackBarOpen] = useState(false);
 
@@ -118,7 +124,7 @@ export default function InfoDialog(props: any) {
   // };
 
   // guard against null / undefined window
-  const clientData = clientDetect(window);
+  const clientData = useMemo(() => clientDetect(window), []);
   // const clientData = window.jscd || {};
 
   const writeToClipboard = (data: string) => {
@@ -156,7 +162,8 @@ export default function InfoDialog(props: any) {
         </Typography>
         <Typography gutterBottom>
           The project was simultaneously undertaken by Freddie Bawden, also under the
-          supervision of Philip Wadler. Freddie's version of the project is available at:{' '}
+          supervision of Philip Wadler. Freddie&apos;s version of the project is available
+          at:{' '}
           <Link href="http://mmaps.freddiejbawden.com/" target="_blank">
             mmaps.freddiejbawden.com
           </Link>
@@ -214,11 +221,14 @@ export default function InfoDialog(props: any) {
 
         <Divider style={{ marginTop: 30, marginBottom: 30 }} />
 
-        <Box style={{ display: 'flex' }}>
+        <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Typography variant="overline" align="center" style={{ margin: 'auto' }}>
             Build:
-            <Typography style={{ fontFamily: 'monospace' }}>{dateTimeStamp}</Typography>
             {/* {console.log(new Date(dateTimeStamp).toLocaleString('en-GB', { timeZone: 'UTC' }))} */}
+          </Typography>
+          <Typography style={{ fontFamily: 'monospace' }}>{dateTimeStamp}</Typography>
+          <Typography style={{ fontFamily: 'monospace' }}>
+            {process.env.REACT_APP_GIT_SHA}
           </Typography>
         </Box>
       </DialogContent>
