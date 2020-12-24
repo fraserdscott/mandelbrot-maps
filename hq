@@ -1,0 +1,1534 @@
+[33mcommit e9a719489e547d60b508acdbbec61ad4cfd8f72f[m[33m ([m[1;36mHEAD -> [m[1;32manimate-tans-theorem[m[33m)[m
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Fri Oct 23 02:09:11 2020 +0100
+
+    Show a select Misiurewicz card to the user
+    This feature needs to be toggled by the user in settings.
+
+[33mcommit 5b7355f8a31992a3f018d6151ebea9029771f5e5[m[33m ([m[1;31morigin/animate-tans-theorem[m[33m)[m
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Fri Oct 23 01:40:50 2020 +0100
+
+    Add setting option to display Misiurewicz points
+
+[33mcommit b9472d9c7e7792a385907c880eddbcdbe150ce7a[m
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Fri Oct 23 01:35:14 2020 +0100
+
+    Add card to select and animate Misiurewicz points
+    Users can select a Misiurewicz point from a preset list, via a dropdown.
+    Once selected, users can align the Mandelbrot and Julia sets to see
+    their similarity at that point.
+    Once aligned, the magnification can be tweaked via a Slider.
+
+[33mcommit 7ccdbc14f1d0da5d816d3fcaf44aabd8688668b8[m
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Fri Oct 23 01:18:28 2020 +0100
+
+    Add UI card to show info about a Misiurewicz point
+    This element takes a complex number (represented as a 2-tuple)
+    and return a small UI card with some properties of the number.
+
+[33mcommit 10eb46450fa081de4f7c64383ace4caa0b1efb6d[m
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Fri Oct 23 01:14:16 2020 +0100
+
+    Add functions to find Tans theorem factors
+    These functions find the correct rotation and magnification factors
+    to display a similarty between the Mandelbrot and Julia set.
+    They do not use any sort of complex arithmetic library,
+    they instead operate on two-tuples which are treated like a complex number.
+
+[33mcommit 0101902bccc69be6db6fd6ab4d1a67779799aa86[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Merge: 0d39c9f 0bb3f34
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Fri Oct 23 01:04:27 2020 +0100
+
+    Merge remote-tracking branch 'joao/master'
+
+[33mcommit 0bb3f34921229594e6a5e475ace4c1edea7ae24b[m[33m ([m[1;31mjoao/master[m[33m)[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Oct 22 14:34:40 2020 +0100
+
+    Update DEPLOYING.md
+    
+    fix text placement and image link
+
+[33mcommit e95f61ca9088b7d540d04a68c3263de51b554e82[m
+Merge: 91a4f60 89e54fe
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Oct 22 13:32:41 2020 +0000
+
+    Merge pull request #28 from JMaio/gh-pages-instructions
+    
+    [docs] add info about how to deploy forks to GitHub pages
+
+[33mcommit 89e54fe1f9795f4e982c0453f3d41148429552f2[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Oct 20 16:13:13 2020 +0100
+
+    [docs] add info about how to deploy forks to GitHub pages
+
+[33mcommit 91a4f601b494f09335536f0bb2ac45106d8aa08b[m
+Merge: 8870821 ce75610
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Oct 22 11:03:26 2020 +0000
+
+    Merge pull request #26 from fraserdscott/add-julia-set-rotation
+    
+    Add julia set rotation
+
+[33mcommit 0d39c9fb54d1758053b502d9eaa3f72d8988600b[m
+Merge: cda6b6e ce75610
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Wed Oct 21 17:29:45 2020 +0100
+
+    Merge pull request #1 from fraserdscott/add-julia-set-rotation
+    
+    Add julia set rotation
+
+[33mcommit ce7561083e83a0576a36ecca43d091dcc1c210e6[m[33m ([m[1;31morigin/add-julia-set-rotation[m[33m, [m[1;32madd-julia-set-rotation[m[33m)[m
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Wed Oct 21 17:18:07 2020 +0100
+
+    Add julia set rotation
+
+[33mcommit 8870821fd85f2ee1e055af83e527e4adf72a178d[m
+Merge: cda6b6e 4518fc7
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Oct 20 13:45:50 2020 +0000
+
+    Merge pull request #25 from fraserdscott/coordinates-input-validation
+    
+    Coordinates input validation
+
+[33mcommit 4518fc70ec346d8839fae0a86709c6a8eb2efaca[m[33m ([m[1;31morigin/coordinates-input-validation[m[33m, [m[1;32mcoordinates-input-validation[m[33m)[m
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Tue Oct 20 13:21:41 2020 +0100
+
+    Remove unused import
+
+[33mcommit 4a63def6c1643a7cebdcc4ab71f66d9eb065d49e[m
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Tue Oct 20 13:18:08 2020 +0100
+
+    Increase size of theta field
+
+[33mcommit bae7f55f40505ef97865d70d279bf0dac9c1fc8e[m
+Author: fraserdscott <fraserdscott@gmail.com>
+Date:   Tue Oct 20 13:11:00 2020 +0100
+
+    Add input validation to the changeCoordinates form
+    This sets the TextField to only take number input.
+    This stops invalid inputs and adds arrows to tweak the values.
+    It will also bring up the number keyboard on mobile devices.
+
+[33mcommit cda6b6e2575675f6ffb7a619abc5361c15e8d22c[m[33m ([m[1;33mtag: v1.0.2[m[33m)[m
+Merge: 177676b 9cccbd7
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Oct 20 10:55:43 2020 +0000
+
+    Merge pull request #21 from JMaio/ts-convert
+    
+    Convert to TypeScript
+
+[33mcommit 9cccbd7e1ef882cf1beb9116b83a316d84b6f78c[m[33m ([m[1;31morigin/ts-convert[m[33m, [m[1;31mjoao/ts-convert[m[33m, [m[1;32mts-convert[m[33m)[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Oct 19 23:52:30 2020 +0100
+
+    [dist] make webgl optional in client detect
+
+[33mcommit c017b3311ebb73857593d076a7501e1560761a08[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Oct 19 23:48:15 2020 +0100
+
+    [ts] InfoDialog jsx -> tsx
+
+[33mcommit 8b178f5a035f0746aae1694c13850003ae940520[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Oct 19 23:19:41 2020 +0100
+
+    [deps] move preval.macro to dev deps
+
+[33mcommit a17f67326d8f83ab504870c082851f6e42184db3[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Oct 19 23:19:31 2020 +0100
+
+    [dist] move clientDetect to dist folder
+
+[33mcommit 3af9a74f3fc5a6e978943061cb51fd29c2a4ae8e[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Oct 19 18:10:44 2020 +0100
+
+    [controls] improve warping API, create "values" file, tweak touch controls
+
+[33mcommit 643747ec6cad48b73466dc41b4aa10bb4bec01ec[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Oct 19 16:09:28 2020 +0100
+
+    [controls] update gestures to be more spring-like
+
+[33mcommit 6b09227c1230c279be57ae40d1eaa3c1c813cc00[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Oct 18 13:19:17 2020 +0100
+
+    [render] update render utils to ts
+
+[33mcommit 8f81e6e4dbc1fd33d878e4fc94394222cf71fb01[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Oct 18 13:05:44 2020 +0100
+
+    [deps] add lodash typescript definitions
+
+[33mcommit 19e2c9400e3bd73a8f7dfee69f3350a1a8c6ad6b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Oct 3 23:01:47 2020 +0100
+
+    [render] fix julia reset button ("zoom" -> "z")
+
+[33mcommit d9331b693587fde05edaa764f59b65173ba06983[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Oct 3 16:54:09 2020 +0100
+
+    [render] convert mandelbrot to typescript, fix theta in julia
+
+[33mcommit 30a8de8ee1560093a951a22164ee859419c60a9f[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Oct 3 15:59:34 2020 +0100
+
+    [render] add rotation to mandelbrot renderer 🤩
+
+[33mcommit 0f2d0982eb831c0a48aa14d0a16dbeea6ddcfeca[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Oct 3 15:00:18 2020 +0100
+
+    [dev] add localhost build step for testing pro builds
+
+[33mcommit 074221cc45525d4ffd9ee7ec084395838ae0f081[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Oct 3 14:29:17 2020 +0100
+
+    [dev] create service worker wrapper to detect updates
+
+[33mcommit 2b7b56fd4eb3c287d24b2d3cd4cae4882cc7aa72[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Oct 3 14:28:49 2020 +0100
+
+    [dev] add "serve" to test production deployment
+
+[33mcommit 9349024b88395620c8e7563c63ddce482376786d[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Oct 3 10:48:41 2020 +0100
+
+    [ts] add zoom to coordinate warp
+
+[33mcommit 0a736f6dd72f4c848aa0461900ce324f0bd86b57[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Oct 3 01:05:30 2020 +0100
+
+    [ts] add proof of concept warp to coordinate
+
+[33mcommit dddc426c6823588244dc7efcc8a4a0351bfd7b74[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Sep 28 17:17:16 2020 +0100
+
+    [config] add husky for pre-commit hooks
+
+[33mcommit dad4959074b17e9cdac05393ad52ae93209c50c8[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Sep 28 16:28:30 2020 +0100
+
+    [ts] SettingsMenu jsx -> tsx
+
+[33mcommit 3ab4c8a5e104b7a18feb2f4abe14c9caaeede818[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Sep 28 15:28:38 2020 +0100
+
+    [theme] update theme palette colours
+
+[33mcommit 667f2788474a786f009861b9f892c6e26db9612f[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Sep 28 13:27:45 2020 +0100
+
+    [misc] more re-organisation of folder structure
+
+[33mcommit d030e4eaf7a18e913342548e807e93f22f5382c0[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Sep 28 11:34:37 2020 +0100
+
+    [config] update eslint run config
+
+[33mcommit 638637c8906e94a34e08bbcfe0a31938bb860f6b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Sep 28 11:15:24 2020 +0100
+
+    [misc] re-organise folder structure
+
+[33mcommit 5d6eefb2628f29d207375484064e1eb4c719f2ce[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 27 22:29:39 2020 +0100
+
+    [misc] fix julia maxI, useAA props
+
+[33mcommit 44efa9416ad1f48087517f5004f69757a96c0c90[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 27 19:58:02 2020 +0100
+
+    [misc] update coordinates padding, minimap border radius
+
+[33mcommit 7d3f4be60390a4cb72da1d455f8e34eb31cef8b8[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 27 19:45:01 2020 +0100
+
+    [ts] update minimap + shader, animate toggleable settings with mui
+    
+    + toggleable components now show through the backdrop to highlight what is changing
+
+[33mcommit 6960a513f09b3e8e0588ad02e1df273406a878eb[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 27 19:39:12 2020 +0100
+
+    [misc] update starting position
+
+[33mcommit 9d67867ade65f4be6c9fd3aa832ab8d00e87041c[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 27 10:45:28 2020 +0100
+
+    [ts] fix cursor also showing "grab" on minimap
+
+[33mcommit 92fc5d967973d7877263a8f2ca43b1ed1a34db12[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 27 09:02:36 2020 +0100
+
+    [ts] create minimap + fade component, add dragging cursor
+
+[33mcommit af991608ac1ec4a15b7df44ae8167546be906e95[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Sep 26 18:14:43 2020 +0100
+
+    [public] index.html now points to "%PUBLIC_URL%/clientDetect.js"
+
+[33mcommit fcee0f37677b75efca5b905b75c5c1987559526b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Sep 26 18:11:13 2020 +0100
+
+    [ts] simplify settings more, extract definitions
+
+[33mcommit fb6e9ef1adcbf514fcd3ebc1c496cf792f1c00fe[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Sep 26 18:09:02 2020 +0100
+
+    [vscode] tab size is now two. everywhere
+
+[33mcommit 323b186fdba7c60e7996df96ac6ce79fa47c3e96[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Sep 25 23:11:00 2020 +0100
+
+    [ts] start converting settings to ts and rework to use context
+
+[33mcommit a0a57901b05dc278840fdfd5854c2c569143d517[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Sep 25 23:09:20 2020 +0100
+
+    [lint] tweak linter config
+
+[33mcommit 338604ad9e9c483d5b9124d4f9edf8999a5fdb7b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Sep 24 14:08:56 2020 +0100
+
+    [lint] organize imports on save
+
+[33mcommit 65f660c91044948c3141b2075e3632a15a98872d[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Sep 24 14:02:56 2020 +0100
+
+    [lint] lint round 2
+
+[33mcommit 053b1606887bca36a140eaa72a6c3c0c29d1b971[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Sep 24 14:02:31 2020 +0100
+
+    [lint] remove eslint (use react-scripts), pin ts-eslint version
+    
+    fixes issue with "'React' was used before it was defined"
+    https://stackoverflow.com/a/63862578/9184658
+
+[33mcommit d4f2c2abc934f895565645b888917639b4aa20dc[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Sep 24 13:22:51 2020 +0100
+
+    [lint] add prettierrc config
+
+[33mcommit 7e7c24bad9d087bab2c606035a28afce5bfc8a32[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Sep 24 13:08:08 2020 +0100
+
+    [lint] lint source folder
+
+[33mcommit 4b573af1b94acd22fe27a2b00d342e1c9dca5e5a[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Sep 24 12:00:06 2020 +0100
+
+    [lint] add prettier, eslint config
+
+[33mcommit 137feb16ac8466efb8b045bdadf453c7656711ee[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Sep 24 11:35:09 2020 +0100
+
+    [ci] always trigger github actions build on push
+
+[33mcommit 0d5c0fafced7a813f66cf22c32a440b69740eb3e[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Sep 24 11:26:43 2020 +0100
+
+    [ts] App.js -> App.tsx initial conversion, rename "pos" to "xy"
+
+[33mcommit 2e36644cd46cb9b6ebaaf3d350916beedd066cc3[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Sep 24 11:23:39 2020 +0100
+
+    [ts] add ts config files, types, eslint, prettier
+
+[33mcommit c7c7424ced1bd6d46d7c982fd49856568ee258f9[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Sep 23 14:37:13 2020 +0100
+
+    [deps] remove complex.js and react-draggable
+
+[33mcommit 177676b796956b78a512737f0f0a94c45a58ff17[m
+Merge: 7fbed74 25ca5e2
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Oct 1 16:08:42 2020 +0100
+
+    Merge pull request #22 from JMaio/enable-code-scanning
+    
+    Create codeql-analysis.yml
+
+[33mcommit 25ca5e28e5da77d6a9657c31f3e9f30846d7ace6[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Oct 1 13:53:02 2020 +0100
+
+    Create codeql-analysis.yml
+
+[33mcommit 7fbed747a23889ebff913ad02bf87eca31469e4f[m
+Merge: bf69418 e6bb1e5
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Sep 23 10:29:23 2020 +0100
+
+    Merge pull request #20 from JMaio/security-updates
+    
+    yarn: update all the things
+
+[33mcommit e6bb1e572ba0b0f882aeb81f2d1735e927c5fb6f[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Sep 23 10:26:13 2020 +0100
+
+    [react-use-gesture] "config.event" is now "config.eventOptions"
+    
+    https://use-gesture.netlify.app/docs/options#generic-options
+
+[33mcommit 101d4c3ca16f9b11850b6ae91a7bf98c7d9c6d9a[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Sep 22 21:00:17 2020 +0100
+
+    update all the things (react-spring needs review)
+
+[33mcommit bf69418e5fcd366246d3dc8562f1d85a73edf202[m
+Merge: a3e5e8c 8f88de1
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 20 15:54:41 2020 +0100
+
+    Merge pull request #19 from JMaio/security-updates
+    
+    Update yarn.lock
+
+[33mcommit 8f88de139c35fa3e46f281b57d55d8d81e8c097e[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 20 15:52:10 2020 +0100
+
+    Update yarn.lock
+
+[33mcommit a3e5e8c7d1d4bc1ead9d9699e4983a1a1931a7ce[m
+Merge: 246eb12 e79e044
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 20 15:42:21 2020 +0100
+
+    Merge pull request #12 from JMaio/gh-actions-node
+    
+    Add CI via GitHub Actions
+
+[33mcommit e79e04491d347444c5f2051e6732d6624292a8fb[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Sep 20 15:37:17 2020 +0100
+
+    use "GitHub Action for Yarn"
+
+[33mcommit 246eb12db53ae29e1230b07776488da551e11184[m
+Merge: c49c188 f86758b
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Sep 11 17:16:39 2020 +0100
+
+    Merge pull request #18 from JMaio/dependabot/npm_and_yarn/http-proxy-1.18.1
+    
+    Bump http-proxy from 1.18.0 to 1.18.1
+
+[33mcommit f86758be4ff4cdadef60aea8b8e66938c345ea54[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Fri Sep 11 15:00:55 2020 +0000
+
+    Bump http-proxy from 1.18.0 to 1.18.1
+    
+    Bumps [http-proxy](https://github.com/http-party/node-http-proxy) from 1.18.0 to 1.18.1.
+    - [Release notes](https://github.com/http-party/node-http-proxy/releases)
+    - [Changelog](https://github.com/http-party/node-http-proxy/blob/master/CHANGELOG.md)
+    - [Commits](https://github.com/http-party/node-http-proxy/compare/1.18.0...1.18.1)
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+[33mcommit c49c188d26e907cc8409b8485180f313a4318c08[m
+Merge: e9c59bd 5a925ee
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Aug 1 21:42:01 2020 +0100
+
+    Merge pull request #15 from JMaio/dependabot/npm_and_yarn/elliptic-6.5.3
+    
+    Bump elliptic from 6.5.2 to 6.5.3
+
+[33mcommit 5a925ee6b568cf7cfa8b4ca7313ea3c71d1ea3f5[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Sat Aug 1 18:59:14 2020 +0000
+
+    Bump elliptic from 6.5.2 to 6.5.3
+    
+    Bumps [elliptic](https://github.com/indutny/elliptic) from 6.5.2 to 6.5.3.
+    - [Release notes](https://github.com/indutny/elliptic/releases)
+    - [Commits](https://github.com/indutny/elliptic/compare/v6.5.2...v6.5.3)
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+[33mcommit e9c59bdbb973c54460ade5fd616c9197d7e8aa37[m
+Merge: f84620d 7126376
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Jul 20 14:12:26 2020 +0100
+
+    Merge pull request #14 from JMaio/dependabot/npm_and_yarn/lodash-4.17.19
+    
+    Bump lodash from 4.17.15 to 4.17.19
+
+[33mcommit 71263760552378cc106d8a07bb6cdcc1a8b031c5[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon Jul 20 02:31:47 2020 +0000
+
+    Bump lodash from 4.17.15 to 4.17.19
+    
+    Bumps [lodash](https://github.com/lodash/lodash) from 4.17.15 to 4.17.19.
+    - [Release notes](https://github.com/lodash/lodash/releases)
+    - [Commits](https://github.com/lodash/lodash/compare/4.17.15...4.17.19)
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+[33mcommit f84620dcefcffbfdb3334d630f0e14b4a9ccb2a4[m
+Merge: 4244436 e23b3d7
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Jun 8 12:08:54 2020 +0100
+
+    Merge pull request #13 from JMaio/dependabot/npm_and_yarn/websocket-extensions-0.1.4
+    
+    Bump websocket-extensions from 0.1.3 to 0.1.4
+
+[33mcommit e23b3d74ff296cf1859e444d2fa96d11e57cdcdb[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon Jun 8 01:43:38 2020 +0000
+
+    Bump websocket-extensions from 0.1.3 to 0.1.4
+    
+    Bumps [websocket-extensions](https://github.com/faye/websocket-extensions-node) from 0.1.3 to 0.1.4.
+    - [Release notes](https://github.com/faye/websocket-extensions-node/releases)
+    - [Changelog](https://github.com/faye/websocket-extensions-node/blob/master/CHANGELOG.md)
+    - [Commits](https://github.com/faye/websocket-extensions-node/compare/0.1.3...0.1.4)
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+[33mcommit a9b20709503dea0b91eeb236f824f0831a311515[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Apr 27 13:58:19 2020 +0100
+
+    Create nodejs.yml
+
+[33mcommit 4244436dba184975b1c1f8c6a0bf11dbb98b358e[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Apr 24 22:58:06 2020 +0100
+
+    add device previews to README
+
+[33mcommit b22c2499595682a5470c3050778bbf8f769f62fb[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Apr 24 22:35:29 2020 +0100
+
+    Create LICENSE
+
+[33mcommit 310e8e3e19c851583859661ee4d6847c65500486[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Apr 24 22:28:03 2020 +0100
+
+    Update README.md
+
+[33mcommit 9198ecdab5cffd9761a6fffff8243337660575b7[m[33m ([m[1;33mtag: v1.0.1[m[33m)[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Apr 11 15:12:06 2020 +0100
+
+    re-add google analytics to head tag
+
+[33mcommit d79b6370cba9fee55943a71b3f7936e9348f9e19[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Apr 9 13:09:41 2020 +0100
+
+    change map start position
+
+[33mcommit 0b1e94bb265fa0fe8001710810d994abd3a912e4[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Apr 9 13:07:37 2020 +0100
+
+    update freddie's app url
+
+[33mcommit 512269ff152bac8d6638c21cb6b73d266e9b8ccc[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Apr 9 13:02:12 2020 +0100
+
+    add build date to info screen
+
+[33mcommit b1517513a116e6337b91a2bcfebb7455b41474e2[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Apr 9 11:28:43 2020 +0100
+
+    move google analytics script to the end of the page (speed up load)
+
+[33mcommit 8385b80cc3bb3298db8a28521c7ae1cb894c9108[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Apr 9 10:50:15 2020 +0100
+
+    fix mini julia id
+
+[33mcommit 9a1a5e432a07b6308af05de8b4853b7a0969f006[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Apr 9 10:49:38 2020 +0100
+
+    fix aria issues
+
+[33mcommit 2c0b109c6dd1f5a562218443c94a32d9c63da8ad[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Apr 9 10:39:19 2020 +0100
+
+    add meta description
+
+[33mcommit fbf9427256860c9c8135635b9f38cf05d2bea527[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Apr 9 10:36:15 2020 +0100
+
+    make favicon consistent: use logo for all purposes
+
+[33mcommit 7946214c76f38078cda247027e3a97094f5fcdc6[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Apr 9 10:26:29 2020 +0100
+
+    add apple-touch-icon for iOS devices
+
+[33mcommit 2521ddca4577b94f82c4ba26c62bdec862c92406[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Apr 7 20:43:54 2020 +0100
+
+    register service worker - should make it full PWA
+
+[33mcommit 56cfb64bd0922be86ebeab3e7bdb7dea91d1f59b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Apr 4 15:01:00 2020 +0100
+
+    update attribution
+
+[33mcommit e4531a568b7a749b88236c2d6c78cebe727f594d[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Mar 31 17:31:50 2020 +0100
+
+    Update yarn.lock
+
+[33mcommit 5c6047dd8a236cacb7e00955da18e952b6b4a2f9[m
+Merge: a51b418 72ed3f3
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Mar 31 17:21:25 2020 +0100
+
+    Merge pull request #9 from JMaio/dependabot/npm_and_yarn/acorn-5.7.4
+    
+    Bump acorn from 5.7.3 to 5.7.4
+
+[33mcommit 72ed3f3377d5777219a45104351d6a369a292305[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Tue Mar 31 15:50:34 2020 +0000
+
+    Bump acorn from 5.7.3 to 5.7.4
+    
+    Bumps [acorn](https://github.com/acornjs/acorn) from 5.7.3 to 5.7.4.
+    - [Release notes](https://github.com/acornjs/acorn/releases)
+    - [Commits](https://github.com/acornjs/acorn/compare/5.7.3...5.7.4)
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+[33mcommit a51b4183fc0e5333ccd34f6f63eb983c609e2323[m[33m ([m[1;33mtag: v1.0[m[33m)[m
+Merge: 562ebac 269e7ee
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Mar 2 15:52:20 2020 +0000
+
+    Merge pull request #8 from JMaio/ui-rework
+    
+    Ui rework
+
+[33mcommit 269e7ee7b49c117b2d8887276074d167955243a5[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Mar 2 12:18:24 2020 +0000
+
+    add logo images
+
+[33mcommit b6f0d4dac381a13033e34394679f28716570ac5f[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Mar 2 12:18:08 2020 +0000
+
+    add more opengraph properties
+
+[33mcommit 50d9596601be0d3e976f55aa56800adbac353052[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Mar 2 11:56:02 2020 +0000
+
+    update image in info dialog
+
+[33mcommit f737e365dabf9506c41029422a0ef571f2e3cc51[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Mar 2 11:55:51 2020 +0000
+
+    add opengraph image logo
+
+[33mcommit 4b2b9bd38cdc64a35ff36b66a52241a778849c5b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Mar 2 11:50:32 2020 +0000
+
+    set feedback button to open in new tab
+
+[33mcommit 038bd9b685f1eaac7f143df2cef956413ab59f6c[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Mar 2 11:50:15 2020 +0000
+
+    set dialog maxwidth
+
+[33mcommit b72b1d9956370fd35eb6693c25e3768ec7e11837[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 28 19:11:53 2020 +0000
+
+    update info
+
+[33mcommit 5711b72a334cd3cc74b266afda1f51ce95a33e42[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 28 15:13:39 2020 +0000
+
+    text updates
+
+[33mcommit 9b3be15047dedd2fab6d824737ffec1945367a31[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 28 14:48:12 2020 +0000
+
+    add survery link
+
+[33mcommit 471da7d855cf71f79905143d9ca5130f6299782f[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 28 14:48:00 2020 +0000
+
+    update info
+
+[33mcommit e1daacbc1099cce0ec83e78fab729b5a286b6274[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Feb 26 18:09:38 2020 +0000
+
+    add favicons and theme
+
+[33mcommit 047e4955ad240a4c2eb8b10ee5fd5aa56707ced2[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Feb 26 15:57:00 2020 +0000
+
+    crosshair toggle
+
+[33mcommit ff2893de8950e3dd2b60c1bf5ab795aa1b6ce473[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Feb 26 15:56:49 2020 +0000
+
+    round pixel ratio to 3dp
+
+[33mcommit 480a1812aa1be3a2b12586961b6aa95729b9b389[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 21:05:13 2020 +0000
+
+    fps -> FPS
+
+[33mcommit 9e3d54b741289c7fcef1ba156376e5ef63a84c37[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 17:48:40 2020 +0000
+
+    fix callback dependencies
+
+[33mcommit 6e2badac4085c200ac391cd76ae6e9ea22804a72[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 17:46:36 2020 +0000
+
+    hook up fps meter (and clean up some settings)
+
+[33mcommit 36f92608faaf8627af1f9bac927b6b458f02b30c[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 17:38:06 2020 +0000
+
+    add fps counter
+
+[33mcommit 4453337ec8114cfa6cae4b6268c2a555d1acd770[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 16:17:00 2020 +0000
+
+    fix properties alert onClose
+
+[33mcommit fbbad188c6ce32c12b9cc6ce56cef5ae745a957b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 15:56:31 2020 +0000
+
+    guard against null / undefined window in device properties
+
+[33mcommit 5833bbf12e7e6464ca7246efbb071bbdf0e920b5[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 15:47:12 2020 +0000
+
+    Update clientDetect.js + accreditation for gpu support
+
+[33mcommit 561803fc55fb78713c32cfb5d1eb5f3d7518c115[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 15:44:53 2020 +0000
+
+    make survey link external json property
+
+[33mcommit 5998db2955258352dd1e7f6fd75d20a586829472[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 15:44:38 2020 +0000
+
+    add fallback copy to clipboard action
+
+[33mcommit 1f08ed69332a34ecaae58f378b203f4a82b473ec[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 14:38:02 2020 +0000
+
+    rename browser -> device
+
+[33mcommit f46bf73f6818d7426500bc632aaea2f8ecd4b927[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 14:13:02 2020 +0000
+
+    display browser properties
+
+[33mcommit ecf019881bf51077ed5aa1aaef0f3c74e4f8ae01[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Feb 25 14:11:08 2020 +0000
+
+    add and modify script to read browser properties
+
+[33mcommit 0b891865c2ff01eb29db4abdcb8a37074a23b7bf[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 22:41:46 2020 +0000
+
+    default to dpr=1
+
+[33mcommit 3c53607f8a5d2fff67ed6741cb6d097bec007ca4[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 22:38:48 2020 +0000
+
+    minor colour fixes and cleanup
+
+[33mcommit 3ae30a5433afa01c4d292693c5bce7e0fe149592[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 22:09:36 2020 +0000
+
+    settings and dialog text tweaks
+
+[33mcommit 571b0c48f893fd6a47d4e414cf1f0ec9064aafcd[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 21:42:47 2020 +0000
+
+    add popup info dialog
+
+[33mcommit ec6e431c6d96a210f21c637e27c481f2980b1300[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 21:42:20 2020 +0000
+
+    tweak settings
+
+[33mcommit 6b601d93600cff04a9f35dd3507e07198bd6ac62[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 18:08:32 2020 +0000
+
+    hook up settings, use device pixel ratio
+
+[33mcommit f37ceeac4965a693ea888da2201b78f4c0c858c4[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 14:34:18 2020 +0000
+
+    move settings to App
+
+[33mcommit fa4e958175977197e60c70fa9326ed3655ebb275[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 14:29:43 2020 +0000
+
+    change column orientation for renderers (mandelbrot second)
+
+[33mcommit 81ff96d41c82a6377cd1190af80ea886db7d8aa3[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 14:12:19 2020 +0000
+
+    make mini viewers more visible on low zoom
+
+[33mcommit 17910fb3bacb7a7199deae6922d59711a3d651b9[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 14:05:37 2020 +0000
+
+    remove pinch move from touchbind (zooms into centre, feels okay)
+
+[33mcommit cb36a89cb8abbb51a07411c78fbbde7ff616e11f[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 12:49:05 2020 +0000
+
+    create prototype menus
+
+[33mcommit f49f37c239c19dc2efe480817af408ee0c5048ad[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 24 12:44:04 2020 +0000
+
+    add material ui icons, lab
+
+[33mcommit c61598d14ee23b48cf4497fd184cc6dda0167c4f[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 23 20:20:25 2020 +0000
+
+    move touchBinds to generic touch bind
+
+[33mcommit 562ebac4fe4ac6eec1cb7a3705606af8436496e0[m[33m ([m[1;33mtag: v0.1[m[33m)[m
+Merge: d293607 6bd3f8a
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 17 12:49:44 2020 +0000
+
+    Merge pull request #6 from JMaio/julia-set
+    
+    Julia set
+
+[33mcommit 6bd3f8a88038da1db44a8d166a20e16cbc877b18[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:50:46 2020 +0000
+
+    update node version
+
+[33mcommit df8e9726624b0517682d4a7286a255bc38319352[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:47:40 2020 +0000
+
+    Add .circleci/config.yml
+
+[33mcommit 29288ca9bd8762bf5d3a9e73d751a2f6e0e5868b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 17 12:41:49 2020 +0000
+
+    make mini size consistent, hide on opacity 0 (allows pan)
+
+[33mcommit a7f0e156a0be146d31bfc2365027c8f0c4676781[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Feb 17 12:41:07 2020 +0000
+
+    hide zoom bar by default
+
+[33mcommit d293607061a4378fb74debbfbfd78a01705a1340[m
+Merge: 15146af f016d10
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 20:29:52 2020 +0000
+
+    Merge pull request #7 from JMaio/circleci-project-setup
+    
+    Circleci project setup
+
+[33mcommit 037de35080ca0ffe1ea8af39d8e1a7f0fe220d07[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 20:17:41 2020 +0000
+
+    cleanup
+
+[33mcommit 89e39f25d73de7d664b9c525b8ff84660b18999e[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 20:16:23 2020 +0000
+
+    mock renderers since webgl methods are not implemented in test framework
+
+[33mcommit 0d20b256bac42326d3f47a902fd0111d242bf127[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 20:15:40 2020 +0000
+
+    rename package
+
+[33mcommit 0f5e8158c7df23b3f3703f597895095bcdf658d2[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 15:07:41 2020 +0000
+
+    prep for testing, optimize imports, remove logging
+
+[33mcommit f016d104cd119dcd5c966f820bd4af0b3ba6ffd9[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:50:46 2020 +0000
+
+    update node version
+
+[33mcommit 338b645719ecceb772d9c99d475f198004adafa1[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:47:40 2020 +0000
+
+    Add .circleci/config.yml
+
+[33mcommit b962551802d8bd2e61d25b595bf0f0f641214643[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:45:51 2020 +0000
+
+    hide iteration slider for now
+
+[33mcommit 1cc290a5ed32392141ed16ced52177637990077a[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:44:57 2020 +0000
+
+    update original shaders
+
+[33mcommit 59e468a2569ca33ad463e517b742c6fd5da5ae3a[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:44:37 2020 +0000
+
+    Update yarn.lock
+
+[33mcommit 166b06ada1edeb203d30309b6930084ddfff1750[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:40:12 2020 +0000
+
+    add typescript
+
+[33mcommit dcd7270810caee72f16a238dc58d0fb18261998c[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:38:29 2020 +0000
+
+    don't zoom on mini viewer, touch controls no longer rotate
+
+[33mcommit a78591ec3f7acddfa210e281a1ea017aaaebd688[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 16 13:31:37 2020 +0000
+
+    fix getSize hooks
+
+[33mcommit b444b546d7e6df6db0a517e1f7ab41a171d1b12d[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 15 23:19:58 2020 +0000
+
+    fix iteration slider defaultValue issue (just value)
+
+[33mcommit f9571536eac379e60d0d28e71729783a7233bb19[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 15 23:19:46 2020 +0000
+
+    add julia scroll, fix app
+
+[33mcommit 4604d0cc9a2dec0c59019244fdf94d03bfae7473[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 15 23:05:36 2020 +0000
+
+    fix julia, optimise both fragment shaders
+
+[33mcommit 31964d51b188637959d3d9ce18ca6fbb13b95be1[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 15 22:16:51 2020 +0000
+
+    add wheel scrolling on mandelbrot
+
+[33mcommit 45155c6b006d9a59f1a26a6dc7247a8f09f34682[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 15 21:16:30 2020 +0000
+
+    zoom with main renderer, tweak opacity effect
+
+[33mcommit ed2ec25c0f9ec263496529d7157e0d74507517c5[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 15 19:25:50 2020 +0000
+
+    make mini mandelbrot disappear when zoomed out
+
+[33mcommit 4e12f803af6b749d55ac12426b79eda9f786fae1[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 15 18:56:49 2020 +0000
+
+    update renderer components to use webglcanvas
+
+[33mcommit 55d4c5add58e19b692934042210dd2186e35c5ea[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 15 18:56:13 2020 +0000
+
+    Create WebGLCanvas as reusable webgl platform
+
+[33mcommit 4b5479a6e24532226fdaf685681918a5a753a80d[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 15 18:56:09 2020 +0000
+
+    make mandelbrot shader take parameters
+
+[33mcommit 6c089a9eada4b6999ec06819171153fb7f660533[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Feb 9 00:05:09 2020 +0000
+
+    prevent Edge (maybe others too) from grabbing touch inputs
+
+[33mcommit c0b62054b2ea737c4e213b2727e13a79927fc267[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 8 21:34:40 2020 +0000
+
+    lower to 500 iterations
+
+[33mcommit ba49b29ee3b627dde5a0d85bd3a4e9c3468c7e51[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 8 21:33:27 2020 +0000
+
+    update renderers from shadertoy and extract fractal functions
+
+[33mcommit 5314d01e0f7e99b04e8baa8cabe660d4c5059718[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 8 17:18:09 2020 +0000
+
+    add testing shaders from shadertoy
+
+[33mcommit 03130c669fae0bbc8aab0f14bf95b38ed9a59466[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sat Feb 8 15:27:23 2020 +0000
+
+    make crosshair shorter (and parametrisable)
+
+[33mcommit 5924deba12dc4432302dbd54ae31743e5cdc5551[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 22:58:57 2020 +0000
+
+    update title
+
+[33mcommit e1d5ea43d9caa931759d365d293cb675d062e610[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 22:50:36 2020 +0000
+
+    make crosshair lighter
+
+[33mcommit ed776dbcd4b22ff8c407717273de2ffb72ee8dee[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 22:50:07 2020 +0000
+
+    fix julia renderer controls
+
+[33mcommit 2203a61f16df549ab8874f47f3258b5b48f4eb9d[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 22:46:02 2020 +0000
+
+    make MaxI a shader parameter
+
+[33mcommit bcbf4217848600feb3c4ead5ec117fd8608cc6ae[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 22:45:44 2020 +0000
+
+    remove mandelbrot rotation to fix image-saving flip; fix others
+
+[33mcommit 10c4d0d6e8a9bb4fcb077296471ef7e2efce765d[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 21:15:16 2020 +0000
+
+    add anti-aliasing to mandelbrot shader
+
+[33mcommit a713400cad85642b32ee9a8494ee6c7c518382bf[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 21:14:29 2020 +0000
+
+    decouple parameters to prep for url parameters
+
+[33mcommit b42ef869400d7572ac192658adb9b6cd956e853b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 20:08:32 2020 +0000
+
+    update app to handle resizes and fix layout
+
+[33mcommit 0120efe808b48a02c7d261edfedde9c4e18f9064[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 20:04:47 2020 +0000
+
+    add background colour
+
+[33mcommit 562b50d4ae2824b87c6ec7b795529cd032d0dbb1[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 20:03:56 2020 +0000
+
+    add crosshair to mandelbrot shader
+
+[33mcommit c209a9848d63c0f4942b11704f11838d0dd05cfc[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 20:03:38 2020 +0000
+
+    fix shading bug (log2 gives undefined value)
+
+[33mcommit 62e16767beaf3624ee8124930a8101ffe2147152[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 20:02:54 2020 +0000
+
+    add window resize listener
+
+[33mcommit ca0d094225314a859c307725cd1d0dbaf231120a[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 19:55:41 2020 +0000
+
+    fix spacing and simplify renderers
+
+[33mcommit a3dc580a5aca73bdc46adcb1c229941ad71b894a[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 14:37:15 2020 +0000
+
+    organise fragment shaders
+
+[33mcommit a19f4c52bb9afe88c9d5fad00a987d65a70829d5[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Feb 7 14:37:09 2020 +0000
+
+    fix mandelbrot renderer display, duplicate to make julia set renderer
+
+[33mcommit 15146afe3f6d5c4c613127b9c5512117d296cafd[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Feb 6 14:59:02 2020 +0000
+
+    Update fullVertexShader.js
+
+[33mcommit d65c364a5adb892ab19f70bad84cfcef2434a4ac[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Jan 31 23:25:04 2020 +0000
+
+    update to include momentum and x/y value monitor
+
+[33mcommit d6bac4ccdb6245e6d044bf26dba81bc09e8d5508[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Jan 29 10:22:50 2020 +0000
+
+    include google analytics
+
+[33mcommit 8c9731726725bb353941c3d329df098d760fe75c[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Jan 28 19:57:13 2020 +0000
+
+    fix github pages endpoint
+
+[33mcommit bd6a431036dc171436dc7db27b0f16e24e2749d2[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Jan 27 11:37:40 2020 +0000
+
+    update demo to use webgl
+
+[33mcommit ebc9cb0177bb28a670a612fa54395766721e89a3[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Jan 15 13:53:50 2020 +0000
+
+    minor fix
+
+[33mcommit f89c4b4ca555a5a737d04f2be22017258c5810fb[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Jan 15 13:53:23 2020 +0000
+
+    make zoom correct range and fix movement
+
+[33mcommit d2d884a2bdd44d12259dd6ebca3def55cd153de9[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Jan 15 13:52:39 2020 +0000
+
+    increase maxI to 300
+
+[33mcommit 30fe268b4c156a60a4f49ddff2f69de4de6ef2e6[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Jan 14 20:47:10 2020 +0000
+
+    Update App.js
+
+[33mcommit 43d400eb855b024fb3dddb89701261ea0162b2f7[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Jan 14 20:47:04 2020 +0000
+
+    Update MandelbrotRenderer.jsx
+
+[33mcommit c0047fc74acc9a463d5cb9256cc5ded903cc8ae0[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Jan 14 20:46:55 2020 +0000
+
+    Update RotationControl.js
+
+[33mcommit 704f919d07e6a3391501b47a4fefe2b27706f888[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Jan 14 20:46:26 2020 +0000
+
+    Create IterationSlider.jsx
+
+[33mcommit c223aee72c908d6bedd751a5c651811f3863d15a[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Dec 4 22:45:15 2019 +0000
+
+    link rotation and scale controls
+
+[33mcommit 54aec5997434782c83023923cf88a35d7a888988[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Dec 4 17:53:06 2019 +0000
+
+    more fixes and layout changes
+
+[33mcommit b5de0b3f5cae87722558cc7d41a76893cc6510bd[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Dec 4 11:51:00 2019 +0000
+
+    make touch target occupy whole screen
+
+[33mcommit 781cf2b28adc7ec4099a048d2d27fbe5f5d141d9[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Dec 4 11:44:03 2019 +0000
+
+    fix var issues (used before definition)
+
+[33mcommit fc620467628873db7b649ff788fbf9418b7c20c7[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Dec 3 15:16:05 2019 +0000
+
+    Update yarn.lock
+
+[33mcommit 3e069aa64288e494e525fe05ec45b29740396df2[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Thu Nov 21 09:45:28 2019 +0000
+
+    add pinch support
+
+[33mcommit 966fec28272b49e127cfbbe7f46be61d3c7a676f[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Nov 20 22:52:11 2019 +0000
+
+    fix rotate + translate
+
+[33mcommit 82bb056a3c615bcd691cfa29350f6ab9eeb5e315[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Nov 20 17:54:42 2019 +0000
+
+    allow pinch rotation and free movement
+
+[33mcommit 1ee0c7db2a4474c3483d7cdaecf7edbd341a119d[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Nov 19 21:12:33 2019 +0000
+
+    update drag/pinch gesture system
+
+[33mcommit e95ebc0cb21d0098ad7a458f5b0f29bef2641766[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Oct 13 14:22:01 2019 +0100
+
+    code cleanup
+
+[33mcommit 39e4435bc7c596081b1bdb238b67d336cf7bc62b[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Oct 9 18:33:27 2019 +0100
+
+    tweak slowdown logic on drag
+
+[33mcommit 7ba0d24af3f8fe38a2ff2ab160f07bd2fb4c8316[m
+Author: JMaio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Oct 9 15:27:58 2019 +0100
+
+    vscode settings
+
+[33mcommit 651620697dfd97c9a8503edbc494d5bcb83f7999[m
+Author: JMaio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Oct 9 15:25:45 2019 +0100
+
+    add pan functionality to canvas
+
+[33mcommit 76be440d0f37e8689644dfc6d451a99e453f8fa3[m
+Author: JMaio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Oct 9 14:18:01 2019 +0100
+
+    add buttons for testing
+
+[33mcommit d6459d5e7e5b1c3a2b00b02951f5c6d6bc549456[m
+Author: JMaio <10330349+JMaio@users.noreply.github.com>
+Date:   Wed Oct 9 14:17:42 2019 +0100
+
+    add gl-matrix
+
+[33mcommit 78a686fa80788b799e2f29006a70145f79827fb8[m
+Author: JMaio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Oct 8 11:57:11 2019 +0100
+
+    remove useEffect deps
+
+[33mcommit 50a01df8ac27745ef6ef3bb9e66f1054a4d2079d[m
+Author: JMaio <10330349+JMaio@users.noreply.github.com>
+Date:   Tue Oct 8 11:43:52 2019 +0100
+
+    display mandelbrot on react render
+
+[33mcommit 80741e52eed64b9c52f00d591af11f123d81ca7d[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Oct 7 15:17:33 2019 +0100
+
+    add gh-pages support
+
+[33mcommit 645283fa4ad718c96ce1da8c4927cb43d4bb1a17[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Mon Oct 7 00:10:12 2019 +0100
+
+    make rotation control hinge on north
+
+[33mcommit d70e41a414d5024df3ac66ff1390fca0264ac6ee[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Oct 6 23:22:29 2019 +0100
+
+    tweak render region
+
+[33mcommit 02685e77cfc4798c6aacf08121fb9a39a688b218[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Oct 6 23:17:07 2019 +0100
+
+    make simple mandelbrot renderer
+
+[33mcommit 68ba5288f4f9ba7cc35e66ce1fdf08837824afad[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Oct 6 23:16:45 2019 +0100
+
+    Create .jshintrc
+
+[33mcommit d9412641eca3f73f2d9b469a1f02a2f7bd7d2062[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Sun Oct 6 23:16:28 2019 +0100
+
+    Update RotationControl.js
+
+[33mcommit 112923b16230f225cd656774be0373e5ed8253f3[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Oct 4 23:11:04 2019 +0100
+
+    start positioning of elements
+
+[33mcommit dd847f23428e2edfb13793e17996acd952372211[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Oct 4 23:10:52 2019 +0100
+
+    make top nodes width/height = 100%
+
+[33mcommit aff0b5d9e17c4d0fe03903a99c84926b023ed72f[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Oct 4 23:10:27 2019 +0100
+
+    re-fix rotation calculation (still errors at 270deg)
+
+[33mcommit ab5c63a492e9cf59db137f276dd2c6e3d94a75df[m
+Author: Joao Maio <10330349+JMaio@users.noreply.github.com>
+Date:   Fri Oct 4 23:09:37 2019 +0100
+
+    add jshint
+
+[33mcommit a71f91d9efab0a674b6c6761f93e6ee7a914ae4b[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Fri Oct 4 20:15:14 2019 +0100
+
+    devug rotation wheel
+
+[33mcommit 9814471ba37f10d9d913b8627a3f1a911333dec8[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Fri Oct 4 20:14:58 2019 +0100
+
+    add separators to components
+
+[33mcommit 66ff88d3fd3d6f530b94ca8efcfe93504a076d18[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Wed Oct 2 14:51:25 2019 +0100
+
+    experiment with rotation control
+
+[33mcommit 4e5d84b90679d3a316fd5fe13b3f08ac4b272234[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Wed Oct 2 10:26:03 2019 +0100
+
+    more zoom tweaking
+
+[33mcommit c12217796ef06d06046f116649a8b153be952b1c[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Wed Oct 2 10:22:39 2019 +0100
+
+    tweak zooming factor
+
+[33mcommit b6be83f556012d7a7246452a45c828a93b8a4680[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Wed Oct 2 10:20:23 2019 +0100
+
+    improve zoombar click behaviour
+
+[33mcommit 25cc40302d1f3daa976318350f7e330a4d6de1d4[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Wed Oct 2 09:46:01 2019 +0100
+
+    improve refresh mechanics
+
+[33mcommit 4a5a981811b840d6d823a1a1609f958a0f1175a9[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Wed Oct 2 08:44:52 2019 +0100
+
+    Update ZoomBar.js
+
+[33mcommit c2c6af9d3d5131922d3355f4c52f914b51f5dc06[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Mon Sep 30 23:04:33 2019 +0100
+
+    fix event preventDefault
+
+[33mcommit 648fd7c0d4279feda0f327ed36ecdf1a14bd9c97[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Mon Sep 30 22:17:41 2019 +0100
+
+    create zoombar vertical component
+
+[33mcommit f41cb622b22ae88b4f55e5446f59b15413bdb3c3[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Mon Sep 23 23:45:18 2019 +0100
+
+    Update yarn.lock
+
+[33mcommit 6a6fb92259f619d0839b4851d088e891a2a403cd[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Mon Sep 23 23:45:15 2019 +0100
+
+    Update App.js
+
+[33mcommit 8f80426a7ee98e9c7c373ca9b41f1d46cf787855[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Mon Sep 23 23:45:07 2019 +0100
+
+    Create RotationControl.js
+
+[33mcommit b7943a20fc4e72b415da7f812885833c6ee3abdb[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Mon Sep 23 23:44:57 2019 +0100
+
+    update zoombar with react-spring
+
+[33mcommit df5152560bebd2144403d44bf04e60a61d44f16a[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Mon Sep 23 23:44:35 2019 +0100
+
+    alter package name
+
+[33mcommit b68ecee17cdc56c3bc54e1c18ab92b88f09ae2b9[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Thu Sep 19 13:14:45 2019 +0100
+
+    add zoombar
+
+[33mcommit f7f91d7a449701d88c27958025ec14e8f127919f[m
+Author: Joao Maio <j.f.maio98@gmail.com>
+Date:   Thu Aug 8 20:18:31 2019 +0100
+
+    Initial commit from Create React App
