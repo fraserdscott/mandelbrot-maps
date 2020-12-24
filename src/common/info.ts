@@ -1,7 +1,7 @@
 import { CardProps } from '@material-ui/core';
 import { OpaqueInterpolation } from 'react-spring';
 import { AnimationStatus } from '../components/info/MisiurewiczModeDiv';
-import { MisiurewiczPoint } from '../components/tansTheoremUtils';
+import { PreperiodicPoint } from '../components/tansTheoremUtils';
 import {
   ThetaType,
   ViewerRotationControlSpring,
@@ -57,10 +57,10 @@ export interface SelectMisiurewiczCardProps extends CardProps {
   julia: ViewerControls;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  focusedPoint: MisiurewiczPoint;
-  setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
-  focusedPointJulia: MisiurewiczPoint;
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
+  focusedPoint: PreperiodicPoint;
+  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  focusedPointJulia: PreperiodicPoint;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   mag: number;
   setMagState: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -72,14 +72,14 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
   offsetX: number;
   offsetY: number;
   SHOW_POINT_THRESHOLD: number;
-  m: MisiurewiczPoint;
+  m: PreperiodicPoint;
   viewerControl: ViewerControls;
   mandelbrotControl: ViewerControls;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  focusedPoint: MisiurewiczPoint;
-  setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
+  focusedPoint: PreperiodicPoint;
+  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
 }
 
@@ -89,8 +89,8 @@ export interface MisiurewiczInfoCardProps extends CardProps {
   julia: ViewerControls;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  focusedPoint: MisiurewiczPoint;
-  setFocusedPoint: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
-  focusedPointJulia: MisiurewiczPoint;
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<MisiurewiczPoint>>;
+  focusedPoint: PreperiodicPoint;
+  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  focusedPointJulia: PreperiodicPoint;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
 }

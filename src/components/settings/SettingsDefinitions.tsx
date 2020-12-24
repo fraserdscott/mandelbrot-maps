@@ -41,7 +41,7 @@ export const settingsWidgets = (
   },
   showMisiurewiczPoints: {
     k: 'showMisiurewiczPoints',
-    label: 'Show Misiurewicz points',
+    label: 'Show preperiodic points',
     checked: settings.showMisiurewiczPoints,
     control: <Switch />,
   },

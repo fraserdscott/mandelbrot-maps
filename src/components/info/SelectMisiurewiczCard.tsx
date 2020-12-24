@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   Grid,
   Grow,
@@ -8,10 +7,8 @@ import {
   Select,
   IconButton,
   Typography,
-  Tooltip,
 } from '@material-ui/core';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
-import InfoIcon from '@material-ui/icons/Info';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import React from 'react';
@@ -20,30 +17,31 @@ import { SelectMisiurewiczCardProps } from '../../common/info';
 import { warpToPoint } from '../../common/utils';
 import { AnimationStatus } from './MisiurewiczModeDiv';
 import {
+  cycleEigenvalue,
+  distance,
   formatComplexNumber,
-  getSimilarsInJulia,
-  MisiurewiczPoint,
+  magnitude,
+  PreperiodicPoint,
+  round,
 } from '../tansTheoremUtils';
 import { ThetaType, XYType, ZoomType } from '../../common/types';
 import { misiurewiczPairs } from '../MPoints';
 import SimilarityAnimationCard from './SimilarityAnimationCard';
-import {
-  handleJuliaSelection,
-  handleMandelbrotSelection,
-} from './MisiurewiczPointMarker';
+import { handleMandelbrotSelection } from './MisiurewiczPointMarker';
+import SimilarityMenu from './SimilarityMenu';
 
-export const misiurewiczPoints: MisiurewiczPoint[] = misiurewiczPairs
+export const misiurewiczPoints: PreperiodicPoint[] = misiurewiczPairs
   .slice(0, 300)
-  .map((p) => new MisiurewiczPoint(p, p));
+  .map((p) => new PreperiodicPoint(p, p));
 
-const parsePoint = (s: string): XYType => {
+export const parsePoint = (s: string): XYType => {
   const posStr = s.split(',');
   return [parseFloat(posStr[0]), parseFloat(posStr[1])];
 };
 
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 100000;
 const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element => {
-  const similarPoints = getSimilarsInJulia(props.focusedPoint);
-
   const rotateAndZoom = (mag: ZoomType) => {
     props.setMagState(mag);
 
@@ -69,7 +67,7 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
   ) => {
     const chosenPoint: XYType = parsePoint(event.target.value as string);
 
-    const chosenMisiurewicz = new MisiurewiczPoint(chosenPoint, chosenPoint);
+    const chosenMisiurewicz = new PreperiodicPoint(chosenPoint, chosenPoint);
     props.setMagState(1);
 
     handleMandelbrotSelection(
@@ -85,24 +83,15 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     });
   };
 
-  const handleJuliaSimilarSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const chosenPoint: XYType = parsePoint(event.target.value as string);
-
-    handleJuliaSelection(
-      new MisiurewiczPoint(props.focusedPoint.point, chosenPoint),
-      props.setFocusedPointJulia,
-    );
-  };
-
   const handleSetMagnification = (event: any, newValue: number | number[]) => {
     rotateAndZoom(newValue as ZoomType);
   };
 
-  const misiurewiczPointsList = (): JSX.Element => {
+  const misiurewiczPointsList = (focusedPoint: PreperiodicPoint): JSX.Element => {
     return (
       <Select
         native
-        value={props.focusedPoint.point}
+        value={focusedPoint.point}
         onChange={handleMandelbrotPointSelection}
         inputProps={{
           name: 'mandelbrot',
@@ -118,6 +107,59 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
     );
   };
 
+  const standardAngle = (z: XYType) => {
+    // all of this is wrong. its should be divided by the bifurication.
+    // if (Math.abs(z[1] - 0) <= 0.001 || (z[0] > 0 && z[1] >= 0)) {
+    //   const angle = Math.atan2(z[1], z[0]);
+    //   return (2 * Math.PI) / angle;
+    // }
+    // if (z[0] < 0 && z[1] > 0) {
+    //   const angle = Math.atan(z[1] / z[0]);
+    //   return (2 * Math.PI) / (Math.PI + angle);
+    // }
+    // if (z[0] < 0 && z[1] < 0) {
+    //   const angle = Math.atan(z[1] / z[0]);
+    //   return (2 * Math.PI) / (Math.PI - angle);
+    // }
+    // if y compoennt is 0 then it's a 2 branch point at least...
+    // if (Math.abs(z[1] - 0) <= 0.001) return 2;
+
+    return 1;
+  };
+
+  const generateMarks = (): {
+    value: number;
+    label: number;
+  }[] => {
+    const eigenvalueMagnitude = magnitude(
+      cycleEigenvalue(
+        props.focusedPoint.point,
+        props.focusedPoint.prePeriod,
+        props.focusedPoint.period,
+      ),
+    );
+
+    const marks: {
+      value: number;
+      label: number;
+    }[] = [];
+
+    const INITIAL_NOTCH = 1;
+    for (let i = 0; i < 1000; i++) {
+      const notch = INITIAL_NOTCH * Math.pow(eigenvalueMagnitude, i);
+      if (notch > MAX_ZOOM) break;
+
+      marks.push({
+        value: notch,
+        label: i,
+      });
+    }
+
+    return marks;
+  };
+
+  const marks = generateMarks();
+
   const zoomBar = (): JSX.Element => {
     return (
       <Grid container direction="column" alignItems="center">
@@ -131,13 +173,13 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
             style={{
               height: '60vh',
             }}
-            min={1}
-            max={1000}
-            track={false}
+            min={MIN_ZOOM}
+            max={MAX_ZOOM}
             orientation="vertical"
             aria-labelledby="continuous-slider"
-            valueLabelDisplay="auto"
-          />{' '}
+            valueLabelDisplay="on"
+            marks={marks}
+          />
         </Grid>
         <Grid item>
           <ZoomOutIcon />
@@ -162,160 +204,168 @@ const SelectMisiurewiczCard = (props: SelectMisiurewiczCardProps): JSX.Element =
         >
           Misiurewicz points
         </InputLabel>
-        {misiurewiczPointsList()}
+        {misiurewiczPointsList(props.focusedPoint)}
+      </Card>
+    );
+  };
+
+  const infoCard = (): JSX.Element => {
+    return (
+      <Card
+        style={{
+          width: 'auto',
+          zIndex: 1300,
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          flexShrink: 1,
+        }}
+      >
+        {props.shadeDomains ? null : searchBar()}
+
+        <MisiurewiczPointInfoCard
+          show={props.show}
+          mandelbrot={props.mandelbrot}
+          julia={props.julia}
+          animationState={props.animationState}
+          setAnimationState={props.setAnimationState}
+          focusedPoint={props.focusedPoint}
+          setFocusedPoint={props.setFocusedPoint}
+          focusedPointJulia={props.focusedPointJulia}
+          setFocusedPointJulia={props.setFocusedPointJulia}
+        ></MisiurewiczPointInfoCard>
+      </Card>
+    );
+  };
+
+  const playCard = (): JSX.Element => {
+    return (
+      <div>
+        <Card
+          style={{
+            zIndex: 1300,
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: 1,
+          }}
+        >
+          <IconButton
+            onClick={() => {
+              props.setAnimationState(AnimationStatus.SELECT_JULIA_POINT);
+              warpToPoint(props.mandelbrot, {
+                xy: props.focusedPoint.point,
+                z: props.focusedPoint.uMagnitude,
+                theta: 0,
+              });
+              warpToPoint(props.julia, {
+                xy: [0, 0],
+                z: 0.5,
+                theta: 0,
+              });
+            }}
+          >
+            <ArrowBackwardIcon />
+          </IconButton>
+          The zoom controls are now synchronised!
+          <div>
+            The mandelbort is zoom at a factor of the julia is mangifying at a factor of
+          </div>
+        </Card>
+        <Card
+          style={{
+            width: '30',
+            zIndex: 1300,
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: 1,
+          }}
+        >
+          {zoomBar()}
+        </Card>
+      </div>
+    );
+  };
+
+  const orbitCard = () => {
+    return (
+      <Card
+        style={{
+          width: 'auto',
+          zIndex: 1300,
+          position: 'relative',
+          padding: 8,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <IconButton
+          onClick={() => {
+            props.setAnimationState(AnimationStatus.NO_ANIMATION);
+          }}
+        >
+          <ArrowBackwardIcon />
+        </IconButton>
+        <Typography component="span" variant="h6">
+          Orbit for {formatComplexNumber(props.focusedPoint.point)}
+        </Typography>
+        <Grid id="top-row" container spacing={8}>
+          <Grid item xs={4}>
+            <Typography component="span" variant="body1" color="textSecondary">
+              Preperiod
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography component="span" variant="body1" color="textPrimary">
+              {props.focusedPoint.prePeriod}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid id="bottom-row" container spacing={8}>
+          <Grid item xs={4}>
+            <Typography component="span" variant="body1" color="textSecondary">
+              Period
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography component="span" variant="body1" color="textPrimary">
+              {props.focusedPoint.period}
+            </Typography>
+          </Grid>
+        </Grid>
       </Card>
     );
   };
 
   return (
     <Grow in={props.show}>
-      <Grid container direction="column" alignItems="flex-start">
-        {props.animationState === AnimationStatus.NO_ANIMATION ? (
-          <Card
-            style={{
-              width: 'auto',
-              zIndex: 1300,
-              position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              flexShrink: 1,
-            }}
-          >
-            {!props.shadeDomains ? searchBar() : null}
-
-            <MisiurewiczPointInfoCard
-              show={props.show}
-              mandelbrot={props.mandelbrot}
-              julia={props.julia}
-              animationState={props.animationState}
-              setAnimationState={props.setAnimationState}
-              focusedPoint={props.focusedPoint}
-              setFocusedPoint={props.setFocusedPoint}
-              focusedPointJulia={props.focusedPointJulia}
-              setFocusedPointJulia={props.setFocusedPointJulia}
-            ></MisiurewiczPointInfoCard>
-          </Card>
+      <div>
+        {props.animationState === AnimationStatus.NO_ANIMATION ? infoCard() : null}
+        {props.animationState === AnimationStatus.SHOW_ORBIT ? orbitCard() : null}
+        {props.animationState === AnimationStatus.SELECT_JULIA_POINT
+          ? SimilarityMenu(props)
+          : null}
+        {props.animationState === AnimationStatus.TRANSLATE_M ||
+        props.animationState === AnimationStatus.TRANSLATE_J ||
+        props.animationState === AnimationStatus.ZOOM_M ||
+        props.animationState === AnimationStatus.ZOOM_J ||
+        props.animationState === AnimationStatus.ROTATE_M ||
+        props.animationState === AnimationStatus.ROTATE_J ? (
+          <SimilarityAnimationCard
+            show={props.show}
+            mandelbrot={props.mandelbrot}
+            julia={props.julia}
+            animationState={props.animationState}
+            setAnimationState={props.setAnimationState}
+            focusedPoint={props.focusedPoint}
+            setFocusedPoint={props.setFocusedPoint}
+            focusedPointJulia={props.focusedPointJulia}
+            setFocusedPointJulia={props.setFocusedPointJulia}
+          ></SimilarityAnimationCard>
         ) : null}
-        <div>
-          {props.animationState !== AnimationStatus.NO_ANIMATION ? (
-            <Card
-              style={{
-                zIndex: 1300,
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                flexShrink: 1,
-              }}
-            >
-              {props.animationState === AnimationStatus.SELECT_JULIA_POINT ? (
-                <Card
-                  style={{
-                    width: 200,
-                    padding: 12,
-                    zIndex: 100,
-                  }}
-                >
-                  <IconButton
-                    onClick={() => {
-                      props.setAnimationState(AnimationStatus.NO_ANIMATION);
-                    }}
-                  >
-                    <ArrowBackwardIcon />
-                  </IconButton>
-                  <div
-                    style={{
-                      marginBottom: 8,
-                      display: 'flex',
-                      flexDirection: 'row',
-                      flexShrink: 1,
-                    }}
-                  >
-                    <Typography variant="h6" gutterBottom>
-                      Show me the similarity between...
-                    </Typography>
-                  </div>
-                  {props.shadeDomains
-                    ? `${props.focusedPoint.toString()} = ${formatComplexNumber(
-                        props.focusedPoint.point,
-                      )}`
-                    : misiurewiczPointsList()}
-                  <div style={{ marginBottom: 12 }}>in the Mandelbrot set</div>
-                  <Typography variant="h6" component="h5" gutterBottom>
-                    and
-                  </Typography>
-                  <Select
-                    native
-                    value={props.focusedPointJulia.point}
-                    onChange={handleJuliaSimilarSelection}
-                  >
-                    {similarPoints.map((m) => (
-                      <option value={m.point.toString()}>
-                        {formatComplexNumber(m.point)}
-                      </option>
-                    ))}
-                  </Select>
-                  <Tooltip
-                    title={`There are at least ${
-                      similarPoints.length
-                    } points in the Julia set for ${props.focusedPoint.toString()} that are similar to the point ${props.focusedPoint.toString()} in the Mandelbrot set!`}
-                    placement="top"
-                  >
-                    <InfoIcon />
-                  </Tooltip>
-                  <div style={{ marginBottom: 12 }}>in the Julia set</div>
-                  <Button
-                    variant="contained"
-                    style={{
-                      float: 'right',
-                    }}
-                    onClick={() => {
-                      props.setAnimationState(AnimationStatus.TRANSLATE_M);
-                    }}
-                  >
-                    GO
-                  </Button>
-                </Card>
-              ) : null}
-              {props.animationState !== AnimationStatus.SELECT_JULIA_POINT &&
-              props.animationState !== AnimationStatus.PLAY ? (
-                <SimilarityAnimationCard
-                  show={props.show}
-                  mandelbrot={props.mandelbrot}
-                  julia={props.julia}
-                  animationState={props.animationState}
-                  setAnimationState={props.setAnimationState}
-                  focusedPoint={props.focusedPoint}
-                  setFocusedPoint={props.setFocusedPoint}
-                  focusedPointJulia={props.focusedPointJulia}
-                  setFocusedPointJulia={props.setFocusedPointJulia}
-                ></SimilarityAnimationCard>
-              ) : null}
-              {props.animationState === AnimationStatus.PLAY ? (
-                <Card>
-                  <IconButton
-                    onClick={() => {
-                      props.setAnimationState(AnimationStatus.SELECT_JULIA_POINT);
-                      warpToPoint(props.mandelbrot, {
-                        xy: props.focusedPoint.point,
-                        z: props.focusedPoint.uMagnitude,
-                        theta: 0,
-                      });
-                      warpToPoint(props.julia, {
-                        xy: [0, 0],
-                        z: 0.5,
-                        theta: 0,
-                      });
-                    }}
-                  >
-                    <ArrowBackwardIcon />
-                  </IconButton>
-                  {zoomBar()}
-                </Card>
-              ) : null}
-            </Card>
-          ) : null}
-        </div>
-      </Grid>
+        {props.animationState === AnimationStatus.PLAY ? playCard() : null}
+      </div>
     </Grow>
   );
 };

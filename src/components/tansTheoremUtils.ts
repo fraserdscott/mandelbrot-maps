@@ -1,12 +1,14 @@
 import { XYType } from '../common/types';
 
 const TOLERANCE = 0.001;
+const FLOATING_POINT_TOLERANCE = 0.01;
+export const MAX_DEPTH = 4;
 
 export function magnitude(p: XYType): number {
   return Math.sqrt(p[0] * p[0] + p[1] * p[1]);
 }
 
-const distance = (a: XYType, b: XYType) => {
+export const distance = (a: XYType, b: XYType) => {
   return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
 };
 
@@ -41,18 +43,12 @@ export function complexNumbersEqual(a: XYType, b: XYType): boolean {
   return a[0] === b[0] && a[1] === b[1];
 }
 
-export const backwardsOrbit = function (z: XYType, c: XYType, t: number): XYType {
-  for (let i = 0; i < t; i++) {
-    z = sqrt(sub(z, c));
-  }
-  return z;
+export const preImagePositive = function (z: XYType, c: XYType): XYType {
+  return sqrt(sub(z, c));
 };
 
-export const backwardsOrbitNeg = function (z: XYType, c: XYType, t: number): XYType {
-  for (let i = 0; i < t; i++) {
-    z = mult([-1, 0], sqrt(sub(z, c)));
-  }
-  return z;
+export const preImageNegative = function (z: XYType, c: XYType): XYType {
+  return mult([-1, 0], sqrt(sub(z, c)));
 };
 
 export const orbit = function (z: XYType, c: XYType, t: number): XYType {
@@ -118,13 +114,13 @@ export const prePeriod = (z: XYType, c: XYType): number => {
  */
 export const period = (z: XYType, c: XYType): number => {
   const olds: XYType[] = [];
-  for (let i = 1; i < 50; i++) {
+  for (let i = 0; i < 50; i++) {
     olds.push(z);
     const newZ: XYType = add(square(z), c);
-    const similar = olds.findIndex((elem) => distance(elem, newZ) < 0.01);
+    const similar = olds.findIndex((elem) => distance(elem, newZ) < TOLERANCE);
     if (similar !== -1) {
       // we've hit a cycle
-      return i - similar;
+      return i - similar + 1;
     }
     z = newZ;
   }
@@ -158,6 +154,11 @@ const numericalDerivative = function (c: XYType, f: (c: XYType) => XYType): XYTy
   const withH = f(add(c, [h, 0]));
 
   return [sub(withH, withoutH)[0] / h, sub(withH, withoutH)[1] / h];
+};
+
+export const cycleEigenvalue = (c: XYType, l: number, p: number) => {
+  const firstIterateInCycle: XYType = orbit(c, c, l);
+  return orbitEigenvalue(firstIterateInCycle, c, p);
 };
 
 /**
@@ -265,57 +266,30 @@ export const findMisiurewicz = function (c: XYType): XYType {
   return c;
 };
 
-const expand = (
-  iterate: MisiurewiczPoint,
-  c: XYType,
-  similarPoints: MisiurewiczPoint[],
-  count: number,
-) => {
-  if (magnitude(iterate.point) > 0.01) {
-    similarPoints.push(iterate);
-    if (count > 0) {
-      const back = new MisiurewiczPoint(c, backwardsOrbit(iterate.point, c, 1));
-      const backNeg = new MisiurewiczPoint(c, backwardsOrbitNeg(iterate.point, c, 1));
-      expand(back, c, similarPoints, count - 1);
-      expand(backNeg, c, similarPoints, count - 1);
-    }
+const depthFirstSearch = (z: XYType, c: XYType, zs: XYType[], depth: number) => {
+  zs.push(z);
+  if (distance(z, c) > FLOATING_POINT_TOLERANCE && depth > 0) {
+    depthFirstSearch(preImagePositive(z, c), c, zs, depth - 1);
+    depthFirstSearch(preImageNegative(z, c), c, zs, depth - 1);
   }
-  return similarPoints;
+  return zs;
 };
 
-export const getSimilarsInJulia = (
-  focusedPoint: MisiurewiczPoint,
-): MisiurewiczPoint[] => {
-  const similarPoints: MisiurewiczPoint[] = [];
-  const depth = 4;
+export const similarPoints = (c: PreperiodicPoint): PreperiodicPoint[] => {
+  const zs: XYType[] = [];
 
-  for (
-    let i = focusedPoint.prePeriod;
-    i < focusedPoint.prePeriod + focusedPoint.period;
-    i++
-  ) {
-    similarPoints.push(
-      new MisiurewiczPoint(
-        focusedPoint.point,
-        orbit(focusedPoint.point, focusedPoint.point, i),
-      ),
-    );
-    expand(
-      new MisiurewiczPoint(
-        focusedPoint.point,
-        mult([-1, 0], orbit(focusedPoint.point, focusedPoint.point, i)),
-      ),
-      focusedPoint.point,
-      similarPoints,
-      depth,
-    );
+  for (let i = c.prePeriod; i < c.prePeriod + c.period; i++) {
+    const z = orbit(c.point, c.point, i);
+    zs.push(z);
+    depthFirstSearch(mult([-1, 0], z), c.point, zs, MAX_DEPTH);
   }
-  return similarPoints;
+  return zs.map((p) => new PreperiodicPoint(c.point, p));
 };
 
 const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
-export class MisiurewiczPoint {
+export class PreperiodicPoint {
   point: XYType;
+  c: XYType;
   u: XYType;
   a: XYType;
   prePeriod: number;
@@ -327,6 +301,7 @@ export class MisiurewiczPoint {
 
   constructor(c: XYType, z: XYType) {
     this.point = z;
+    this.c = c;
 
     this.prePeriod = prePeriod(this.point, c);
     this.period = period(this.point, c);
