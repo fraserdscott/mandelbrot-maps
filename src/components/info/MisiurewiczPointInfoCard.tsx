@@ -46,7 +46,7 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
           warpToPoint(props.mandelbrot, {
             xy: props.focusedPoint.point,
             z: props.focusedPoint.uMagnitude,
-            theta: props.mandelbrot.rotCtrl[0].theta.getValue(),
+            theta: props.mandelbrot.rotCtrl[0].theta,
           })
         }
       >

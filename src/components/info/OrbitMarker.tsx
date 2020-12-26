@@ -1,10 +1,9 @@
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
-import { MisiurewiczPointMarkerProps } from '../../common/info';
+import { OrbitMarkerProps } from '../../common/info';
 import { formatComplexNumber, prePeriod, PreperiodicPoint } from '../tansTheoremUtils';
 import { animated } from 'react-spring';
-import { screenScaleMultiplier } from '../../common/values';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import FiberManualRecordOutlinedIcon from '@material-ui/icons/FiberManualRecordOutlined';
 import { XYType } from '../../common/types';
@@ -33,26 +32,24 @@ export const colorBasedOnPreperiod = (
   return `#E6${redness}00`;
 };
 
-export const complexNumberWithinView = (
-  x: number,
-  y: number,
-  angle: number,
-  zoom: number,
+export const pointWithinBoundingBox = (
+  p: XYType,
+  boxCentre: XYType,
   boxWidth: number,
   boxHeight: number,
-  c: XYType,
+  angleRelativeToBox: number,
 ): boolean => {
-  const distanceX = c[0] - x * screenScaleMultiplier;
-  const distanceY = c[1] - y * screenScaleMultiplier;
+  const distanceX = p[0] - boxCentre[0];
+  const distanceY = p[1] - boxCentre[1];
 
-  const horizontalDistanceFromCentre: number =
-    zoom * Math.abs(distanceX * Math.cos(angle) - distanceY * Math.sin(angle));
-  const verticalDistanceFromCentre: number =
-    zoom * Math.abs(distanceX * Math.sin(angle) + distanceY * Math.cos(angle));
-
-  return (
-    horizontalDistanceFromCentre < boxWidth && verticalDistanceFromCentre < boxHeight
+  const horizontalDistance: number = Math.abs(
+    distanceX * Math.cos(angleRelativeToBox) - distanceY * Math.sin(angleRelativeToBox),
   );
+  const verticalDistance: number = Math.abs(
+    distanceX * Math.sin(angleRelativeToBox) + distanceY * Math.cos(angleRelativeToBox),
+  );
+
+  return horizontalDistance < boxWidth && verticalDistance < boxHeight;
 };
 
 export const complexToScreen = (
@@ -64,8 +61,8 @@ export const complexToScreen = (
   boxHeight: number,
   c: XYType,
 ): XYType => {
-  const distanceX = c[0] - x * screenScaleMultiplier;
-  const distanceY = c[1] - y * screenScaleMultiplier;
+  const distanceX = c[0] - x;
+  const distanceY = c[1] - y;
   return [
     (boxHeight / 2) *
       ((distanceX * Math.cos(angle) - distanceY * Math.sin(angle)) * zoom + boxWidth),
@@ -74,9 +71,9 @@ export const complexToScreen = (
   ];
 };
 
-const OrbitMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
-  const [{ z }] = props.viewerControl.zoomCtrl;
-  const [{ theta }] = props.viewerControl.rotCtrl;
+const OrbitMarker = (props: OrbitMarkerProps): JSX.Element => {
+  const [{ z }] = props.mandelbrotControl.zoomCtrl;
+  const [{ theta }] = props.mandelbrotControl.rotCtrl;
 
   const ASPECT_RATIO = props.mapWidth / props.mapHeight;
 
@@ -85,19 +82,18 @@ const OrbitMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
       style={{
         zIndex: 100,
         position: 'absolute',
-        visibility: props.viewerControl.xyCtrl[0].xy.interpolate(
+        visibility: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
+            const centre: XYType = [x, y];
             if (
               props.show &&
-              complexNumberWithinView(
-                x,
-                y,
+              pointWithinBoundingBox(
+                props.c.point,
+                centre,
+                ASPECT_RATIO / z.getValue(),
+                1 / z.getValue(),
                 -theta.getValue(),
-                z.getValue(),
-                ASPECT_RATIO,
-                1,
-                props.m.point,
               )
             ) {
               return 'visible';
@@ -106,7 +102,7 @@ const OrbitMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
             }
           },
         ),
-        left: props.viewerControl.xyCtrl[0].xy.interpolate(
+        left: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
             return (
@@ -117,14 +113,12 @@ const OrbitMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
                 z.getValue(),
                 ASPECT_RATIO,
                 props.mapHeight,
-                props.m.point,
-              )[0] +
-              props.offsetX -
-              THREE_BUTTON_SIZE_OVER_4
+                props.c.point,
+              )[0] - THREE_BUTTON_SIZE_OVER_4
             );
           },
         ),
-        bottom: props.viewerControl.xyCtrl[0].xy.interpolate(
+        bottom: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
             return (
@@ -135,22 +129,20 @@ const OrbitMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
                 z.getValue(),
                 ASPECT_RATIO,
                 props.mapHeight,
-                props.m.point,
-              )[1] +
-              props.offsetY -
-              BUTTON_SIZE_OVER_4
+                props.c.point,
+              )[1] - BUTTON_SIZE_OVER_4
             );
           },
         ),
       }}
     >
-      <Tooltip title={`${formatComplexNumber(props.m.point)}`} placement="top">
+      <Tooltip title={`${formatComplexNumber(props.c.point)}`} placement="top">
         <IconButton
           style={{
-            color: colorBasedOnPreperiod(props.m, prePeriod([0, 0], props.m.c)),
+            color: colorBasedOnPreperiod(props.c, prePeriod([0, 0], props.c.c)),
           }}
         >
-          {props.m.prePeriod === 0 ? (
+          {props.c.prePeriod === 0 ? (
             <FiberManualRecordOutlinedIcon
               style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
             />

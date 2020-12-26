@@ -157,12 +157,12 @@ function App(): JSX.Element {
                 />
 
                 <MisiurewiczModeDiv
-                  animationState={animationState}
-                  setAnimationState={setAnimationState}
-                  shadeDomains={settings.shadeMisiurewiczDomains}
                   show={settings.showMisiurewiczPoints}
                   mandelbrot={mandelbrotControls}
                   julia={juliaControls}
+                  animationState={animationState}
+                  setAnimationState={setAnimationState}
+                  shadeDomains={settings.shadeMisiurewiczDomains}
                 />
                 <Grid item xs className="renderer">
                   <MandelbrotRenderer

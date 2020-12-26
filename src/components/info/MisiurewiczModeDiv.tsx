@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { MisiurewiczModeDivProps } from '../../common/info';
-import SelectMisiurewiczCard from './SelectMisiurewiczCard';
 import { misiurewiczPoints } from './SelectMisiurewiczCard';
 import MisiurewiczPointMarker, {
   animationNotTakingPlace,
@@ -8,7 +7,6 @@ import MisiurewiczPointMarker, {
 import { useWindowSize } from '../../common/utils';
 
 import { Button } from '@material-ui/core';
-import { screenScaleMultiplier } from '../../common/values';
 import {
   complexNumbersEqual,
   findMisiurewicz,
@@ -20,6 +18,11 @@ import {
   orbitList,
 } from '../tansTheoremUtils';
 import OrbitMarker from './OrbitMarker';
+import InfoCard from './InfoCard';
+import SimilarityAnimationCard from './SimilarityAnimationCard';
+import OrbitCard from './OrbitCard';
+import SimilarityMenu from './SimilarityMenu';
+import PlayCard from './PlayCard';
 export enum AnimationStatus {
   SHOW_ORBIT = -3,
   NO_ANIMATION = -2,
@@ -50,10 +53,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
   ] = React.useState(focusedPoint);
 
   const handlePickDomain = () => {
-    const mPoint = findMisiurewicz([
-      props.mandelbrot.xyCtrl[0].xy.getValue()[0] * screenScaleMultiplier,
-      props.mandelbrot.xyCtrl[0].xy.getValue()[1] * screenScaleMultiplier,
-    ]);
+    const mPoint = findMisiurewicz(props.mandelbrot.xyCtrl[0].xy.getValue());
     setFocusedPoint(new PreperiodicPoint(mPoint, mPoint));
   };
 
@@ -98,6 +98,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
       props.animationState !== AnimationStatus.SHOW_ORBIT
         ? misiurewiczPoints.map((m) => (
             <MisiurewiczPointMarker
+              key={m.point.toString()}
               m={m}
               mapWidth={mapWidth}
               mapHeight={mapHeight}
@@ -111,7 +112,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
               setFocusedPointJulia={setFocusedPointJulia}
               offsetX={0}
               offsetY={0}
-              SHOW_POINT_THRESHOLD={7}
+              SHOW_POINT_THRESHOLD={m.uMagnitude * 0.5}
               color={
                 complexNumbersEqual(m.point, focusedPoint.point) ? 'primary' : 'secondary'
               }
@@ -133,7 +134,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           setFocusedPointJulia={setFocusedPointJulia}
           offsetX={0}
           offsetY={0}
-          SHOW_POINT_THRESHOLD={7}
+          SHOW_POINT_THRESHOLD={9999999}
           color={'primary'}
         />
       ) : null}
@@ -141,6 +142,7 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
       {props.animationState === AnimationStatus.SELECT_JULIA_POINT
         ? zs.map((m) => (
             <MisiurewiczPointMarker
+              key={m.point.toString()}
               m={m}
               offsetX={(size.width || 1) < (size.height || 0) ? 0 : (size.width || 1) / 2}
               offsetY={
@@ -185,31 +187,39 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
         focusedPoint.prePeriod + focusedPoint.period + 1, // add one to include 0
       ).map((m) => (
         <OrbitMarker
-          m={new PreperiodicPoint(focusedPoint.point, m)}
+          key={m.toString()}
+          c={new PreperiodicPoint(focusedPoint.point, m)}
           mapWidth={mapWidth}
           mapHeight={mapHeight}
           show={props.show && props.animationState === AnimationStatus.SHOW_ORBIT}
-          viewerControl={props.mandelbrot}
           mandelbrotControl={props.mandelbrot}
+        />
+      ))}
+
+      {props.animationState === AnimationStatus.NO_ANIMATION ? (
+        <InfoCard
+          show={props.show}
+          shadeDomains={props.shadeDomains}
+          mandelbrot={props.mandelbrot}
+          julia={props.julia}
           animationState={props.animationState}
           setAnimationState={props.setAnimationState}
           focusedPoint={focusedPoint}
           setFocusedPoint={setFocusedPoint}
+          focusedPointJulia={focusedPointJulia}
           setFocusedPointJulia={setFocusedPointJulia}
-          offsetX={0}
-          offsetY={0}
-          SHOW_POINT_THRESHOLD={100000000000000}
-          color={'default'}
+          mag={mag}
+          setMagState={setMagState}
+        ></InfoCard>
+      ) : null}
+      {props.animationState === AnimationStatus.SHOW_ORBIT ? (
+        <OrbitCard
+          setAnimationState={props.setAnimationState}
+          focusedPoint={focusedPoint}
         />
-      ))}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-        }}
-      >
-        <SelectMisiurewiczCard
+      ) : null}
+      {props.animationState === AnimationStatus.SELECT_JULIA_POINT ? (
+        <SimilarityMenu
           show={props.show}
           shadeDomains={props.shadeDomains}
           mandelbrot={props.mandelbrot}
@@ -223,7 +233,36 @@ const MisiurewiczModeDiv = (props: MisiurewiczModeDivProps): JSX.Element => {
           mag={mag}
           setMagState={setMagState}
         />
-      </div>
+      ) : null}
+      {props.animationState === AnimationStatus.PLAY ? (
+        <PlayCard
+          mandelbrot={props.mandelbrot}
+          julia={props.julia}
+          setAnimationState={props.setAnimationState}
+          focusedPoint={focusedPoint}
+          focusedPointJulia={focusedPointJulia}
+          mag={mag}
+          setMagState={setMagState}
+        />
+      ) : null}
+      {props.animationState === AnimationStatus.TRANSLATE_M ||
+      props.animationState === AnimationStatus.TRANSLATE_J ||
+      props.animationState === AnimationStatus.ZOOM_M ||
+      props.animationState === AnimationStatus.ZOOM_J ||
+      props.animationState === AnimationStatus.ROTATE_M ||
+      props.animationState === AnimationStatus.ROTATE_J ? (
+        <SimilarityAnimationCard
+          show={props.show}
+          mandelbrot={props.mandelbrot}
+          julia={props.julia}
+          animationState={props.animationState}
+          setAnimationState={props.setAnimationState}
+          focusedPoint={focusedPoint}
+          setFocusedPoint={setFocusedPoint}
+          focusedPointJulia={focusedPointJulia}
+          setFocusedPointJulia={setFocusedPointJulia}
+        ></SimilarityAnimationCard>
+      ) : null}
     </>
   );
 };

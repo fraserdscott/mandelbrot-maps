@@ -35,7 +35,6 @@ export interface MisiurewiczModeDivProps extends CardProps {
 export interface SelectMisiurewiczCardProps extends CardProps {
   show: boolean;
   shadeDomains: boolean;
-  // screenScaleMultiplier: number;
   mandelbrot: ViewerControlSprings;
   julia: ViewerControlSprings;
   animationState: AnimationStatus;
@@ -46,6 +45,25 @@ export interface SelectMisiurewiczCardProps extends CardProps {
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   mag: number;
   setMagState: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export interface ZoomBarProps extends CardProps {
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
+  focusedPoint: PreperiodicPoint;
+  focusedPointJulia: PreperiodicPoint;
+  mag: number;
+  setMagState: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export interface PlayCardProps extends CardProps {
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
+  focusedPoint: PreperiodicPoint;
+  focusedPointJulia: PreperiodicPoint;
+  mag: number;
+  setMagState: React.Dispatch<React.SetStateAction<number>>;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
 }
 
 export interface MisiurewiczPointMarkerProps extends CardProps {
@@ -66,6 +84,14 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
   color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
 }
 
+export interface OrbitMarkerProps extends CardProps {
+  show: boolean;
+  mapWidth: number;
+  mapHeight: number;
+  c: PreperiodicPoint;
+  mandelbrotControl: ViewerControlSprings;
+}
+
 export interface MisiurewiczInfoCardProps extends CardProps {
   show: boolean;
   mandelbrot: ViewerControlSprings;
@@ -77,6 +103,12 @@ export interface MisiurewiczInfoCardProps extends CardProps {
   focusedPointJulia: PreperiodicPoint;
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
 }
+
+export interface OrbitCardProps extends CardProps {
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
+  focusedPoint: PreperiodicPoint;
+}
+
 export interface InfoDialogProps {
   // control whether the info dialog should be displayed
   ctrl: [boolean, React.Dispatch<React.SetStateAction<boolean>>];

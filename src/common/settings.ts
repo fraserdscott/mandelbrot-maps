@@ -21,6 +21,8 @@ export const defaultSettings = {
   showMinimap: true,
   showCrosshair: true,
   showCoordinates: false,
+  showMisiurewiczPoints: false,
+  shadeMisiurewiczDomains: false,
   maxI: 250,
   showFPS: false,
   useDPR: false,

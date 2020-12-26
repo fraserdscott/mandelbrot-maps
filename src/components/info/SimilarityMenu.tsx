@@ -19,7 +19,7 @@ import {
 } from './MisiurewiczPointMarker';
 
 export const misiurewiczPoints: PreperiodicPoint[] = misiurewiczPairs
-  .slice(0, 300)
+  .slice(0, 100)
   .map((p) => new PreperiodicPoint(p, p));
 
 const SimilarityMenu = (props: SelectMisiurewiczCardProps): JSX.Element => {
@@ -94,7 +94,7 @@ const SimilarityMenu = (props: SelectMisiurewiczCardProps): JSX.Element => {
         }}
       >
         {misiurewiczPoints.map((m) => (
-          <option value={m.point.toString()}>
+          <option key={m.point.toString()} value={m.point.toString()}>
             {m.toString()} = {formatComplexNumber(m.point)}
           </option>
         ))}
@@ -108,10 +108,12 @@ const SimilarityMenu = (props: SelectMisiurewiczCardProps): JSX.Element => {
         width: 200,
         padding: 12,
         zIndex: 100,
-        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 1,
+        position: 'absolute',
+        left: 0,
+        top: 0,
       }}
     >
       {backButton(AnimationStatus.NO_ANIMATION)}
@@ -137,7 +139,9 @@ const SimilarityMenu = (props: SelectMisiurewiczCardProps): JSX.Element => {
         onChange={handleJuliaSimilarSelection}
       >
         {zs.map((m) => (
-          <option value={m.point.toString()}>{formatComplexNumber(m.point)}</option>
+          <option key={m.point.toString()} value={m.point.toString()}>
+            {formatComplexNumber(m.point)}
+          </option>
         ))}
       </Select>
       <Tooltip

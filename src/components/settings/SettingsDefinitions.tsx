@@ -28,13 +28,11 @@ export const settingsWidgets = (
     control: <Switch />,
   },
   showMisiurewiczPoints: {
-    k: 'showMisiurewiczPoints',
     label: 'Show preperiodic points',
     checked: settings.showMisiurewiczPoints,
     control: <Switch />,
   },
   shadeMisiurewiczDomains: {
-    k: 'shadeMisiurewiczDomains',
     label: 'Shade Misiurewicz Domains',
     checked: settings.shadeMisiurewiczDomains,
     control: <Switch />,

@@ -92,7 +92,9 @@ const SimilarityAnimationCard = (props: MisiurewiczInfoCardProps): JSX.Element =
     <Card
       style={{
         zIndex: 1300,
-        position: 'relative',
+        position: 'absolute',
+        left: 0,
+        top: 0,
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 1,
