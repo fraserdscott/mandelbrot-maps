@@ -3,13 +3,12 @@ import { Tooltip } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import IconButton from '@material-ui/core/IconButton';
 import { MisiurewiczPointMarkerProps } from '../../common/info';
-import { MAX_DEPTH, PreperiodicPoint } from '../tansTheoremUtils';
+import { distance, PreperiodicPoint } from '../tansTheoremUtils';
 import { animated } from 'react-spring';
-import { AnimationStatus } from './MisiurewiczModeDiv';
+import { AnimationStatus } from './MisiurewiczModeFragment';
 import {
-  colorBasedOnPreperiod,
-  pointWithinBoundingBox,
-  complexToScreen,
+  pointWithinBoundingBox as withinBoundingBox,
+  complexToScreenCoordinate,
 } from './OrbitMarker';
 import { XYType } from '../../common/types';
 const BUTTON_SIZE = 40;
@@ -44,8 +43,8 @@ export const animationNotTakingPlace = (animationState: AnimationStatus): boolea
 };
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
-  const [{ z }] = props.viewerControl.zoomCtrl;
-  const [{ theta }] = props.viewerControl.rotCtrl;
+  const [{ z }] = props.mandelbrotControl.zoomCtrl;
+  const [{ theta }] = props.mandelbrotControl.rotCtrl;
 
   const ASPECT_RATIO = props.mapWidth / props.mapHeight;
 
@@ -54,20 +53,19 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
       style={{
         zIndex: 100,
         position: 'absolute',
-        visibility: props.viewerControl.xyCtrl[0].xy.interpolate(
+        visibility: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
             const centre: XYType = [x, y];
             if (
-              props.show &&
-              pointWithinBoundingBox(
+              z.getValue() >= props.show_threshold &&
+              withinBoundingBox(
                 props.m.point,
                 centre,
                 ASPECT_RATIO / z.getValue(),
                 1 / z.getValue(),
                 -theta.getValue(),
-              ) &&
-              props.SHOW_POINT_THRESHOLD <= z.getValue()
+              )
             ) {
               return 'visible';
             } else {
@@ -75,11 +73,11 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
             }
           },
         ),
-        left: props.viewerControl.xyCtrl[0].xy.interpolate(
+        left: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
             return (
-              complexToScreen(
+              complexToScreenCoordinate(
                 x,
                 y,
                 -theta.getValue(),
@@ -93,11 +91,11 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
             );
           },
         ),
-        bottom: props.viewerControl.xyCtrl[0].xy.interpolate(
+        bottom: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
             return (
-              complexToScreen(
+              complexToScreenCoordinate(
                 x,
                 y,
                 -theta.getValue(),
@@ -113,51 +111,26 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
         ),
       }}
     >
-      {props.offsetX === 0 ? (
-        <Tooltip title={`${props.m.toString()}`} placement="top">
-          <IconButton
-            onClick={() => {
-              if (props.offsetX === 0) {
-                handleMandelbrotSelection(
-                  props.m,
-                  props.setFocusedPoint,
-                  props.m,
-                  props.setFocusedPointJulia,
-                );
-              } else {
-                handleJuliaSelection(props.m, props.setFocusedPointJulia);
-              }
-            }}
-            color={props.color}
-          >
-            <RoomIcon style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }} />
-          </IconButton>
-        </Tooltip>
-      ) : null}
-      {props.offsetX > 0 ? (
-        <Tooltip title={`${props.m.toString()}`} placement="top">
-          <IconButton
-            style={{
-              color: colorBasedOnPreperiod(props.m, MAX_DEPTH + 1), // fixme make the max the depth of search
-            }}
-            onClick={() => {
-              if (props.offsetX === 0) {
-                handleMandelbrotSelection(
-                  props.m,
-                  props.setFocusedPoint,
-                  props.m,
-                  props.setFocusedPointJulia,
-                );
-              } else {
-                handleJuliaSelection(props.m, props.setFocusedPointJulia);
-              }
-            }}
-            color={props.color}
-          >
-            <RoomIcon style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }} />
-          </IconButton>
-        </Tooltip>
-      ) : null}
+      <Tooltip title={`${props.m.toString()}`} placement="top">
+        <IconButton
+          style={{
+            color:
+              distance(props.m.point, props.focusedPointMandelbrot.point) < 0.01
+                ? '#FF5588'
+                : '#00FFFF',
+          }}
+          onClick={() => {
+            handleMandelbrotSelection(
+              props.m,
+              props.setFocusedPointMandelbrot,
+              props.m,
+              props.setFocusedPointJulia,
+            );
+          }}
+        >
+          <RoomIcon style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }} />
+        </IconButton>
+      </Tooltip>
     </animated.div>
   );
 };

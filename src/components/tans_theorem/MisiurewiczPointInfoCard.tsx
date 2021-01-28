@@ -1,13 +1,12 @@
-import { Card, Typography, IconButton, Grid, Divider } from '@material-ui/core';
+import { Card, Typography, IconButton, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import CompareIcon from '@material-ui/icons/Compare';
 import CachedIcon from '@material-ui/icons/Cached';
 import React from 'react';
-import { formatComplexNumber, similarPoints } from '../tansTheoremUtils';
+import { formatComplexNumber } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
 import { MisiurewiczInfoCardProps } from '../../common/info';
-import { AnimationStatus } from './MisiurewiczModeDiv';
+import { AnimationStatus } from './MisiurewiczModeFragment';
 
 const useStyles = makeStyles(() => ({
   iconButtonLabel: {
@@ -20,8 +19,6 @@ const useStyles = makeStyles(() => ({
 
 const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element => {
   const classes = useStyles();
-
-  const zs = similarPoints(props.focusedPoint);
 
   return (
     <Card
@@ -38,21 +35,6 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         {formatComplexNumber(props.focusedPoint.point)}
       </Typography>
       <Divider style={{ marginTop: 8, marginBottom: 8 }}></Divider>
-      <IconButton
-        size="small"
-        style={{ marginBottom: 8 }}
-        classes={{ label: classes.iconButtonLabel }}
-        onClick={() =>
-          warpToPoint(props.mandelbrot, {
-            xy: props.focusedPoint.point,
-            z: props.focusedPoint.uMagnitude,
-            theta: props.mandelbrot.rotCtrl[0].theta,
-          })
-        }
-      >
-        <ArrowForwardIcon />
-        Go to
-      </IconButton>
       <IconButton
         size="small"
         style={{ marginBottom: 8 }}
@@ -76,7 +58,6 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
             z: 0.5,
             theta: 0,
           });
-          props.setFocusedPointJulia(zs[0]);
           props.setAnimationState(AnimationStatus.SELECT_JULIA_POINT);
         }}
       >

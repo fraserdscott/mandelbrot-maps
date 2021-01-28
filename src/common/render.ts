@@ -1,7 +1,7 @@
 import { CanvasHTMLAttributes } from 'react';
 import { RgbColor } from 'react-colorful';
 import { OpaqueInterpolation } from 'react-spring';
-import { AnimationStatus } from '../components/info/MisiurewiczModeDiv';
+import { AnimationStatus } from '../components/tans_theorem/MisiurewiczModeFragment';
 import { MandelbrotMapsWebGLUniforms, ViewerControlSprings, XYType } from './types';
 
 export interface WebGLCanvasProps extends CanvasHTMLAttributes<HTMLCanvasElement> {

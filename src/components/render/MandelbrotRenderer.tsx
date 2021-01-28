@@ -12,7 +12,7 @@ import FPSCard from '../info/FPSCard';
 import { SettingsContext } from '../settings/SettingsContext';
 import MinimapViewer from './MinimapViewer';
 import WebGLCanvas from './WebGLCanvas';
-import { AnimationStatus } from '../info/MisiurewiczModeDiv';
+import { AnimationStatus } from '../tans_theorem/MisiurewiczModeFragment';
 
 export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.Element {
   // variables to hold canvas and webgl information
@@ -40,7 +40,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
   const maxI = props.maxI; // -> global
   const AA = props.useAA ? 2 : 1; // -> global
 
-  const fragShaderDomain = misiurewiczDomainsMandelbrotShader(
+  const fragShaderMisiurewiczDomain = misiurewiczDomainsMandelbrotShader(
     {
       maxI: maxI,
       AA: AA,
@@ -108,9 +108,10 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
           <WebGLCanvas
             id="mandelbrot"
             fragShader={
+              settings.showMisiurewiczPoints &&
               settings.shadeMisiurewiczDomains &&
               props.animationState === AnimationStatus.NO_ANIMATION
-                ? fragShaderDomain
+                ? fragShaderMisiurewiczDomain
                 : fragShader
             }
             useDPR={settings.useDPR}

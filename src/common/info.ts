@@ -1,6 +1,6 @@
 import { CardProps } from '@material-ui/core';
 import { OpaqueInterpolation } from 'react-spring';
-import { AnimationStatus } from '../components/info/MisiurewiczModeDiv';
+import { AnimationStatus } from '../components/tans_theorem/MisiurewiczModeFragment';
 import { PreperiodicPoint } from '../components/tansTheoremUtils';
 import { ThetaType, ViewerControlSprings, XYType, ZoomType } from './types';
 
@@ -47,6 +47,19 @@ export interface SelectMisiurewiczCardProps extends CardProps {
   setMagState: React.Dispatch<React.SetStateAction<number>>;
 }
 
+export interface InfoCardProps extends CardProps {
+  show: boolean;
+  shadeDomains: boolean;
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
+  animationState: AnimationStatus;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
+  focusedPoint: PreperiodicPoint;
+  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  focusedPointJulia: PreperiodicPoint;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+}
+
 export interface ZoomBarProps extends CardProps {
   mandelbrot: ViewerControlSprings;
   julia: ViewerControlSprings;
@@ -59,10 +72,8 @@ export interface ZoomBarProps extends CardProps {
 export interface PlayCardProps extends CardProps {
   mandelbrot: ViewerControlSprings;
   julia: ViewerControlSprings;
-  focusedPoint: PreperiodicPoint;
+  focusedPointMandelbrot: PreperiodicPoint;
   focusedPointJulia: PreperiodicPoint;
-  mag: number;
-  setMagState: React.Dispatch<React.SetStateAction<number>>;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
 }
 
@@ -72,23 +83,32 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
   mapHeight: number;
   offsetX: number;
   offsetY: number;
-  SHOW_POINT_THRESHOLD: number;
+  show_threshold: number;
   m: PreperiodicPoint;
-  viewerControl: ViewerControlSprings;
   mandelbrotControl: ViewerControlSprings;
   animationState: AnimationStatus;
-  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  focusedPoint: PreperiodicPoint;
-  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  focusedPointMandelbrot: PreperiodicPoint;
+  setFocusedPointMandelbrot: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
-  color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
+}
+
+export interface PreperiodicPointMarkerProps extends CardProps {
+  show: boolean;
+  mapWidth: number;
+  mapHeight: number;
+  offset: XYType;
+  show_threshold: number;
+  preperiodicPoint: PreperiodicPoint;
+  viewerControl: ViewerControlSprings;
+  focusedPointJulia: PreperiodicPoint;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
 }
 
 export interface OrbitMarkerProps extends CardProps {
   show: boolean;
   mapWidth: number;
   mapHeight: number;
-  c: PreperiodicPoint;
+  iterate: XYType;
   mandelbrotControl: ViewerControlSprings;
 }
 

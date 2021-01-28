@@ -7,22 +7,20 @@ import {
   PreperiodicPoint,
 } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
-import { SelectMisiurewiczCardProps } from '../../common/info';
-import { AnimationStatus } from './MisiurewiczModeDiv';
+import { InfoCardProps } from '../../common/info';
+import {
+  AnimationStatus,
+  MISIUREWICZ_POINTS,
+  parsePoint,
+} from './MisiurewiczModeFragment';
 import { XYType } from '../../common/types';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
-import { misiurewiczPairs } from '../MPoints';
-import { parsePoint } from './SelectMisiurewiczCard';
 import {
   handleJuliaSelection,
   handleMandelbrotSelection,
 } from './MisiurewiczPointMarker';
 
-export const misiurewiczPoints: PreperiodicPoint[] = misiurewiczPairs
-  .slice(0, 100)
-  .map((p) => new PreperiodicPoint(p, p));
-
-const SimilarityMenu = (props: SelectMisiurewiczCardProps): JSX.Element => {
+const SimilarityMenu = (props: InfoCardProps): JSX.Element => {
   const backButton = (state: AnimationStatus) => {
     return (
       <IconButton
@@ -50,7 +48,7 @@ const SimilarityMenu = (props: SelectMisiurewiczCardProps): JSX.Element => {
       </Button>
     );
   };
-  const zs = similarPoints(props.focusedPoint);
+  const similarPointsJulia = similarPoints(props.focusedPoint);
 
   const handleMandelbrotPointSelection = (
     event: React.ChangeEvent<{ value: unknown }>,
@@ -58,7 +56,6 @@ const SimilarityMenu = (props: SelectMisiurewiczCardProps): JSX.Element => {
     const chosenPoint: XYType = parsePoint(event.target.value as string);
 
     const chosenMisiurewicz = new PreperiodicPoint(chosenPoint, chosenPoint);
-    props.setMagState(1);
 
     handleMandelbrotSelection(
       chosenMisiurewicz,
@@ -93,7 +90,7 @@ const SimilarityMenu = (props: SelectMisiurewiczCardProps): JSX.Element => {
           id: 'select-multiple-native',
         }}
       >
-        {misiurewiczPoints.map((m) => (
+        {MISIUREWICZ_POINTS.map((m) => (
           <option key={m.point.toString()} value={m.point.toString()}>
             {m.toString()} = {formatComplexNumber(m.point)}
           </option>
@@ -138,7 +135,7 @@ const SimilarityMenu = (props: SelectMisiurewiczCardProps): JSX.Element => {
         value={props.focusedPointJulia.point}
         onChange={handleJuliaSimilarSelection}
       >
-        {zs.map((m) => (
+        {similarPointsJulia.map((m) => (
           <option key={m.point.toString()} value={m.point.toString()}>
             {formatComplexNumber(m.point)}
           </option>

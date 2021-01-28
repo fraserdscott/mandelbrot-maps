@@ -61,6 +61,11 @@ export const orbit = function (z: XYType, c: XYType, t: number): XYType {
 export const orbitList = function (z: XYType, c: XYType, t: number): XYType[] {
   const points = [];
   for (let i = 0; i < t; i++) {
+    const similar = points.findIndex((elem) => distance(elem, z) < TOLERANCE);
+    if (similar !== -1) {
+      // we've hit a cycle
+      break;
+    }
     points.push(z);
     z = add(square(z), c);
   }
@@ -107,9 +112,10 @@ export const prePeriod = (z: XYType, c: XYType): number => {
 };
 
 /**
- * Find the period of a given point under iteration.
+ * Find the period of a given point.
  *
- * @param c - The point
+ * @param z - The point
+ * @param c - The constant of iteration
  * @returns The period, otherwise: -1.
  */
 export const period = (z: XYType, c: XYType): number => {
@@ -254,7 +260,7 @@ const Wfried = function (c: XYType, l: number, p: number) {
   return sub(endOfCycle, startOfCycle);
 };
 
-export const findMisiurewicz = function (c: XYType): XYType {
+export const findNearestMisiurewiczPoint = function (c: XYType): XYType {
   const q = findPotentialPreperiod(c);
   const p = 1;
   const learningRate: XYType = [0.01, 0];

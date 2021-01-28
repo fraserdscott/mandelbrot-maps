@@ -9,7 +9,7 @@ import {
 } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
 import { MisiurewiczInfoCardProps } from '../../common/info';
-import { AnimationStatus } from './MisiurewiczModeDiv';
+import { AnimationStatus } from './MisiurewiczModeFragment';
 import { ThetaType, ZoomType } from '../../common/types';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
 

@@ -2,14 +2,12 @@ import React from 'react';
 import { Tooltip } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import { OrbitMarkerProps } from '../../common/info';
-import { formatComplexNumber, prePeriod, PreperiodicPoint } from '../tansTheoremUtils';
+import { formatComplexNumber } from '../tansTheoremUtils';
 import { animated } from 'react-spring';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import FiberManualRecordOutlinedIcon from '@material-ui/icons/FiberManualRecordOutlined';
 import { XYType } from '../../common/types';
-const BUTTON_SIZE = 40;
-const BUTTON_SIZE_OVER_4 = BUTTON_SIZE / 4;
-const THREE_BUTTON_SIZE_OVER_4 = 3 * BUTTON_SIZE_OVER_4;
+const BUTTON_SIZE = 30;
+const THREE_BUTTON_SIZE_OVER_4 = (3 * BUTTON_SIZE) / 4;
 
 //https://stackoverflow.com/questions/10756313/javascript-jquery-map-a-range-of-numbers-to-another-range-of-numbers
 const scale = (
@@ -22,13 +20,8 @@ const scale = (
   return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
 
-export const colorBasedOnPreperiod = (
-  m: PreperiodicPoint,
-  highestPreperiod: number,
-): string => {
-  const redness = Math.round(scale(m.prePeriod, 0, highestPreperiod, 25, 255)).toString(
-    16,
-  );
+export const colorByPreperiod = (prePeriod: number, highestPreperiod: number): string => {
+  const redness = Math.round(scale(prePeriod, 0, highestPreperiod, 25, 255)).toString(16);
   return `#E6${redness}00`;
 };
 
@@ -52,7 +45,7 @@ export const pointWithinBoundingBox = (
   return horizontalDistance < boxWidth && verticalDistance < boxHeight;
 };
 
-export const complexToScreen = (
+export const complexToScreenCoordinate = (
   x: number,
   y: number,
   angle: number,
@@ -82,38 +75,18 @@ const OrbitMarker = (props: OrbitMarkerProps): JSX.Element => {
       style={{
         zIndex: 100,
         position: 'absolute',
-        visibility: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
-          // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
-          (x, y) => {
-            const centre: XYType = [x, y];
-            if (
-              props.show &&
-              pointWithinBoundingBox(
-                props.c.point,
-                centre,
-                ASPECT_RATIO / z.getValue(),
-                1 / z.getValue(),
-                -theta.getValue(),
-              )
-            ) {
-              return 'visible';
-            } else {
-              return 'hidden';
-            }
-          },
-        ),
         left: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
             return (
-              complexToScreen(
+              complexToScreenCoordinate(
                 x,
                 y,
                 -theta.getValue(),
                 z.getValue(),
                 ASPECT_RATIO,
                 props.mapHeight,
-                props.c.point,
+                props.iterate,
               )[0] - THREE_BUTTON_SIZE_OVER_4
             );
           },
@@ -122,33 +95,23 @@ const OrbitMarker = (props: OrbitMarkerProps): JSX.Element => {
           // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
           (x, y) => {
             return (
-              complexToScreen(
+              complexToScreenCoordinate(
                 x,
                 y,
                 -theta.getValue(),
                 z.getValue(),
                 ASPECT_RATIO,
                 props.mapHeight,
-                props.c.point,
-              )[1] - BUTTON_SIZE_OVER_4
+                props.iterate,
+              )[1] - THREE_BUTTON_SIZE_OVER_4
             );
           },
         ),
       }}
     >
-      <Tooltip title={`${formatComplexNumber(props.c.point)}`} placement="top">
-        <IconButton
-          style={{
-            color: colorBasedOnPreperiod(props.c, prePeriod([0, 0], props.c.c)),
-          }}
-        >
-          {props.c.prePeriod === 0 ? (
-            <FiberManualRecordOutlinedIcon
-              style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-            />
-          ) : (
-            <FiberManualRecordIcon style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }} />
-          )}
+      <Tooltip title={`${formatComplexNumber(props.iterate)}`} placement="top">
+        <IconButton style={{ color: '#FFFF00' }}>
+          <FiberManualRecordIcon style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }} />
         </IconButton>
       </Tooltip>
     </animated.div>

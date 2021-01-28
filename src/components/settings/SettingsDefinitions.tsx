@@ -1,6 +1,7 @@
 import { Slider, Switch } from '@material-ui/core';
 import ExtensionIcon from '@material-ui/icons/Extension';
 import PhotoIcon from '@material-ui/icons/Photo';
+import CompareIcon from '@material-ui/icons/Compare';
 import React from 'react';
 import { RgbColorPicker } from 'react-colorful';
 import {
@@ -28,14 +29,30 @@ export const settingsWidgets = (
     control: <Switch />,
   },
   showMisiurewiczPoints: {
-    label: 'Show preperiodic points',
+    label: 'Highlight Misiurewicz points',
     checked: settings.showMisiurewiczPoints,
     control: <Switch />,
   },
+
   shadeMisiurewiczDomains: {
-    label: 'Shade Misiurewicz Domains',
-    checked: settings.shadeMisiurewiczDomains,
-    control: <Switch />,
+    label: 'Selection method',
+    value: settings.shadeMisiurewiczDomains,
+    labelPlacement: 'top',
+    style: {
+      marginLeft: 0,
+      marginRight: 0,
+    },
+    control: (
+      <Slider
+        step={null}
+        min={0}
+        max={1}
+        marks={[
+          { value: 0, label: 'List of points' },
+          { value: 1, label: 'Misiurewicz Domains' },
+        ]}
+      />
+    ),
   },
   maxI: {
     label: 'Iterations',
@@ -110,8 +127,6 @@ export const getSettingsWidgetsGrouping = (
       showMinimap: settingsWidgets.showMinimap,
       showCrosshair: settingsWidgets.showCrosshair,
       showCoordinates: settingsWidgets.showCoordinates,
-      showMisiurewiczPoints: settingsWidgets.showMisiurewiczPoints,
-      shadeMisiurewiczDomains: settingsWidgets.shadeMisiurewiczDomains,
     },
   },
   {
@@ -123,6 +138,14 @@ export const getSettingsWidgetsGrouping = (
       useDPR: settingsWidgets.useDPR,
       useAA: settingsWidgets.useAA,
       showFPS: settingsWidgets.showFPS,
+    },
+  },
+  {
+    icon: CompareIcon,
+    name: "Tan's Theorem",
+    widgets: {
+      showMisiurewiczPoints: settingsWidgets.showMisiurewiczPoints,
+      shadeMisiurewiczDomains: settingsWidgets.shadeMisiurewiczDomains,
     },
   },
 ];

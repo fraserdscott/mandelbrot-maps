@@ -19,9 +19,9 @@ import { useWindowSize, warpToPoint } from './common/utils';
 import { springsConfigs, viewerOrigin } from './common/values';
 import CoordinateInterface from './components/info/CoordinateInterface';
 import InfoDialog from './components/info/InfoDialog';
-import MisiurewiczModeDiv, {
+import MisiurewiczModeFragment, {
   AnimationStatus,
-} from './components/info/MisiurewiczModeDiv';
+} from './components/tans_theorem/MisiurewiczModeFragment';
 import JuliaRenderer from './components/render/JuliaRenderer';
 // import 'typeface-roboto';
 import MandelbrotRenderer from './components/render/MandelbrotRenderer';
@@ -156,7 +156,7 @@ function App(): JSX.Element {
                   mandelbrot={mandelbrotControls}
                 />
 
-                <MisiurewiczModeDiv
+                <MisiurewiczModeFragment
                   show={settings.showMisiurewiczPoints}
                   mandelbrot={mandelbrotControls}
                   julia={juliaControls}
