@@ -1,5 +1,7 @@
 // TODO set max iterations as parameter, crosshair as parameter
 
+import { RendererRenderValues } from '../common/render';
+
 const makeCrosshair = (stroke: number, radius: number) => ({
   stroke,
   radius,
@@ -17,7 +19,7 @@ export interface MandelbrotShaderParams {
 }
 
 const newSmoothMandelbrotShader = (
-  { maxI = 300, AA = 1, B = 64 },
+  { maxI = 300, AA = 1, B = 64 }: RendererRenderValues,
   showCrosshair = true,
   crosshairShape = {
     stroke: 2,
@@ -44,8 +46,13 @@ const newSmoothMandelbrotShader = (
 #define cross_stroke ${crosshairShape.stroke.toFixed(1)}
 #define cross_radius ${crosshairShape.radius.toFixed(1)}
 
-// set high float precision (lower than this may break colours on mobile)
-precision highp float;
+// https://webglfundamentals.org/webgl/lessons/webgl-precision-issues.html
+// prefer high float precision (lower than this may break colours on mobile)
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+#else
+  precision mediump float;
+#endif
 
 // need to know the resolution of the canvas
 uniform vec2 resolution;
@@ -55,6 +62,7 @@ uniform int   u_maxI;
 uniform vec2  u_xy;
 uniform float u_zoom;
 uniform float u_theta;
+uniform vec3  u_colour;
 
 bool crosshair( float x, float y ) {
   float abs_x = abs(2.0*x - resolution.x);
@@ -119,7 +127,8 @@ void main() {
     vec2 c = u_xy + xy/u_zoom;
     
     float l = mandelbrot(c);
-    col += 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
+    // col += 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
+    col += 0.5 + 0.5*cos( 3.0 + l*0.15 + u_colour);
 
     // antialiasing
     #if AA>1

@@ -1,44 +1,33 @@
 import { Slider, Switch } from '@material-ui/core';
+import ExtensionIcon from '@material-ui/icons/Extension';
+import PhotoIcon from '@material-ui/icons/Photo';
 import React from 'react';
+import { RgbColorPicker } from 'react-colorful';
 import {
   settingsDefinitionsType,
   settingsGroupType,
   settingsWidgetType,
 } from '../../common/settings';
 
-export const defaultSettings = {
-  showMinimap: true,
-  showCrosshair: true,
-  showCoordinates: true,
-  maxI: 250,
-  showFPS: false,
-  useDPR: false,
-  useAA: false,
-};
-
 export const settingsWidgets = (
   settings: settingsDefinitionsType,
 ): settingsWidgetType => ({
   showMinimap: {
-    k: 'showMinimap',
     label: 'Minimap',
     checked: settings.showMinimap,
     control: <Switch />,
   },
   showCrosshair: {
-    k: 'showCrosshair',
     label: 'Crosshair',
     checked: settings.showCrosshair,
     control: <Switch />,
   },
   showCoordinates: {
-    k: 'showCoordinates',
     label: 'Show coordinates',
     checked: settings.showCoordinates,
     control: <Switch />,
   },
   maxI: {
-    k: 'maxI',
     label: 'Iterations',
     value: settings.maxI,
     labelPlacement: 'top',
@@ -63,7 +52,6 @@ export const settingsWidgets = (
     ),
   },
   useDPR: {
-    k: 'useDPR',
     // https://stackoverflow.com/a/12830454/9184658
     // // There is a downside that values like 1.5 will give "1.50" as the output. A fix suggested by @minitech:
     // var numb = 1.5;
@@ -76,16 +64,29 @@ export const settingsWidgets = (
     control: <Switch />,
   },
   useAA: {
-    k: 'useAA',
     label: `Anti-aliasing (slow)`,
     checked: settings.useAA,
     control: <Switch />,
   },
   showFPS: {
-    k: 'showFPS',
     label: `Show FPS`,
     checked: settings.showFPS,
     control: <Switch />,
+  },
+  colour: {
+    label: null,
+    style: {
+      marginTop: 14,
+      marginBottom: 10,
+      marginLeft: 0,
+      marginRight: 0,
+    },
+    control: (
+      <RgbColorPicker
+        // set the initial colour
+        color={settings.colour}
+      />
+    ),
   },
 });
 
@@ -93,22 +94,24 @@ export const getSettingsWidgetsGrouping = (
   settingsWidgets: settingsWidgetType,
 ): Array<settingsGroupType> => [
   {
+    icon: ExtensionIcon,
     name: 'Interface',
-    widgets: [
-      settingsWidgets.showMinimap,
-      settingsWidgets.showCrosshair,
-      settingsWidgets.showCoordinates,
-    ],
+    widgets: {
+      showMinimap: settingsWidgets.showMinimap,
+      showCrosshair: settingsWidgets.showCrosshair,
+      showCoordinates: settingsWidgets.showCoordinates,
+    },
+    // ],
   },
   {
+    icon: PhotoIcon,
     name: 'Graphics',
-    widgets: [
-      settingsWidgets.maxI,
-      settingsWidgets.useDPR,
-      settingsWidgets.useAA,
-      settingsWidgets.showFPS,
-    ],
+    widgets: {
+      maxI: settingsWidgets.maxI,
+      colour: settingsWidgets.colour,
+      useDPR: settingsWidgets.useDPR,
+      useAA: settingsWidgets.useAA,
+      showFPS: settingsWidgets.showFPS,
+    },
   },
 ];
-
-export default defaultSettings;
