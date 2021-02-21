@@ -59,9 +59,7 @@ export type SpringAnimatedValueWithSetter<T> = [
 
 export type ViewerXYControlSpring = SpringAnimatedValueWithSetter<ViewerXYControl>;
 export type ViewerZoomControlSpring = SpringAnimatedValueWithSetter<ViewerZoomControl>;
-export type ViewerRotationControlSpring = SpringAnimatedValueWithSetter<
-  ViewerRotationControl
->;
+export type ViewerRotationControlSpring = SpringAnimatedValueWithSetter<ViewerRotationControl>;
 
 export interface ViewerControlSprings {
   xyCtrl: ViewerXYControlSpring;
@@ -76,6 +74,9 @@ export interface MandelbrotMapsWebGLUniforms {
   c?: { getValue: () => XYType };
   theta: OpaqueInterpolation<ThetaType>;
   colour: RgbFloatColour;
+  orbit: number[];
+  orbit_length: number;
+  preperiod: number;
 }
 
 export interface DefaultRendererProps {

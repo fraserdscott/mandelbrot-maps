@@ -41,6 +41,7 @@ export interface RendererRenderValues {
 
 export interface MandelbrotRendererProps extends RendererProps {
   showCrosshair: boolean;
+  showOrbit: boolean;
 }
 
 export interface JuliaRendererProps extends RendererProps {

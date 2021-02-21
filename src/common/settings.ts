@@ -8,6 +8,7 @@ export type settingsDefinitionsType = {
   showMinimap: boolean;
   showCrosshair: boolean;
   showCoordinates: boolean;
+  showOrbit: boolean;
   showFPS: boolean;
   maxI: number;
   useDPR: boolean;
@@ -19,6 +20,7 @@ export const defaultSettings = {
   showMinimap: true,
   showCrosshair: true,
   showCoordinates: false,
+  showOrbit: false,
   maxI: 250,
   showFPS: false,
   useDPR: false,

@@ -108,6 +108,9 @@ const WebGLCanvas = React.forwardRef<HTMLCanvasElement, WebGLCanvasProps>(
           u_maxI: u.maxI,
           u_theta: u.theta.getValue(),
           u_colour: u.colour,
+          u_orbit: u.orbit,
+          u_orbit_length: u.orbit_length,
+          u_preperiod: u.preperiod,
         };
 
         ctx.useProgram(prog.program);

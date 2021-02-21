@@ -27,6 +27,11 @@ export const settingsWidgets = (
     checked: settings.showCoordinates,
     control: <Switch />,
   },
+  showOrbit: {
+    label: 'Show orbit',
+    checked: settings.showOrbit,
+    control: <Switch />,
+  },
   maxI: {
     label: 'Iterations',
     value: settings.maxI,
@@ -100,6 +105,7 @@ export const getSettingsWidgetsGrouping = (
       showMinimap: settingsWidgets.showMinimap,
       showCrosshair: settingsWidgets.showCrosshair,
       showCoordinates: settingsWidgets.showCoordinates,
+      showOrbit: settingsWidgets.showOrbit,
     },
     // ],
   },
