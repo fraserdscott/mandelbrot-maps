@@ -1,6 +1,6 @@
 {
   "name": "mandelbrot-maps",
-  "version": "1.0.3",
+  "version": "1.1.1",
   "private": true,
   "homepage": "https://jmaio.github.io/mandelbrot-maps/",
   "dependencies": {
@@ -22,6 +22,9 @@
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
     "react-spring": "^8.0.27",
+    "react-swipeable-views": "^0.13.9",
+    "react-swipeable-views-core": "^0.14.0-alpha.0",
+    "react-swipeable-views-utils": "^0.14.0-alpha.0",
     "react-use-gesture": "^8.0.1",
     "twgl.js": "^4.17.0",
     "typeface-roboto": "^1.1.13",
@@ -45,6 +48,9 @@
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@types/preval.macro": "^3.0.0",
+    "@types/react-swipeable-views": "^0",
+    "@types/react-swipeable-views-core": "^0",
+    "@types/react-swipeable-views-utils": "^0",
     "@typescript-eslint/eslint-plugin": "4.9.0",
     "@typescript-eslint/parser": "4.9.0",
     "cross-env": "^7.0.3",
@@ -67,9 +73,9 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "cross-env REACT_APP_GIT_SHA=$(git describe) react-scripts start",
-    "start:https": "cross-env HTTPS=true REACT_APP_GIT_SHA=$(git describe) react-scripts start",
-    "build": "cross-env REACT_APP_GIT_SHA=$(git describe) react-scripts build",
+    "start": "cross-env REACT_APP_GIT_SHA=$(git describe --tags) react-scripts start",
+    "start:https": "cross-env HTTPS=true REACT_APP_GIT_SHA=$(git describe --tags) react-scripts start",
+    "build": "cross-env REACT_APP_GIT_SHA=$(git describe --tags) react-scripts build",
     "build:ci": "cross-env CI=true yarn build",
     "build:localhost": "cross-env PUBLIC_URL='.' react-scripts build",
     "test": "react-scripts test",
