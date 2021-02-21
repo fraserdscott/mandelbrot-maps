@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useGesture } from 'react-use-gesture';
 import { forwardOrbit } from '../../common/complex_number_utils';
 import { MandelbrotRendererProps } from '../../common/render';
@@ -14,7 +14,7 @@ import { SettingsContext } from '../settings/SettingsContext';
 import MinimapViewer from './MinimapViewer';
 import WebGLCanvas from './WebGLCanvas';
 
-export const MAX_ORBIT_LENGTH = 250;
+export const MAX_ORBIT_LENGTH = 400;
 
 export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.Element {
   // variables to hold canvas and webgl information
@@ -65,10 +65,13 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
     forwardOrbit(xy.getValue(), xy.getValue(), MAX_ORBIT_LENGTH),
   );
 
-  setInterval(
-    () => setOrbitInfo(forwardOrbit(xy.getValue(), xy.getValue(), MAX_ORBIT_LENGTH)),
-    1000,
-  );
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (props.showOrbit)
+        setOrbitInfo(forwardOrbit(xy.getValue(), xy.getValue(), MAX_ORBIT_LENGTH));
+    }, 1);
+    return () => clearInterval(interval);
+  }, [props.showOrbit, xy]);
 
   const u: MandelbrotMapsWebGLUniforms = {
     zoom: z,
@@ -112,12 +115,13 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
             position: 'relative',
           }}
         >
-          {/* <OrbitCard
+          <OrbitCard
             show={settings.showOrbit}
             xy={xy}
             preperiod={orbitInfo[1]}
             period={orbitInfo[2]}
-          /> */}
+            flag={orbitInfo[3]}
+          />
           <FPSCard fps={fps} show={settings.showFPS} />
           <WebGLCanvas
             id="mandelbrot-canvas"
