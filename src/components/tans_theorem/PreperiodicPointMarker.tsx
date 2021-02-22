@@ -2,13 +2,13 @@ import React from 'react';
 import { Tooltip } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import IconButton from '@material-ui/core/IconButton';
-import { distance, MAX_DEPTH, PreperiodicPoint } from '../tansTheoremUtils';
-import { animated } from 'react-spring';
 import {
-  colorByPreperiod,
-  pointWithinBoundingBox,
   complexToScreenCoordinate,
-} from './OrbitMarker';
+  distance,
+  PreperiodicPoint,
+  withinBoundingBox,
+} from '../tansTheoremUtils';
+import { animated } from 'react-spring';
 import { XYType } from '../../common/types';
 import { PreperiodicPointMarkerProps } from '../../common/info';
 const MARKER_SIZE = 40;
@@ -40,7 +40,7 @@ const MisiurewiczPointMarker = (props: PreperiodicPointMarkerProps): JSX.Element
             if (
               props.show &&
               z.getValue() >= props.show_threshold &&
-              pointWithinBoundingBox(
+              withinBoundingBox(
                 props.preperiodicPoint.point,
                 centre,
                 ASPECT_RATIO / z.getValue(),
@@ -98,7 +98,7 @@ const MisiurewiczPointMarker = (props: PreperiodicPointMarkerProps): JSX.Element
             color:
               distance(props.preperiodicPoint.point, props.focusedPointJulia.point) < 0.01
                 ? '#FF5588'
-                : colorByPreperiod(props.preperiodicPoint.prePeriod, MAX_DEPTH + 1),
+                : '#FF0000',
           }}
           onClick={() => {
             handleJuliaSelection(props.preperiodicPoint, props.setFocusedPointJulia);

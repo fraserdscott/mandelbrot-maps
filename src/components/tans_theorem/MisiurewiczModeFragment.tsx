@@ -13,17 +13,14 @@ import {
 } from '../tansTheoremUtils';
 import PointsInfoCard from './PointsInfoCard';
 import SimilarityAnimationCard from './SimilarityAnimationCard';
-import OrbitCard from './OrbitCard';
 import SimilarityMenu from './SimilarityMenu';
 import PlayCard from './PlayCard';
 import PreperiodicPointMarker from './PreperiodicPointMarker';
 import DomainInfoCard from './DomainInfoCard';
-import { misiurewiczPairs } from '../MPoints';
+import { misiurewiczPairs } from './MPoints';
 import { XYType } from '../../common/types';
-import Clock from './Clock';
 
 export enum AnimationStatus {
-  SHOW_ORBIT = -3,
   NO_ANIMATION = -2,
   SELECT_JULIA_POINT = -1,
   TRANSLATE_M = 0,
@@ -92,15 +89,6 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
 
   return (
     <>
-      {props.show && props.animationState === AnimationStatus.SHOW_ORBIT ? (
-        <Clock
-          mandelbrot={props.mandelbrot}
-          mapWidth={mapWidth}
-          mapHeight={mapHeight}
-          setAnimationState={props.setAnimationState}
-          focusedPointMandelbrot={focusedPointMandelbrot}
-        ></Clock>
-      ) : null}
       {props.show &&
       props.animationState === AnimationStatus.NO_ANIMATION &&
       props.shadeDomains

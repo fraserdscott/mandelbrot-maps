@@ -58,18 +58,22 @@ export const orbit = function (z: XYType, c: XYType, t: number): XYType {
   return z;
 };
 
-export const orbitList = function (z: XYType, c: XYType, t: number): XYType[] {
+export const orbitList = function (
+  z: XYType,
+  c: XYType,
+  maxIterations: number,
+): [XYType[], number, number] {
   const points = [];
-  for (let i = 0; i < t; i++) {
+  for (let i = 0; i < maxIterations; i++) {
     const similar = points.findIndex((elem) => distance(elem, z) < TOLERANCE);
     if (similar !== -1) {
       // we've hit a cycle
-      break;
+      return [points, similar, i - similar];
     }
     points.push(z);
     z = add(square(z), c);
   }
-  return points;
+  return [points, -1, -1];
 };
 
 /**
@@ -329,3 +333,51 @@ export class PreperiodicPoint {
     return pre;
   }
 }
+
+/**
+ * Check if a point is within a given "bounding" box.
+ *
+ * @param {p} A point.
+ * @param {boxCentre} The centre of the box.
+ * @param {boxWidth} The width of the box.
+ * @param {boxHeight} The height of the box.
+ * @param {boxAngle} The angle the box makes with the x-axis.
+ */
+export const withinBoundingBox = (
+  p: XYType,
+  boxCentre: XYType,
+  boxWidth: number,
+  boxHeight: number,
+  boxAngle: number,
+): boolean => {
+  const distanceX = p[0] - boxCentre[0];
+  const distanceY = p[1] - boxCentre[1];
+
+  const horizontalDistance: number = Math.abs(
+    distanceX * Math.cos(-boxAngle) - distanceY * Math.sin(-boxAngle),
+  );
+  const verticalDistance: number = Math.abs(
+    distanceX * Math.sin(-boxAngle) + distanceY * Math.cos(-boxAngle),
+  );
+
+  return horizontalDistance < boxWidth && verticalDistance < boxHeight;
+};
+
+export const complexToScreenCoordinate = (
+  x: number,
+  y: number,
+  angle: number,
+  zoom: number,
+  boxWidth: number,
+  boxHeight: number,
+  c: XYType,
+): XYType => {
+  const distanceX = c[0] - x;
+  const distanceY = c[1] - y;
+  return [
+    (boxHeight / 2) *
+      ((distanceX * Math.cos(angle) - distanceY * Math.sin(angle)) * zoom + boxWidth),
+    (boxHeight / 2) *
+      ((distanceX * Math.sin(angle) + distanceY * Math.cos(angle)) * zoom + 1),
+  ];
+};

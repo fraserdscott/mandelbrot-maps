@@ -1,7 +1,6 @@
 import { Card, Typography, IconButton, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CompareIcon from '@material-ui/icons/Compare';
-import CachedIcon from '@material-ui/icons/Cached';
 import React from 'react';
 import { formatComplexNumber } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
@@ -35,15 +34,6 @@ const MisiurewiczPointInfoCard = (props: MisiurewiczInfoCardProps): JSX.Element 
         {formatComplexNumber(props.focusedPoint.point)}
       </Typography>
       <Divider style={{ marginTop: 8, marginBottom: 8 }}></Divider>
-      <IconButton
-        size="small"
-        style={{ marginBottom: 8 }}
-        classes={{ label: classes.iconButtonLabel }}
-        onClick={() => props.setAnimationState(AnimationStatus.SHOW_ORBIT)}
-      >
-        <CachedIcon />
-        Show orbit
-      </IconButton>
       <IconButton
         size="small"
         classes={{ label: classes.iconButtonLabel }}

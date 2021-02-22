@@ -104,14 +104,6 @@ export interface PreperiodicPointMarkerProps extends CardProps {
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
 }
 
-export interface OrbitMarkerProps extends CardProps {
-  show: boolean;
-  mapWidth: number;
-  mapHeight: number;
-  iterate: XYType;
-  mandelbrotControl: ViewerControlSprings;
-}
-
 export interface MisiurewiczInfoCardProps extends CardProps {
   show: boolean;
   mandelbrot: ViewerControlSprings;
@@ -122,11 +114,6 @@ export interface MisiurewiczInfoCardProps extends CardProps {
   setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   focusedPointJulia: PreperiodicPoint;
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
-}
-
-export interface OrbitCardProps extends CardProps {
-  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  focusedPoint: PreperiodicPoint;
 }
 
 export interface InfoDialogProps {

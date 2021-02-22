@@ -3,13 +3,14 @@ import { Tooltip } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import IconButton from '@material-ui/core/IconButton';
 import { MisiurewiczPointMarkerProps } from '../../common/info';
-import { distance, PreperiodicPoint } from '../tansTheoremUtils';
+import {
+  complexToScreenCoordinate,
+  distance,
+  PreperiodicPoint,
+  withinBoundingBox,
+} from '../tansTheoremUtils';
 import { animated } from 'react-spring';
 import { AnimationStatus } from './MisiurewiczModeFragment';
-import {
-  pointWithinBoundingBox as withinBoundingBox,
-  complexToScreenCoordinate,
-} from './OrbitMarker';
 import { XYType } from '../../common/types';
 const BUTTON_SIZE = 40;
 const BUTTON_OFFSET_Y = BUTTON_SIZE / 4;
@@ -37,8 +38,7 @@ export const handleMandelbrotSelection = (
 export const animationNotTakingPlace = (animationState: AnimationStatus): boolean => {
   return (
     animationState === AnimationStatus.NO_ANIMATION ||
-    animationState === AnimationStatus.SELECT_JULIA_POINT ||
-    animationState === AnimationStatus.SHOW_ORBIT
+    animationState === AnimationStatus.SELECT_JULIA_POINT
   );
 };
 

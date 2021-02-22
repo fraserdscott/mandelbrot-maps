@@ -1,4 +1,4 @@
-import { XYType } from '../common/types';
+import { XYType } from '../../common/types';
 
 export const misiurewiczPairs: XYType[] = [
   [-2, 0],
