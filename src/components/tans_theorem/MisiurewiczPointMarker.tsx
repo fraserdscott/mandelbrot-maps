@@ -7,11 +7,9 @@ import {
   complexToScreenCoordinate,
   distance,
   PreperiodicPoint,
-  withinBoundingBox,
+  similarPoints,
 } from '../tansTheoremUtils';
-import { animated } from 'react-spring';
-import { AnimationStatus } from './MisiurewiczModeFragment';
-import { XYType } from '../../common/types';
+
 const BUTTON_SIZE = 40;
 const BUTTON_OFFSET_Y = BUTTON_SIZE / 4;
 const BUTTON_OFFSET_X = (3 * BUTTON_SIZE) / 4;
@@ -35,80 +33,29 @@ export const handleMandelbrotSelection = (
   );
 };
 
-export const animationNotTakingPlace = (animationState: AnimationStatus): boolean => {
-  return (
-    animationState === AnimationStatus.NO_ANIMATION ||
-    animationState === AnimationStatus.SELECT_JULIA_POINT
-  );
-};
-
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
   const [{ z }] = props.mandelbrotControl.zoomCtrl;
   const [{ theta }] = props.mandelbrotControl.rotCtrl;
 
   const ASPECT_RATIO = props.mapWidth / props.mapHeight;
 
+  const coord = complexToScreenCoordinate(
+    props.mandelbrotControl.xyCtrl[0].xy.getValue()[0],
+    props.mandelbrotControl.xyCtrl[0].xy.getValue()[1],
+    -theta.getValue(),
+    z.getValue(),
+    ASPECT_RATIO,
+    props.mapHeight,
+    props.m.point,
+  );
+
   return (
-    <animated.div
+    <div
       style={{
         zIndex: 100,
         position: 'absolute',
-        visibility: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
-          // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
-          (x, y) => {
-            const centre: XYType = [x, y];
-            if (
-              z.getValue() >= props.show_threshold &&
-              withinBoundingBox(
-                props.m.point,
-                centre,
-                ASPECT_RATIO / z.getValue(),
-                1 / z.getValue(),
-                -theta.getValue(),
-              )
-            ) {
-              return 'visible';
-            } else {
-              return 'hidden';
-            }
-          },
-        ),
-        left: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
-          // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
-          (x, y) => {
-            return (
-              complexToScreenCoordinate(
-                x,
-                y,
-                -theta.getValue(),
-                z.getValue(),
-                ASPECT_RATIO,
-                props.mapHeight,
-                props.m.point,
-              )[0] +
-              props.offsetX -
-              BUTTON_OFFSET_X
-            );
-          },
-        ),
-        bottom: props.mandelbrotControl.xyCtrl[0].xy.interpolate(
-          // @ts-expect-error: Function call broken in TS, waiting till react-spring v9 to fix
-          (x, y) => {
-            return (
-              complexToScreenCoordinate(
-                x,
-                y,
-                -theta.getValue(),
-                z.getValue(),
-                ASPECT_RATIO,
-                props.mapHeight,
-                props.m.point,
-              )[1] +
-              props.offsetY -
-              BUTTON_OFFSET_Y
-            );
-          },
-        ),
+        left: coord[0] + props.offsetX - BUTTON_OFFSET_X,
+        bottom: coord[1] + props.offsetY - BUTTON_OFFSET_Y,
       }}
     >
       <Tooltip title={`${props.m.toString()}`} placement="top">
@@ -126,12 +73,15 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
               props.m,
               props.setFocusedPointJulia,
             );
+            props.setSimilarPointsJulia(
+              similarPoints(props.m, 4).sort((a, b) => a.prePeriod - b.prePeriod),
+            );
           }}
         >
           <RoomIcon style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }} />
         </IconButton>
       </Tooltip>
-    </animated.div>
+    </div>
   );
 };
 

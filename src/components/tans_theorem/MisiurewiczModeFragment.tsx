@@ -1,8 +1,6 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MisiurewiczModeDivProps } from '../../common/info';
-import MisiurewiczPointMarker, {
-  animationNotTakingPlace,
-} from './MisiurewiczPointMarker';
+import MisiurewiczPointMarker from './MisiurewiczPointMarker';
 import { useWindowSize } from '../../common/utils';
 import { Button } from '@material-ui/core';
 import {
@@ -10,6 +8,7 @@ import {
   similarPoints,
   PreperiodicPoint,
   distance,
+  withinBoundingBox,
 } from '../tansTheoremUtils';
 import PointsInfoCard from './PointsInfoCard';
 import SimilarityAnimationCard from './SimilarityAnimationCard';
@@ -33,141 +32,216 @@ export enum AnimationStatus {
 }
 
 export const MISIUREWICZ_POINTS: PreperiodicPoint[] = misiurewiczPairs
-  .slice(0, 25)
-  .map((p) => new PreperiodicPoint(p, p));
+  .slice(0, 200)
+  .map((p) => new PreperiodicPoint(p, p))
+  .sort((a, b) => a.uMagnitude - b.uMagnitude);
 
 export const parsePoint = (s: string): XYType => {
   const commaSeperated = s.split(',');
   return [parseFloat(commaSeperated[0]), parseFloat(commaSeperated[1])];
 };
 
+const defaultMisiurewiczPoint = new PreperiodicPoint(
+  [-0.10109636384562218, +0.9562865108091414],
+  [-0.10109636384562218, +0.9562865108091414],
+);
+
 const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element => {
-  const defaultMisiurewiczPoint = new PreperiodicPoint(
-    [-0.10109636384562218, +0.9562865108091414],
-    [-0.10109636384562218, +0.9562865108091414],
+  const [focusedPointMandelbrot, setFocusedPointMandelbrot] = useState(
+    defaultMisiurewiczPoint,
   );
-  const [focusedPointMandelbrot, setFocusedPointMandelbrot]: [
-    PreperiodicPoint,
-    Dispatch<SetStateAction<PreperiodicPoint>>,
-  ] = React.useState(defaultMisiurewiczPoint);
-  const [focusedPointJulia, setFocusedPointJulia]: [
-    PreperiodicPoint,
-    Dispatch<SetStateAction<PreperiodicPoint>>,
-  ] = React.useState(defaultMisiurewiczPoint);
-
-  const selectDomainButton = () => {
-    return (
-      <Button
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: (size.w || 1) / 4 - 100,
-          zIndex: 1000,
-        }}
-        variant="contained"
-        onClick={() => {
-          const mPoint = findNearestMisiurewiczPoint(
-            props.mandelbrot.xyCtrl[0].xy.getValue(),
-          );
-          setFocusedPointMandelbrot(new PreperiodicPoint(mPoint, mPoint));
-        }}
-      >
-        Select nearest Misiurewicz point
-      </Button>
-    );
-  };
-
-  const similarPointsJulia = similarPoints(focusedPointMandelbrot);
+  const [focusedPointJulia, setFocusedPointJulia] = useState(defaultMisiurewiczPoint);
+  const [similarPointsJulia, setSimilarPointsJulia] = useState(
+    similarPoints(focusedPointJulia, 4).sort((a, b) => a.prePeriod - b.prePeriod),
+  );
 
   const size = useWindowSize();
 
   const mapWidth = (size.w || 1) < (size.h || 0) ? size.w || 1 : (size.w || 1) / 2;
-
   const mapHeight = (size.w || 1) < (size.h || 0) ? (size.h || 0) / 2 : size.h || 0;
 
-  return (
-    <>
-      {props.show &&
-      props.animationState === AnimationStatus.NO_ANIMATION &&
-      props.shadeDomains
-        ? selectDomainButton()
-        : null}
-      {props.show &&
-      !props.shadeDomains &&
-      (props.animationState === AnimationStatus.NO_ANIMATION ||
-        props.animationState === AnimationStatus.SELECT_JULIA_POINT)
-        ? MISIUREWICZ_POINTS.map((m) => {
-            let show_threshold: number;
-            if (distance(m.point, focusedPointMandelbrot.point) < 0.01) {
-              show_threshold = 0;
-            } else {
-              show_threshold = m.uMagnitude * 0.5;
-            }
-            return (
-              <MisiurewiczPointMarker
-                key={m.point.toString()}
-                m={m}
-                mapWidth={mapWidth}
-                mapHeight={mapHeight}
-                show={props.show}
-                mandelbrotControl={props.mandelbrot}
-                animationState={props.animationState}
-                focusedPointMandelbrot={focusedPointMandelbrot}
-                setFocusedPointMandelbrot={setFocusedPointMandelbrot}
-                setFocusedPointJulia={setFocusedPointJulia}
-                offsetX={0}
-                offsetY={0}
-                show_threshold={show_threshold}
-              />
-            );
-          })
-        : null}
-      {props.show &&
-      props.shadeDomains &&
-      animationNotTakingPlace(props.animationState) ? (
+  const ASPECT_RATIO = mapWidth / mapHeight;
+
+  const [misiurewiczMarkers, setMisiurewiczMarkers] = useState(
+    MISIUREWICZ_POINTS.slice(0, 1).map((m) => {
+      return (
         <MisiurewiczPointMarker
-          m={focusedPointMandelbrot}
+          key={m.point.toString()}
+          m={m}
           mapWidth={mapWidth}
           mapHeight={mapHeight}
-          show={props.show}
           mandelbrotControl={props.mandelbrot}
-          animationState={props.animationState}
           focusedPointMandelbrot={focusedPointMandelbrot}
           setFocusedPointMandelbrot={setFocusedPointMandelbrot}
           setFocusedPointJulia={setFocusedPointJulia}
+          setSimilarPointsJulia={setSimilarPointsJulia}
           offsetX={0}
           offsetY={0}
-          show_threshold={0}
         />
-      ) : null}
+      );
+    }),
+  );
+  const [juliaMarkers, setJuliaMarkers] = useState(
+    similarPointsJulia.slice(0, 1).map((m) => {
+      return (
+        <PreperiodicPointMarker
+          key={m.point.toString()}
+          preperiodicPoint={m}
+          offset={[
+            (size.w || 1) < (size.h || 0) ? 0 : (size.w || 1) / 2,
+            (size.w || 1) < (size.h || 0) ? (size.h || 0) / 2 : 0,
+          ]}
+          mapWidth={mapWidth}
+          mapHeight={mapHeight}
+          viewerControl={props.julia}
+          focusedPointJulia={focusedPointJulia}
+          setFocusedPointJulia={setFocusedPointJulia}
+        />
+      );
+    }),
+  );
 
-      {props.animationState === AnimationStatus.SELECT_JULIA_POINT
-        ? similarPointsJulia.map((m) => {
-            let show_threshold: number;
-            if (distance(m.point, focusedPointJulia.point) < 0.01) {
-              show_threshold = 0;
-            } else {
-              show_threshold = m.prePeriod / 5;
-            }
-            return (
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!props.show) {
+        return;
+      }
+
+      if (props.animationState === AnimationStatus.SELECT_JULIA_POINT) {
+        const visibleJuliaPoints: JSX.Element[] = [];
+
+        const boxCentre = props.julia.xyCtrl[0].xy.getValue();
+        const boxWidth = ASPECT_RATIO / props.julia.zoomCtrl[0].z.getValue();
+        const boxHeight = 1 / props.julia.zoomCtrl[0].z.getValue();
+        const boxAngle = props.julia.rotCtrl[0].theta.getValue();
+
+        for (let i = 0; i < similarPointsJulia.length; i++) {
+          if (visibleJuliaPoints.length === 5) break;
+
+          if (
+            withinBoundingBox(
+              similarPointsJulia[i].point,
+              boxCentre,
+              boxWidth,
+              boxHeight,
+              boxAngle,
+            )
+          ) {
+            visibleJuliaPoints.push(
               <PreperiodicPointMarker
-                key={m.point.toString()}
-                preperiodicPoint={m}
+                key={similarPointsJulia[i].point.toString()}
+                preperiodicPoint={similarPointsJulia[i]}
                 offset={[
                   (size.w || 1) < (size.h || 0) ? 0 : (size.w || 1) / 2,
                   (size.w || 1) < (size.h || 0) ? (size.h || 0) / 2 : 0,
                 ]}
                 mapWidth={mapWidth}
                 mapHeight={mapHeight}
-                show={props.show}
                 viewerControl={props.julia}
                 focusedPointJulia={focusedPointJulia}
                 setFocusedPointJulia={setFocusedPointJulia}
-                show_threshold={show_threshold}
-              />
+              />,
             );
-          })
+          }
+        }
+        setJuliaMarkers(visibleJuliaPoints);
+      }
+
+      if (props.animationState === AnimationStatus.NO_ANIMATION) {
+        const visiblePoints = [];
+
+        const boxCentre = props.mandelbrot.xyCtrl[0].xy.getValue();
+        const boxWidth = ASPECT_RATIO / props.mandelbrot.zoomCtrl[0].z.getValue();
+        const boxHeight = 1 / props.mandelbrot.zoomCtrl[0].z.getValue();
+        const boxAngle = props.mandelbrot.rotCtrl[0].theta.getValue();
+
+        for (let i = 0; i < MISIUREWICZ_POINTS.length; i++) {
+          const show_threshold = MISIUREWICZ_POINTS[i].uMagnitude;
+
+          if (
+            visiblePoints.length === 5 ||
+            props.mandelbrot.zoomCtrl[0].z.getValue() < show_threshold
+          )
+            break;
+
+          if (
+            withinBoundingBox(
+              MISIUREWICZ_POINTS[i].point,
+              boxCentre,
+              boxWidth,
+              boxHeight,
+              boxAngle,
+            )
+          ) {
+            visiblePoints.push(
+              <MisiurewiczPointMarker
+                key={MISIUREWICZ_POINTS[i].point.toString()}
+                m={MISIUREWICZ_POINTS[i]}
+                mapWidth={mapWidth}
+                mapHeight={mapHeight}
+                mandelbrotControl={props.mandelbrot}
+                focusedPointMandelbrot={focusedPointMandelbrot}
+                setFocusedPointMandelbrot={setFocusedPointMandelbrot}
+                setFocusedPointJulia={setFocusedPointJulia}
+                setSimilarPointsJulia={setSimilarPointsJulia}
+                offsetX={0}
+                offsetY={0}
+              />,
+            );
+          }
+        }
+        setMisiurewiczMarkers(visiblePoints);
+      } else {
+        setMisiurewiczMarkers([]);
+      }
+    }, 10);
+    return () => clearInterval(interval);
+  }, [
+    ASPECT_RATIO,
+    focusedPointJulia,
+    focusedPointMandelbrot,
+    mapHeight,
+    mapWidth,
+    props.animationState,
+    props.julia,
+    props.mandelbrot,
+    props.show,
+    similarPointsJulia,
+    size.h,
+    size.w,
+  ]);
+
+  return (
+    <>
+      {props.show &&
+      props.animationState === AnimationStatus.NO_ANIMATION &&
+      props.shadeDomains ? (
+        <Button
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: (size.w || 1) / 4 - 100,
+            zIndex: 1000,
+          }}
+          variant="contained"
+          onClick={() => {
+            const mPoint = findNearestMisiurewiczPoint(
+              props.mandelbrot.xyCtrl[0].xy.getValue(),
+            );
+            setFocusedPointMandelbrot(new PreperiodicPoint(mPoint, mPoint));
+          }}
+        >
+          Select nearest Misiurewicz point
+        </Button>
+      ) : null}
+      {props.show &&
+      !props.shadeDomains &&
+      (props.animationState === AnimationStatus.NO_ANIMATION ||
+        props.animationState === AnimationStatus.SELECT_JULIA_POINT)
+        ? misiurewiczMarkers
         : null}
+
+      {props.animationState === AnimationStatus.SELECT_JULIA_POINT ? juliaMarkers : null}
 
       {props.animationState === AnimationStatus.NO_ANIMATION && !props.shadeDomains ? (
         <PointsInfoCard
@@ -209,6 +283,7 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
           setFocusedPoint={setFocusedPointMandelbrot}
           focusedPointJulia={focusedPointJulia}
           setFocusedPointJulia={setFocusedPointJulia}
+          similarPointsJulia={similarPointsJulia}
         />
       ) : null}
       {props.animationState === AnimationStatus.PLAY ? (

@@ -285,13 +285,13 @@ const depthFirstSearch = (z: XYType, c: XYType, zs: XYType[], depth: number) => 
   return zs;
 };
 
-export const similarPoints = (c: PreperiodicPoint): PreperiodicPoint[] => {
+export const similarPoints = (c: PreperiodicPoint, depth: number): PreperiodicPoint[] => {
   const zs: XYType[] = [];
 
   for (let i = c.prePeriod; i < c.prePeriod + c.period; i++) {
     const z = orbit(c.point, c.point, i);
     zs.push(z);
-    depthFirstSearch(mult([-1, 0], z), c.point, zs, MAX_DEPTH);
+    depthFirstSearch(mult([-1, 0], z), c.point, zs, depth);
   }
   return zs.map((p) => new PreperiodicPoint(c.point, p));
 };
@@ -350,14 +350,14 @@ export const withinBoundingBox = (
   boxHeight: number,
   boxAngle: number,
 ): boolean => {
-  const distanceX = p[0] - boxCentre[0];
-  const distanceY = p[1] - boxCentre[1];
+  const dx = p[0] - boxCentre[0];
+  const dy = p[1] - boxCentre[1];
 
   const horizontalDistance: number = Math.abs(
-    distanceX * Math.cos(-boxAngle) - distanceY * Math.sin(-boxAngle),
+    dx * Math.cos(boxAngle) - dy * Math.sin(boxAngle),
   );
   const verticalDistance: number = Math.abs(
-    distanceX * Math.sin(-boxAngle) + distanceY * Math.cos(-boxAngle),
+    dx * Math.sin(boxAngle) + dy * Math.cos(boxAngle),
   );
 
   return horizontalDistance < boxWidth && verticalDistance < boxHeight;

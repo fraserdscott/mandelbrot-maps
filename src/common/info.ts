@@ -78,26 +78,22 @@ export interface PlayCardProps extends CardProps {
 }
 
 export interface MisiurewiczPointMarkerProps extends CardProps {
-  show: boolean;
   mapWidth: number;
   mapHeight: number;
   offsetX: number;
   offsetY: number;
-  show_threshold: number;
   m: PreperiodicPoint;
   mandelbrotControl: ViewerControlSprings;
-  animationState: AnimationStatus;
   focusedPointMandelbrot: PreperiodicPoint;
   setFocusedPointMandelbrot: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  setSimilarPointsJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint[]>>;
 }
 
 export interface PreperiodicPointMarkerProps extends CardProps {
-  show: boolean;
   mapWidth: number;
   mapHeight: number;
   offset: XYType;
-  show_threshold: number;
   preperiodicPoint: PreperiodicPoint;
   viewerControl: ViewerControlSprings;
   focusedPointJulia: PreperiodicPoint;
@@ -114,6 +110,32 @@ export interface MisiurewiczInfoCardProps extends CardProps {
   setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   focusedPointJulia: PreperiodicPoint;
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+}
+
+export interface MisiurewiczInfoCardProps extends CardProps {
+  show: boolean;
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
+  animationState: AnimationStatus;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
+  focusedPoint: PreperiodicPoint;
+  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  focusedPointJulia: PreperiodicPoint;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+}
+
+export interface SimilarityMenuProps extends CardProps {
+  show: boolean;
+  shadeDomains: boolean;
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
+  animationState: AnimationStatus;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
+  focusedPoint: PreperiodicPoint;
+  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  focusedPointJulia: PreperiodicPoint;
+  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  similarPointsJulia: PreperiodicPoint[];
 }
 
 export interface InfoDialogProps {

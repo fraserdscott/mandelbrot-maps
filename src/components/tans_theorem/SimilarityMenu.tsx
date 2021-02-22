@@ -1,13 +1,9 @@
 import { Card, Button, Typography, IconButton, Tooltip, Select } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import React from 'react';
-import {
-  formatComplexNumber,
-  similarPoints,
-  PreperiodicPoint,
-} from '../tansTheoremUtils';
+import { formatComplexNumber, PreperiodicPoint } from '../tansTheoremUtils';
 import { warpToPoint } from '../../common/utils';
-import { InfoCardProps } from '../../common/info';
+import { SimilarityMenuProps } from '../../common/info';
 import {
   AnimationStatus,
   MISIUREWICZ_POINTS,
@@ -20,7 +16,7 @@ import {
   handleMandelbrotSelection,
 } from './MisiurewiczPointMarker';
 
-const SimilarityMenu = (props: InfoCardProps): JSX.Element => {
+const SimilarityMenu = (props: SimilarityMenuProps): JSX.Element => {
   const backButton = (state: AnimationStatus) => {
     return (
       <IconButton
@@ -48,7 +44,6 @@ const SimilarityMenu = (props: InfoCardProps): JSX.Element => {
       </Button>
     );
   };
-  const similarPointsJulia = similarPoints(props.focusedPoint);
 
   const handleMandelbrotPointSelection = (
     event: React.ChangeEvent<{ value: unknown }>,
@@ -135,7 +130,7 @@ const SimilarityMenu = (props: InfoCardProps): JSX.Element => {
         value={props.focusedPointJulia.point}
         onChange={handleJuliaSimilarSelection}
       >
-        {similarPointsJulia.map((m) => (
+        {props.similarPointsJulia.map((m) => (
           <option key={m.point.toString()} value={m.point.toString()}>
             {formatComplexNumber(m.point)}
           </option>
