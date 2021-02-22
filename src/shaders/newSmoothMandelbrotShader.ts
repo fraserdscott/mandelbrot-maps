@@ -51,7 +51,7 @@ const newSmoothMandelbrotShader = (
 // orbit parameters
 #define show_orbit ${showOrbit}
 #define circle_radius ${(0.02).toFixed(3)}
-#define max_orbit_length ${MAX_ORBIT_LENGTH.toFixed(0)}
+#define max_orbit_length ${(1000).toFixed(0)}
 
 // https://webglfundamentals.org/webgl/lessons/webgl-precision-issues.html
 // prefer high float precision (lower than this may break colours on mobile)
