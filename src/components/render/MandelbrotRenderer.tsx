@@ -80,7 +80,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
     maxI: maxI,
     colour: Rgb255ColourToFloat(props.colour), // vec3(0.0,0.6,1.0)
     orbit: orbitInfo[0].flat(),
-    orbit_length: orbitInfo[1] + orbitInfo[2],
+    orbit_length: orbitInfo[0].length,
     preperiod: orbitInfo[1],
   };
 
