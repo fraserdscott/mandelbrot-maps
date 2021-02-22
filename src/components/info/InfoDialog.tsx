@@ -1,201 +1,105 @@
-import React, { PropsWithChildren, useMemo, useState } from 'react';
-import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
+import {
+  Box,
+  Grid,
+  Paper,
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import {
-  Link,
-  TableContainer,
-  Table,
-  Paper,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableBody,
-  Box,
-  Divider,
-  Snackbar,
-} from '@material-ui/core';
-import LaunchIcon from '@material-ui/icons/Launch';
+import { InfoOutlined } from '@material-ui/icons';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import { surveyLink } from '../surveyLink.json';
-import MandelbrotMapsLogo from '../../img/logo-192.png';
-
+import GitHubIcon from '@material-ui/icons/GitHub';
+import LaunchIcon from '@material-ui/icons/Launch';
 // for evaluating build time
 import preval from 'preval.macro';
-import clientDetect from '../../dist/clientDetect';
+import React, { useMemo, useState } from 'react';
 import { InfoDialogProps } from '../../common/info';
+import clientDetect from '../../dist/clientDetect';
+import {
+  Alert,
+  DialogActions,
+  DialogContent,
+  DialogDivider,
+  DialogTitle,
+} from '../custom/DialogComponents';
+import survey from '../surveyLink.json';
+import infoTextMarkdown from './info.md';
+import { MarkdownFromFile } from './MarkdownOverrides';
 
 const dateTimeStamp = preval`module.exports = new Date();`;
+const GITSHA = process.env.REACT_APP_GIT_SHA;
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2),
-      display: 'flex',
-      flexDirection: 'row',
-      // align: "middle",
-    },
-    image: {
-      marginTop: 'auto',
-      marginBottom: 'auto',
-      marginRight: 8,
-      height: 50,
-    },
-    closeButton: {
-      // position: 'absolute',
-      // right: theme.spacing(1),
-      // top: theme.spacing(1),
-      marginLeft: 'auto',
-      color: theme.palette.grey[500],
-    },
-  });
-
-export interface DialogTitleProps extends PropsWithChildren<WithStyles<typeof styles>> {
-  onClose: () => void;
-  id: string;
-}
-
-// https://material-ui.com/guides/typescript/#usage-of-withstyles
-const DialogTitle = withStyles(styles)(
-  ({ children, classes, onClose, ...other }: DialogTitleProps) => {
-    return (
-      <MuiDialogTitle disableTypography className={classes.root} {...other}>
-        <img
-          src={MandelbrotMapsLogo}
-          alt="Mandelbrot Maps logo"
-          className={classes.image}
-        />
-        <Typography
-          variant="h1"
-          style={{ fontSize: 24, marginTop: 'auto', marginBottom: 'auto' }}
-        >
-          {children}
-        </Typography>
-        {onClose ? (
-          <IconButton
-            aria-label="close"
-            className={classes.closeButton}
-            onClick={onClose}
-          >
-            <CloseIcon />
-          </IconButton>
-        ) : null}
-      </MuiDialogTitle>
-    );
-  },
-);
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(3),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
-
-function Alert(props: AlertProps) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
-export default function InfoDialog(props: InfoDialogProps): JSX.Element {
-  const [open, setOpen] = props.ctrl;
+export default function InfoDialog({
+  ctrl: [open, setOpen],
+}: InfoDialogProps): JSX.Element {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
 
   const handleClose = () => setOpen(false);
-  // const showSnackBar = () => {
-  // new Promise(() => {
-  // setSnackBarOpen(false);
-  // }).then(() => {
-  // setSnackBarOpen(true);
-  // });
-  // };
 
   // guard against null / undefined window
   const clientData = useMemo(() => clientDetect(window), []);
-  // const clientData = window.jscd || {};
 
-  const writeToClipboard = (data: string) => {
+  const writeClientDataToClipboard = () => {
+    const data = JSON.stringify(clientData);
     console.log(snackBarOpen);
     try {
       navigator.clipboard.writeText(data);
       setSnackBarOpen(true);
     } catch (e) {
-      window.prompt('Auto copy to clipboard failed, copy manually from below:', data);
+      window.prompt('Auto copy to clipboard failed, please copy manually:', data);
     }
   };
 
   return (
-    <Dialog
-      onClose={handleClose}
-      aria-labelledby="customized-dialog-title"
-      open={open}
-      maxWidth="md"
-    >
-      {/* <div style={{ maxWidth: 700 }}> */}
-      <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-        Mandelbrot Maps
+    <Dialog onClose={handleClose} open={open}>
+      <DialogTitle onClose={handleClose}>
+        <InfoOutlined style={{ marginRight: 8 }} />
+        About
       </DialogTitle>
-      <DialogContent dividers style={{ maxWidth: 700 }}>
-        <Typography gutterBottom>
-          Mandelbrot Maps is an interactive fractal explorer built using React and WebGL.
-        </Typography>
-        <Typography gutterBottom>
-          Developed by{' '}
-          <Link href="https://jmaio.github.io/" target="_blank">
-            Joao Maio
-          </Link>{' '}
-          in 2019/2020 as part of an Honours Project at The University of Edinburgh, under
-          the supervision of Philip Wadler.
-        </Typography>
-        <Typography gutterBottom>
-          The project was simultaneously undertaken by Freddie Bawden, also under the
-          supervision of Philip Wadler. Freddie&apos;s version of the project is available
-          at:{' '}
-          <Link href="http://mmaps.freddiejbawden.com/" target="_blank">
-            mmaps.freddiejbawden.com
-          </Link>
-        </Typography>
-        <Typography gutterBottom>
-          The{' '}
-          <Link
-            href="https://homepages.inf.ed.ac.uk/wadler/mandelbrot-maps/index.html"
-            target="_blank"
-          >
-            original Mandelbrot Maps project
-          </Link>{' '}
-          was developed by Iain Parris in 2008 as a Java Applet.
-        </Typography>
-        <Typography gutterBottom>
-          Mandelbrot set shader code adapted from{' '}
-          <Link href="https://www.shadertoy.com/view/4df3Rn">Mandelbrot - smooth</Link> by{' '}
-          <Link href="http://iquilezles.org/" target="_blank">
-            Inigo Quilez
-          </Link>
-          .
-        </Typography>
-        {/* <Typography>
-            &copy; Joao Maio 2020
-          </Typography> */}
+      <DialogContent dividers>
+        <Grid
+          container
+          justify="center"
+          style={{
+            marginBottom: 16,
+          }}
+        >
+          <Grid item>
+            <Button
+              color="primary"
+              endIcon={<GitHubIcon />}
+              startIcon={<LaunchIcon />}
+              href="https://github.com/JMaio/mandelbrot-maps"
+              target="_blank"
+              rel="noopener"
+            >
+              View on GitHub
+            </Button>
+          </Grid>
+        </Grid>
 
-        <Divider style={{ marginTop: 30, marginBottom: 30 }} />
+        <MarkdownFromFile f={infoTextMarkdown} />
+
+        <DialogDivider />
 
         <Box style={{ display: 'flex' }}>
           <TableContainer
             component={Paper}
             style={{ width: 'auto', margin: 'auto', maxWidth: 460 }}
+            // attempt to stop manual copying of the table
+            onClick={writeClientDataToClipboard}
+            // https://stackoverflow.com/a/46337736/9184658
+            onContextMenu={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              e.preventDefault();
+              writeClientDataToClipboard();
+            }}
           >
             <Table size="small" aria-label="a dense table">
               <TableHead>
@@ -208,7 +112,7 @@ export default function InfoDialog(props: InfoDialogProps): JSX.Element {
               <TableBody>
                 {Object.entries(clientData).map(([k, v]) => (
                   <TableRow key={k}>
-                    <TableCell>{k}</TableCell>
+                    <TableCell style={{ userSelect: 'none' }}>{k}</TableCell>
                     <TableCell align="right" style={{ fontFamily: 'monospace' }}>
                       {String(v)}
                     </TableCell>
@@ -219,52 +123,68 @@ export default function InfoDialog(props: InfoDialogProps): JSX.Element {
           </TableContainer>
         </Box>
 
-        <Divider style={{ marginTop: 30, marginBottom: 30 }} />
+        <DialogDivider />
 
         <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Typography variant="overline" align="center" style={{ margin: 'auto' }}>
-            Build:
-            {/* {console.log(new Date(dateTimeStamp).toLocaleString('en-GB', { timeZone: 'UTC' }))} */}
+          <Typography align="center" style={{ margin: 'auto' }}>
+            Build
           </Typography>
-          <Typography style={{ fontFamily: 'monospace' }}>{dateTimeStamp}</Typography>
-          <Typography style={{ fontFamily: 'monospace' }}>
-            {process.env.REACT_APP_GIT_SHA}
-          </Typography>
+          <Button
+            color="primary"
+            variant="outlined"
+            startIcon={<LaunchIcon />}
+            href={`https://github.com/JMaio/mandelbrot-maps/tree/${GITSHA}`}
+            // href={`https://${process.env.REPOSITORY}/tree/${GITSHA}`}
+            target="_blank"
+            rel="noopener"
+            style={{ margin: '8px 0' }}
+          >
+            {GITSHA}
+          </Button>
+          <code>{dateTimeStamp}</code>
         </Box>
       </DialogContent>
 
       <DialogActions>
         <Button
           onClick={() => {
-            writeToClipboard(JSON.stringify(clientData));
+            writeClientDataToClipboard();
           }}
           color="primary"
           variant="outlined"
           startIcon={<FileCopyIcon />}
         >
-          Copy
+          Copy info
         </Button>
         <Snackbar
           open={snackBarOpen}
           autoHideDuration={5000}
-          // onClose={() => setSnackBarOpen(false)}
+          // clicking outside the snackbar would trigger close
+          onClose={(e, reason) => {
+            switch (reason) {
+              case 'clickaway':
+                // don't close the snackbar on clicking outside
+                break;
+              default:
+                setSnackBarOpen(false);
+            }
+          }}
         >
           <Alert onClose={() => setSnackBarOpen(false)} severity="info">
             Device properties copied!
           </Alert>
         </Snackbar>
-        <Link
-          href={surveyLink}
+        <Button
+          color="primary"
+          variant="outlined"
+          startIcon={<LaunchIcon />}
+          href={survey.link}
           target="_blank"
           rel="noopener"
-          style={{ textDecoration: 'none' }}
         >
-          <Button autoFocus color="primary" variant="outlined" startIcon={<LaunchIcon />}>
-            Feedback
-          </Button>
-        </Link>
+          Feedback
+        </Button>
       </DialogActions>
-      {/* </div> */}
     </Dialog>
   );
 }

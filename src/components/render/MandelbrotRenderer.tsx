@@ -81,6 +81,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
     controls: props.controls,
     // gl: gl,
     setDragging: setDragging,
+    DPR: props.DPR,
   });
 
   // https://use-gesture.netlify.app/docs/changelog/#breaking
@@ -106,7 +107,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
         >
           <FPSCard fps={fps} show={settings.showFPS} />
           <WebGLCanvas
-            id="mandelbrot"
+            id="mandelbrot-canvas"
             fragShader={
               settings.showMisiurewiczPoints &&
               settings.shadeMisiurewiczDomains &&
@@ -114,7 +115,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
                 ? fragShaderMisiurewiczDomain
                 : fragShader
             }
-            useDPR={settings.useDPR}
+            DPR={props.DPR}
             // touchBind={touchBind}
             u={u}
             ref={canvasRef}
@@ -125,7 +126,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
           <MinimapViewer
             id="mandelbrot-minimap-canvas"
             fragShader={miniFragShader}
-            useDPR={settings.useDPR}
+            DPR={props.DPR}
             u={u}
             canvasRef={miniCanvasRef}
             // glRef={miniGl}

@@ -1,6 +1,6 @@
 {
   "name": "mandelbrot-maps",
-  "version": "0.1.0",
+  "version": "1.1.1",
   "private": true,
   "homepage": "https://jmaio.github.io/mandelbrot-maps/",
   "dependencies": {
@@ -14,32 +14,79 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "gl-matrix": "^3.1.0",
+    "lint-staged": "^10.5.3",
     "lodash": "^4.17.19",
+    "markdown-to-jsx": "^7.1.0",
     "react": "^17.0.1",
     "react-colorful": "^4.4.3",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
     "react-spring": "^8.0.27",
+    "react-swipeable-views": "^0.13.9",
+    "react-swipeable-views-core": "^0.14.0-alpha.0",
+    "react-swipeable-views-utils": "^0.14.0-alpha.0",
     "react-use-gesture": "^8.0.1",
     "twgl.js": "^4.17.0",
     "typeface-roboto": "^1.1.13",
     "typescript": "^4.1.2",
     "vec-la-fp": "^1.9.0",
+    "workbox-background-sync": "^5.1.3",
+    "workbox-broadcast-update": "^5.1.3",
+    "workbox-cacheable-response": "^5.1.3",
+    "workbox-core": "^5.1.3",
+    "workbox-expiration": "^5.1.3",
+    "workbox-google-analytics": "^5.1.3",
+    "workbox-navigation-preload": "^5.1.3",
+    "workbox-precaching": "^5.1.3",
+    "workbox-range-requests": "^5.1.3",
+    "workbox-routing": "^5.1.3",
+    "workbox-strategies": "^5.1.3",
+    "workbox-streams": "^5.1.3",
     "wouter": "^2.6.0"
   },
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@types/preval.macro": "^3.0.0",
+    "@types/react-swipeable-views": "^0",
+    "@types/react-swipeable-views-core": "^0",
+    "@types/react-swipeable-views-utils": "^0",
+    "@typescript-eslint/eslint-plugin": "4.9.0",
+    "@typescript-eslint/parser": "4.9.0",
+    "cross-env": "^7.0.3",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-prettier": "^3.2.0",
+    "eslint-plugin-react": "^7.21.1",
+    "eslint-plugin-react-hooks": "^4.1.2",
+    "gh-pages": "^3.1.0",
+    "husky": "^4.3.6",
+    "jest-canvas-mock": "^2.2.0",
+    "jest-webgl-canvas-mock": "^0.2.3",
+    "jshint": "^2.10.2",
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.0.2",
+    "preval.macro": "^5.0.0",
+    "react-refresh": "^0.9.0",
+    "serve": "^11.3.2",
+    "standard-version": "^9.0.0",
+    "web-vitals": "^1.0.1"
+  },
   "scripts": {
-    "start": "cross-env REACT_APP_GIT_SHA=$(837a434) react-scripts start",
-    "build": "cross-env REACT_APP_GIT_SHA=$(837a434) react-scripts build",
+    "start": "cross-env REACT_APP_GIT_SHA=$(git describe --tags) react-scripts start",
+    "start:https": "cross-env HTTPS=true REACT_APP_GIT_SHA=$(git describe --tags) react-scripts start",
+    "build": "cross-env REACT_APP_GIT_SHA=$(git describe --tags) react-scripts build",
     "build:ci": "cross-env CI=true yarn build",
     "build:localhost": "cross-env PUBLIC_URL='.' react-scripts build",
     "test": "react-scripts test",
     "test:ci": "cross-env CI=true yarn test",
     "eject": "react-scripts eject",
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "yarn predeploy && gh-pages -d build",
     "lint": "eslint \"./src/**.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint \"./src/**/*.{js,jsx,ts,tsx}\" --fix",
-    "postinstall": "husky install"
+    "release": "standard-version",
+    "release:patch": "yarn release --release-as patch"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -56,24 +103,12 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@types/preval.macro": "^3.0.0",
-    "@typescript-eslint/eslint-plugin": "4.9.0",
-    "@typescript-eslint/parser": "4.9.0",
-    "cross-env": "^7.0.3",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-config-react-app": "^5.2.1",
-    "eslint-plugin-prettier": "^3.2.0",
-    "eslint-plugin-react": "^7.21.1",
-    "eslint-plugin-react-hooks": "^4.1.2",
-    "gh-pages": "^3.1.0",
-    "husky": "^5.0.6",
-    "jest-canvas-mock": "^2.2.0",
-    "jest-webgl-canvas-mock": "^0.2.3",
-    "jshint": "^2.10.2",
-    "prettier": "^2.2.1",
-    "pretty-quick": "^3.0.2",
-    "preval.macro": "^5.0.0",
-    "serve": "^11.3.2"
+  "lint-staged": {
+    "./src/**/*.{js,jsx,ts,tsx}": "pretty-quick"
+  },
+  "dependenciesMeta": {
+    "webpack-dev-server": {
+      "unplugged": true
+    }
   }
 }

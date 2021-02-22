@@ -14,9 +14,9 @@ export interface WebGLCanvasProps extends CanvasHTMLAttributes<HTMLCanvasElement
   /** The fps setter, provided by React useState, optional in Julia */
   fps?: React.Dispatch<React.SetStateAction<string>>;
   /** The device pixel ratio to be used can be overwritten with this value? */
-  dpr?: number;
+  DPR: number;
   /** Should the DPR value be used? */
-  useDPR?: boolean;
+  // useDPR?: boolean;
   /** Specify whether the viewer is being dragged on, to set the appropriate cursor. */
   dragging?: boolean;
   /** The HTML "id" to give to the canvas element, if any */
@@ -29,6 +29,7 @@ export interface RendererProps {
   controls: ViewerControlSprings;
   maxI: number;
   useDPR: boolean;
+  DPR: number;
   useAA: boolean;
   colour: RgbColor;
 }
@@ -58,4 +59,11 @@ export interface MinimapViewerProps extends WebGLCanvasProps {
 
   //   fragShader: any;
   //   glRef: React.MutableRefObject<HTMLCanvasElement>;
+}
+
+export interface ViewChangerProps {
+  vertical: boolean;
+  changeFunc: React.Dispatch<React.SetStateAction<[boolean, boolean]>>;
+  /** use this toggle to make the component display nicely for showcase purposes */
+  displayOnly?: boolean;
 }

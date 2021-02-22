@@ -13,6 +13,7 @@
   user-select: none;
   /* cursor: default; */
   cursor: grab;
+  margin: auto;
 }
 
 .react-colorful__saturation {

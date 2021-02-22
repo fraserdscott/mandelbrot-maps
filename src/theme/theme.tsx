@@ -1,6 +1,6 @@
-import { colors, createMuiTheme } from '@material-ui/core';
+import { colors, createMuiTheme, responsiveFontSizes } from '@material-ui/core';
 
-const theme = createMuiTheme({
+let theme = createMuiTheme({
   props: {
     // Name of the component ⚛️
     MuiSwitch: {
@@ -9,8 +9,30 @@ const theme = createMuiTheme({
     },
     MuiButton: {
       variant: 'outlined',
+      // style: {
+      //   borderRadius: 24,
+      // },
+    },
+    MuiDialog: {
+      // maxWidth: 'sm',
+      // fullWidth: true,
       style: {
-        borderRadius: 24,
+        // fill more of the screen with this dialog
+        margin: 0,
+      },
+      PaperProps: {
+        style: {
+          // fill more of the screen with this dialog
+          margin: 12,
+          // don't expand past 1000px
+          maxHeight: 1000,
+          // don't go outside window bounds
+          height: 'calc(100% - 24px)', // = 16px top + bottom margin
+          // sm is 600px, go slightly beyond that
+          maxWidth: 680,
+          // always try to maximize width (`fullWidth={true}`)
+          width: '100%',
+        },
       },
     },
   },
@@ -28,7 +50,17 @@ const theme = createMuiTheme({
   shape: {
     borderRadius: 12,
   },
+  typography: {
+    h1: {
+      fontSize: '3rem',
+    },
+    h2: {
+      fontSize: '2rem',
+    },
+  },
 });
+
+theme = responsiveFontSizes(theme);
 
 export const simpleBoxShadow = '0px 2px 10px 1px rgba(0, 0, 0, 0.4)';
 export const lightBoxShadow = '0px 0px 10px 2px rgba(255, 255, 255, 0.8)';
