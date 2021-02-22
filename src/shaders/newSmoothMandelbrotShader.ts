@@ -1,7 +1,6 @@
 // TODO set max iterations as parameter, crosshair as parameter
 
 import { RendererRenderValues } from '../common/render';
-import { MAX_ORBIT_LENGTH } from '../components/render/MandelbrotRenderer';
 
 const makeCrosshair = (stroke: number, radius: number) => ({
   stroke,
