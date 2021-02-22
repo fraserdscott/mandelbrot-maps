@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useGesture } from 'react-use-gesture';
+import { forwardOrbit } from '../../common/complex_number_utils';
 import { MandelbrotRendererProps } from '../../common/render';
 import { MandelbrotMapsWebGLUniforms } from '../../common/types';
 import { genericTouchBind, Rgb255ColourToFloat } from '../../common/utils';
@@ -9,10 +10,13 @@ import newSmoothMandelbrotShader, {
 } from '../../shaders/newSmoothMandelbrotShader';
 import misiurewiczDomainsMandelbrotShader from '../../shaders/misiurewiczDomainsMandelbrotShader';
 import FPSCard from '../info/FPSCard';
+import OrbitCard from '../info/OrbitCard';
 import { SettingsContext } from '../settings/SettingsContext';
 import MinimapViewer from './MinimapViewer';
 import WebGLCanvas from './WebGLCanvas';
 import { AnimationStatus } from '../tans_theorem/MisiurewiczModeFragment';
+
+export const MAX_ORBIT_LENGTH = 400;
 
 export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.Element {
   // variables to hold canvas and webgl information
@@ -54,6 +58,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
       AA: AA,
     },
     props.showCrosshair,
+    props.showOrbit,
     standardCrosshair,
   );
   const miniFragShader = newSmoothMandelbrotShader(
@@ -62,8 +67,21 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
       AA: 2,
     },
     props.showCrosshair,
+    props.showOrbit,
     miniCrosshair,
   );
+
+  const [orbitInfo, setOrbitInfo] = useState(
+    forwardOrbit(xy.getValue(), xy.getValue(), MAX_ORBIT_LENGTH),
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (props.showOrbit)
+        setOrbitInfo(forwardOrbit(xy.getValue(), xy.getValue(), MAX_ORBIT_LENGTH));
+    }, 1);
+    return () => clearInterval(interval);
+  }, [props.showOrbit, xy]);
 
   const u: MandelbrotMapsWebGLUniforms = {
     zoom: z,
@@ -71,7 +89,9 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
     theta: theta,
     maxI: maxI,
     colour: Rgb255ColourToFloat(props.colour), // vec3(0.0,0.6,1.0)
-    // screenScaleMultiplier: screenScaleMultiplier,
+    orbit: orbitInfo[0].flat(),
+    orbit_length: orbitInfo[0].length,
+    preperiod: orbitInfo[1],
   };
 
   const [dragging, setDragging] = useState(false);
@@ -105,6 +125,13 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
             position: 'relative',
           }}
         >
+          <OrbitCard
+            show={settings.showOrbit}
+            xy={xy}
+            preperiod={orbitInfo[1]}
+            period={orbitInfo[2]}
+            flag={orbitInfo[3]}
+          />
           <FPSCard fps={fps} show={settings.showFPS} />
           <WebGLCanvas
             id="mandelbrot-canvas"

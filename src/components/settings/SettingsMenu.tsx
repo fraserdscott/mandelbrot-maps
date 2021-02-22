@@ -114,8 +114,10 @@ export default function SettingsMenu(props: SettingsMenuProps): JSX.Element {
       startIcon={<MyLocationOutlined />}
       color="secondary"
       aria-controls="reset"
-      // eslint-disable-next-line react/prop-types
-      onClick={props.reset}
+      onClick={() => {
+        // eslint-disable-next-line react/prop-types
+        props.reset();
+      }}
     >
       Reset
     </Button>

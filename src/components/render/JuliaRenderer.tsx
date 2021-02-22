@@ -35,6 +35,9 @@ export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
     theta: theta,
     maxI: maxI,
     colour: Rgb255ColourToFloat(props.colour),
+    orbit: [],
+    orbit_length: -1,
+    preperiod: -1,
   };
 
   const [dragging, setDragging] = useState(false);

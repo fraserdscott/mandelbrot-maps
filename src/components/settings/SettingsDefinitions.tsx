@@ -68,6 +68,15 @@ and allows warping to specific coordinates
       />
     ),
   },
+  showOrbit: {
+    label: 'Show orbit',
+    checked: settings.showOrbit,
+    control: <Switch />,
+    helptext: `
+Displays the forward orbit of the current point.
+Yellow circle represent preperiodic points, while red circles represent periodic points.
+(Mandelbrot viewer only).`,
+  },
   maxI: {
     label: 'Iterations',
     value: settings.maxI,
@@ -174,6 +183,7 @@ export const getSettingsWidgetsGrouping = (
       showMinimap: settingsWidgets.showMinimap,
       showCrosshair: settingsWidgets.showCrosshair,
       showCoordinates: settingsWidgets.showCoordinates,
+      showOrbit: settingsWidgets.showOrbit,
     },
   },
   {

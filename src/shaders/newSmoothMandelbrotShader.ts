@@ -21,6 +21,7 @@ export interface MandelbrotShaderParams {
 const newSmoothMandelbrotShader = (
   { maxI = 300, AA = 1, B = 64 }: RendererRenderValues,
   showCrosshair = true,
+  showOrbit = false,
   crosshairShape = {
     stroke: 2,
     radius: 100,
@@ -46,6 +47,11 @@ const newSmoothMandelbrotShader = (
 #define cross_stroke ${crosshairShape.stroke.toFixed(1)}
 #define cross_radius ${crosshairShape.radius.toFixed(1)}
 
+// orbit parameters
+#define show_orbit ${showOrbit}
+#define circle_radius ${(0.02).toFixed(3)}
+#define max_orbit_length ${(1000).toFixed(0)}
+
 // https://webglfundamentals.org/webgl/lessons/webgl-precision-issues.html
 // prefer high float precision (lower than this may break colours on mobile)
 #ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -63,6 +69,9 @@ uniform vec2  u_xy;
 uniform float u_zoom;
 uniform float u_theta;
 uniform vec3  u_colour;
+uniform int u_preperiod;
+uniform int u_orbit_length;
+uniform vec2 u_orbit[max_orbit_length];
 
 bool crosshair( float x, float y ) {
   float abs_x = abs(2.0*x - resolution.x);
@@ -129,6 +138,22 @@ void main() {
     float l = mandelbrot(c);
     // col += 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
     col += 0.5 + 0.5*cos( 3.0 + l*0.15 + u_colour);
+
+    #if show_orbit
+    float radius = circle_radius / u_zoom;
+    for( int i=0; i<max_orbit_length; i++ )
+    {
+      if (i == u_orbit_length) break;
+
+      if (distance(c, u_orbit[i]) <= radius) {
+        if (u_preperiod < 0 || i < u_preperiod) {
+          col = vec3(255, 255, 0);
+        } else {
+          col = vec3(255, 0, 0);
+        }
+      }
+    }
+    #endif
 
     // antialiasing
     #if AA>1
