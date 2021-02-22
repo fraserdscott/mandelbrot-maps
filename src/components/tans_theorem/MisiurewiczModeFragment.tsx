@@ -61,7 +61,7 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
         style={{
           position: 'absolute',
           bottom: 0,
-          left: (size.width || 1) / 4 - 100,
+          left: (size.w || 1) / 4 - 100,
           zIndex: 1000,
         }}
         variant="contained"
@@ -81,11 +81,9 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
 
   const size = useWindowSize();
 
-  const mapWidth =
-    (size.width || 1) < (size.height || 0) ? size.width || 1 : (size.width || 1) / 2;
+  const mapWidth = (size.w || 1) < (size.h || 0) ? size.w || 1 : (size.w || 1) / 2;
 
-  const mapHeight =
-    (size.width || 1) < (size.height || 0) ? (size.height || 0) / 2 : size.height || 0;
+  const mapHeight = (size.w || 1) < (size.h || 0) ? (size.h || 0) / 2 : size.h || 0;
 
   return (
     <>
@@ -156,8 +154,8 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
                 key={m.point.toString()}
                 preperiodicPoint={m}
                 offset={[
-                  (size.width || 1) < (size.height || 0) ? 0 : (size.width || 1) / 2,
-                  (size.width || 1) < (size.height || 0) ? (size.height || 0) / 2 : 0,
+                  (size.w || 1) < (size.h || 0) ? 0 : (size.w || 1) / 2,
+                  (size.w || 1) < (size.h || 0) ? (size.h || 0) / 2 : 0,
                 ]}
                 mapWidth={mapWidth}
                 mapHeight={mapHeight}

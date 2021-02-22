@@ -194,6 +194,7 @@ function App(): JSX.Element {
                     }}
                   >
                     <MandelbrotRenderer
+                      animationState={animationState}
                       controls={mandelbrotControls}
                       DPR={currentDPR}
                       {...settings}
