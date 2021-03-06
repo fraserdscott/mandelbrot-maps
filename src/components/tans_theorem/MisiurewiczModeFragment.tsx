@@ -10,6 +10,7 @@ import {
   withinBoundingBox,
 } from '../tansTheoremUtils';
 import PointsInfoCard from './MisiurewiczPointsMenu';
+import DomainsInfoCard from './MisiurewiczDomainsMenu';
 import SimilarityAnimationCard from './SimilarityAnimationCard';
 import SimilarityMenu from './SimilarityMenu';
 import PlayCard from './PlayCard';
@@ -146,13 +147,10 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
         const boxWidth = ASPECT_RATIO / props.mandelbrot.zoomCtrl[0].z.getValue();
         const boxHeight = 1 / props.mandelbrot.zoomCtrl[0].z.getValue();
         const boxAngle = props.mandelbrot.rotCtrl[0].theta.getValue();
-
-        for (let i = 0; i < MISIUREWICZ_POINTS.length; i++) {
-          if (visiblePoints.length === 5) break;
-
+        if (props.shadeDomains) {
           if (
             withinBoundingBox(
-              MISIUREWICZ_POINTS[i].point,
+              props.focusedPointMandelbrot.point,
               boxCentre,
               boxWidth,
               boxHeight,
@@ -161,8 +159,8 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
           ) {
             visiblePoints.push(
               <MisiurewiczPointMarker
-                key={MISIUREWICZ_POINTS[i].point.toString()}
-                m={MISIUREWICZ_POINTS[i]}
+                key={props.focusedPointMandelbrot.point.toString()}
+                m={props.focusedPointMandelbrot}
                 mapWidth={mapWidth}
                 mapHeight={mapHeight}
                 mandelbrotControl={props.mandelbrot}
@@ -170,6 +168,32 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
                 handleMandelbrotSelection={handleMisiurewiczPointSelection}
               />,
             );
+          }
+        } else {
+          for (let i = 0; i < MISIUREWICZ_POINTS.length; i++) {
+            if (visiblePoints.length === 5) break;
+
+            if (
+              withinBoundingBox(
+                MISIUREWICZ_POINTS[i].point,
+                boxCentre,
+                boxWidth,
+                boxHeight,
+                boxAngle,
+              )
+            ) {
+              visiblePoints.push(
+                <MisiurewiczPointMarker
+                  key={MISIUREWICZ_POINTS[i].point.toString()}
+                  m={MISIUREWICZ_POINTS[i]}
+                  mapWidth={mapWidth}
+                  mapHeight={mapHeight}
+                  mandelbrotControl={props.mandelbrot}
+                  focusedPointMandelbrot={props.focusedPointMandelbrot}
+                  handleMandelbrotSelection={handleMisiurewiczPointSelection}
+                />,
+              );
+            }
           }
         }
         setMisiurewiczMarkers(visiblePoints);
@@ -223,6 +247,7 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
     props.focusedPointMandelbrot,
     props.julia,
     props.mandelbrot,
+    props.shadeDomains,
     props.show,
     similarPointsJulia,
   ]);
@@ -243,11 +268,15 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
           onClick={() => {
             const mPoint = findNearestMisiurewiczPoint(
               props.mandelbrot.xyCtrl[0].xy.getValue(),
+              1000,
             );
-            props.setFocusedPointMandelbrot(new PreperiodicPoint(mPoint, mPoint));
+            if (mPoint[0] !== 0 && mPoint[1] !== 0) {
+              const p = new PreperiodicPoint(mPoint, mPoint);
+              handleMisiurewiczPointSelection(p, p);
+            }
           }}
         >
-          Select nearest Misiurewicz point
+          Press to find nearest Misiurewicz point
         </Button>
       ) : null}
       {props.show && props.animationState === AnimationStatus.SELECT_MANDELBROT_POINT ? (
@@ -283,16 +312,29 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
       ) : null}
 
       {props.animationState === AnimationStatus.SELECT_MANDELBROT_POINT ? (
-        <PointsInfoCard
-          show={props.show}
-          mandelbrot={props.mandelbrot}
-          julia={props.julia}
-          animationState={props.animationState}
-          setAnimationState={props.setAnimationState}
-          focusedPointMandelbrot={props.focusedPointMandelbrot}
-          focusedPointJulia={props.focusedPointJulia}
-          handleMandelbrotSelection={handleMisiurewiczPointSelection}
-        />
+        props.shadeDomains ? (
+          <DomainsInfoCard
+            show={props.show}
+            mandelbrot={props.mandelbrot}
+            julia={props.julia}
+            animationState={props.animationState}
+            setAnimationState={props.setAnimationState}
+            focusedPointMandelbrot={props.focusedPointMandelbrot}
+            focusedPointJulia={props.focusedPointJulia}
+            handleMandelbrotSelection={handleMisiurewiczPointSelection}
+          />
+        ) : (
+          <PointsInfoCard
+            show={props.show}
+            mandelbrot={props.mandelbrot}
+            julia={props.julia}
+            animationState={props.animationState}
+            setAnimationState={props.setAnimationState}
+            focusedPointMandelbrot={props.focusedPointMandelbrot}
+            focusedPointJulia={props.focusedPointJulia}
+            handleMandelbrotSelection={handleMisiurewiczPointSelection}
+          />
+        )
       ) : null}
       {props.animationState === AnimationStatus.SELECT_JULIA_POINT ? (
         <Card

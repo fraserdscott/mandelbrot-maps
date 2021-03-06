@@ -242,19 +242,21 @@ export function formatAngle(angle: number): string {
 }
 
 function findPotentialPreperiod(c: XYType): number {
+  const MAX_PREPERIOD = 1000;
+
   let z: XYType = c;
-  let minNumber = 4;
-  let minp = -1;
-  for (let i = 0; i < 50; i++) {
+  let minDistance = 4;
+  let minPreperiod = -1;
+  for (let i = 0; i < MAX_PREPERIOD; i++) {
     const newZ: XYType = add(square(z), c);
-    const x = sub(newZ, z);
-    if (magnitude(x) < minNumber) {
-      minNumber = magnitude(x);
-      minp = i;
+    const distance = magnitude(sub(newZ, z));
+    if (distance < minDistance) {
+      minDistance = distance;
+      minPreperiod = i;
     }
     z = newZ;
   }
-  return minp;
+  return minPreperiod;
 }
 
 const Wfried = function (c: XYType, l: number, p: number) {
@@ -264,11 +266,17 @@ const Wfried = function (c: XYType, l: number, p: number) {
   return sub(endOfCycle, startOfCycle);
 };
 
-export const findNearestMisiurewiczPoint = function (c: XYType): XYType {
+export const findNearestMisiurewiczPoint = function (
+  c: XYType,
+  iterations: number,
+): XYType {
   const q = findPotentialPreperiod(c);
+  if (q === -1) {
+    return [0, 0];
+  }
   const p = 1;
   const learningRate: XYType = [0.01, 0];
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < iterations; i++) {
     const F = W(c, q, p);
     const Fdash = Wfried(c, q, p);
     c = sub(c, mult(learningRate, divide(F, Fdash)));

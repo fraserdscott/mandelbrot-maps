@@ -43,30 +43,15 @@ and allows warping to specific coordinates
     `,
   },
   showMisiurewiczPoints: {
-    label: 'Highlight Misiurewicz points',
+    label: "Tan's theorem animation",
     checked: settings.showMisiurewiczPoints,
     control: <Switch />,
   },
 
   shadeMisiurewiczDomains: {
-    label: 'Selection method',
+    label: 'Shade Misiurewicz domains',
     value: settings.shadeMisiurewiczDomains,
-    labelPlacement: 'top',
-    style: {
-      marginLeft: 0,
-      marginRight: 0,
-    },
-    control: (
-      <Slider
-        step={null}
-        min={0}
-        max={1}
-        marks={[
-          { value: 0, label: 'List of points' },
-          { value: 1, label: 'Misiurewicz Domains' },
-        ]}
-      />
-    ),
+    control: <Switch />,
   },
   showOrbit: {
     label: 'Show orbit',
