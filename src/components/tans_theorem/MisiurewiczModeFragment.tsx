@@ -340,14 +340,14 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
           >
             <>{BackButton()}</>
           </Card>
-          <PlayCard
+          {/* <PlayCard
             mandelbrot={props.mandelbrot}
             julia={props.julia}
             setAnimationState={props.setAnimationState}
             focusedPointMandelbrot={props.focusedPointMandelbrot}
             focusedPointJulia={props.focusedPointJulia}
             magnification={props.magnification}
-          />
+          /> */}
         </>
       ) : null}
       {[
