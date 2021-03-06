@@ -104,5 +104,5 @@ function round(value: number, precision: number): number {
 }
 
 export function formatComplexNumber(c: XYType): string {
-  return `${round(c[0], 3)}${c[1] >= 0 ? '+' : ''}${round(c[1], 3)}i`;
+  return `${round(c[0], 2)}${c[1] >= 0 ? '+' : ''}${round(c[1], 2)}i`;
 }

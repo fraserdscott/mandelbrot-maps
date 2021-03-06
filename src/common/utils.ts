@@ -57,6 +57,10 @@ export interface GenericTouchBindParams {
   DPR: number;
 }
 
+export interface FrozenTouchBindParams extends GenericTouchBindParams {
+  align: (z: number) => void;
+}
+
 export interface GenericTouchBindReturn {
   handlers: Handlers;
   config: UseGestureConfig;
@@ -311,6 +315,424 @@ export function genericTouchBind({
         //   //   // decay: true,
         //   // },
         // });
+
+        updateXY({
+          xy: memo.xy,
+          theta: theta.getValue(),
+          relMove: relMove,
+          down: down,
+        });
+
+        // tell the renderer that it's being dragged on
+        setDragging(down);
+
+        return memo;
+      },
+    },
+    config: {
+      eventOptions: { passive: false, capture: false },
+      domTarget: domTarget,
+      // The config object passed to useGesture has drag, wheel, scroll, pinch and move keys
+      // for specific gesture options. See here for more details.
+      // drag: {
+      //   bounds,
+      //   rubberband: true,
+      // }
+    },
+  };
+}
+
+// a touchbind for re-using across renderers
+export function frozenTouchBind({
+  domTarget,
+  controls,
+  setDragging,
+  DPR,
+  align,
+}: FrozenTouchBindParams): GenericTouchBindReturn {
+  const [{ xy }] = controls.xyCtrl;
+  const [{ z, minZoom, maxZoom }, setControlZoom] = controls.zoomCtrl;
+  const [{ theta }] = controls.rotCtrl;
+
+  const zoomMult = { in: 3e-3, out: 1e-3 };
+
+  // used to have screenScaleMultiplier here
+  const getRealZoom = (z: number) => (domTarget.current?.height || 100) * z;
+  // * screenScaleMultiplier;
+
+  /** Re-usable logic for XY "panning" */
+  const updateXY = ({
+    xy,
+    theta,
+    relMove,
+    down,
+  }: {
+    xy: Vector2;
+    theta: number;
+    relMove: Vector2;
+    down: boolean;
+  }) => null;
+
+  /** Re-usable logic for zooming */
+  const updateZ = ({ z, down }: { z: number; down: boolean }) => {
+    align(z);
+    return setControlZoom({
+      z: z,
+      config: down ? springsConfigs.user.zoom : springsConfigs.default.zoom,
+      // reset immediate value from warp function
+      immediate: false,
+    });
+  };
+
+  /** Re-usable logic for rotating */
+  const updateT = ({ t, down }: { t: number; down: boolean }) => null;
+
+  return {
+    handlers: {
+      // prevent some browser events such as swipe-based navigation or
+      // pinch-based zoom and instead redirect them to this handler
+      // onDragStart: ({ event }: FullGestureState<StateKey<'drag'>>) =>
+      //   event?.preventDefault(),
+      // onPinchStart: ({ event }: FullGestureState<StateKey<'pinch'>>) =>
+      //   event?.preventDefault(),
+      // onWheelStart: ({ event }: FullGestureState<StateKey<'wheel'>>) =>
+      //   event?.preventDefault(),
+
+      onPinch: ({
+        event,
+        da: [d, a],
+        vdva: [vd, va],
+        down,
+        movement: [md, ma],
+        delta: [dd, da],
+        first,
+        // initial, // initial [d, a]
+        origin,
+        memo = {
+          xy: xy.getValue(),
+          z: z.getValue(),
+          t: theta.getValue(),
+          a: 0,
+          o: [0, 0] as Vector2,
+        },
+      }: FullGestureState<StateKey<'pinch'>>) => {
+        // disable native browser events
+        event && event.preventDefault();
+
+        if (first) {
+          // remember the angle, location at which the pinch gesture starts
+          // memo.a = a;
+          memo.o = origin;
+        }
+
+        // new zoom is the product of initial zoom and a function of the delta since the pinch
+        //   (initial zoom) exponentially changed by md, with linear and exponential multipliers
+        //     linear multiplier:
+        //     exponential multiplier: scale faster as pinch becomes more distant
+        //     if decreasing, scale must decrease more slowly
+        // const em = 1.33;
+        // const newZ =
+        //   memo.z * (1 + Math.sign(md) * 1e-2 * Math.abs(md) ** (md <= 0 ? 1 / em : em)); //(1 - zdelta * Math.abs(zdelta));
+        const newZ = _.clamp(memo.z + md * 1e-2, 0.5, 100_000) ** (1 + md * 1e-3); //(1 - zdelta * Math.abs(zdelta));
+        // console.log(Math.abs(md * 1e-2));
+        // console.log(
+        //   md.toFixed(2) + ' => ' + 1e-2 * Math.abs(md) ** (md <= 0 ? 0.8 : 1.1),
+        // );
+        // console.log(newZ);
+        const newZclamp = _.clamp(newZ, minZoom.getValue(), maxZoom.getValue());
+
+        const realZoom = getRealZoom(newZclamp);
+
+        // get movement of pointer origin for panning
+        const [px, py]: Vector2 = vScale(-2 / realZoom, subV(origin, memo.o));
+        const relMove: Vector2 = [px, -py];
+
+        updateXY({
+          xy: memo.xy,
+          theta: theta.getValue(),
+          relMove: relMove,
+          down: down,
+        });
+
+        updateZ({ z: newZclamp, down: down });
+
+        updateT({
+          t: memo.t + degToRad(ma),
+          down: down,
+        });
+
+        return memo;
+      },
+
+      onWheel: ({
+        event,
+        movement: [, my],
+        active,
+        shiftKey,
+        memo = { zoom: z.getValue(), t: theta.getValue() },
+      }: FullGestureState<StateKey<'wheel'>>) => {
+        // disable native browser events
+        event && event.preventDefault();
+
+        if (shiftKey) {
+          // if shift is pressed, rotate instead of zoom
+          const newT = memo.t + my * 1.5e-3;
+
+          updateT({
+            t: newT,
+            down: active,
+          });
+        } else {
+          // set different multipliers based on zoom direction
+          // mouse movement negative = move up the page = zoom in
+          //                                   zoom        in           out
+          const newZ = memo.zoom * (1 - my * (my < 0 ? zoomMult.in : zoomMult.out));
+
+          updateZ({
+            z: _.clamp(newZ, minZoom.getValue(), maxZoom.getValue()),
+            down: active,
+          });
+        }
+        return memo;
+      },
+
+      onDrag: ({
+        event,
+        down,
+        movement,
+        direction: [dx, dy],
+        velocity,
+        pinching,
+        last,
+        cancel,
+        memo = { xy: xy.getValue(), theta: theta.getValue() },
+      }: FullGestureState<StateKey<'drag'>>) => {
+        // disable native browser events
+        event && event.preventDefault();
+
+        // let pinch handle movement
+        if (pinching) cancel && cancel();
+        // change according to this formula:
+        // move (x, y) in the opposite direction of drag (pan with cursor)
+        // divide by canvas size to scale appropriately
+        // multiply by 2 to correct scaling on viewport (?)
+        // use screen multiplier for more granularity
+        const realZoom = getRealZoom(z.getValue());
+
+        const [px, py]: Vector = vScale(-2 / realZoom, movement);
+        // const relMove: Vector = vScale(2 / realZoom, movement);
+
+        const relMove: Vector = [px, -py];
+        // const relDir: Vector = [dx, -dy];
+
+        // const t = theta.getValue();
+
+        // const vecXY = addV(memo.xy, vRotate(t, relMove)); // add the displacement to the starting position
+        // const velXY = vScale(velocity, vNorm(vecXY))
+
+        updateXY({
+          xy: memo.xy,
+          theta: theta.getValue(),
+          relMove: relMove,
+          down: down,
+        });
+
+        // tell the renderer that it's being dragged on
+        setDragging(down);
+
+        return memo;
+      },
+    },
+    config: {
+      eventOptions: { passive: false, capture: false },
+      domTarget: domTarget,
+      // The config object passed to useGesture has drag, wheel, scroll, pinch and move keys
+      // for specific gesture options. See here for more details.
+      // drag: {
+      //   bounds,
+      //   rubberband: true,
+      // }
+    },
+  };
+}
+
+export function frozoneTouchBind({
+  domTarget,
+  controls,
+  setDragging,
+  DPR,
+}: GenericTouchBindParams): GenericTouchBindReturn {
+  const [{ xy }] = controls.xyCtrl;
+  const [{ z, minZoom, maxZoom }, setControlZoom] = controls.zoomCtrl;
+  const [{ theta }] = controls.rotCtrl;
+
+  const zoomMult = { in: 3e-3, out: 1e-3 };
+
+  // used to have screenScaleMultiplier here
+  const getRealZoom = (z: number) => (domTarget.current?.height || 100) * z;
+  // * screenScaleMultiplier;
+
+  /** Re-usable logic for XY "panning" */
+  const updateXY = ({
+    xy,
+    theta,
+    relMove,
+    down,
+  }: {
+    xy: Vector2;
+    theta: number;
+    relMove: Vector2;
+    down: boolean;
+  }) => null;
+
+  /** Re-usable logic for zooming */
+  const updateZ = ({ z, down }: { z: number; down: boolean }) => null;
+
+  /** Re-usable logic for rotating */
+  const updateT = ({ t, down }: { t: number; down: boolean }) => null;
+
+  return {
+    handlers: {
+      // prevent some browser events such as swipe-based navigation or
+      // pinch-based zoom and instead redirect them to this handler
+      // onDragStart: ({ event }: FullGestureState<StateKey<'drag'>>) =>
+      //   event?.preventDefault(),
+      // onPinchStart: ({ event }: FullGestureState<StateKey<'pinch'>>) =>
+      //   event?.preventDefault(),
+      // onWheelStart: ({ event }: FullGestureState<StateKey<'wheel'>>) =>
+      //   event?.preventDefault(),
+
+      onPinch: ({
+        event,
+        da: [d, a],
+        vdva: [vd, va],
+        down,
+        movement: [md, ma],
+        delta: [dd, da],
+        first,
+        // initial, // initial [d, a]
+        origin,
+        memo = {
+          xy: xy.getValue(),
+          z: z.getValue(),
+          t: theta.getValue(),
+          a: 0,
+          o: [0, 0] as Vector2,
+        },
+      }: FullGestureState<StateKey<'pinch'>>) => {
+        // disable native browser events
+        event && event.preventDefault();
+
+        if (first) {
+          // remember the angle, location at which the pinch gesture starts
+          // memo.a = a;
+          memo.o = origin;
+        }
+
+        // new zoom is the product of initial zoom and a function of the delta since the pinch
+        //   (initial zoom) exponentially changed by md, with linear and exponential multipliers
+        //     linear multiplier:
+        //     exponential multiplier: scale faster as pinch becomes more distant
+        //     if decreasing, scale must decrease more slowly
+        // const em = 1.33;
+        // const newZ =
+        //   memo.z * (1 + Math.sign(md) * 1e-2 * Math.abs(md) ** (md <= 0 ? 1 / em : em)); //(1 - zdelta * Math.abs(zdelta));
+        const newZ = _.clamp(memo.z + md * 1e-2, 0.5, 100_000) ** (1 + md * 1e-3); //(1 - zdelta * Math.abs(zdelta));
+        // console.log(Math.abs(md * 1e-2));
+        // console.log(
+        //   md.toFixed(2) + ' => ' + 1e-2 * Math.abs(md) ** (md <= 0 ? 0.8 : 1.1),
+        // );
+        // console.log(newZ);
+        const newZclamp = _.clamp(newZ, minZoom.getValue(), maxZoom.getValue());
+
+        const realZoom = getRealZoom(newZclamp);
+
+        // get movement of pointer origin for panning
+        const [px, py]: Vector2 = vScale(-2 / realZoom, subV(origin, memo.o));
+        const relMove: Vector2 = [px, -py];
+
+        updateXY({
+          xy: memo.xy,
+          theta: theta.getValue(),
+          relMove: relMove,
+          down: down,
+        });
+
+        updateZ({ z: newZclamp, down: down });
+
+        updateT({
+          t: memo.t + degToRad(ma),
+          down: down,
+        });
+
+        return memo;
+      },
+
+      onWheel: ({
+        event,
+        movement: [, my],
+        active,
+        shiftKey,
+        memo = { zoom: z.getValue(), t: theta.getValue() },
+      }: FullGestureState<StateKey<'wheel'>>) => {
+        // disable native browser events
+        event && event.preventDefault();
+
+        if (shiftKey) {
+          // if shift is pressed, rotate instead of zoom
+          const newT = memo.t + my * 1.5e-3;
+
+          updateT({
+            t: newT,
+            down: active,
+          });
+        } else {
+          // set different multipliers based on zoom direction
+          // mouse movement negative = move up the page = zoom in
+          //                                   zoom        in           out
+          const newZ = memo.zoom * (1 - my * (my < 0 ? zoomMult.in : zoomMult.out));
+
+          updateZ({
+            z: _.clamp(newZ, minZoom.getValue(), maxZoom.getValue()),
+            down: active,
+          });
+        }
+        return memo;
+      },
+
+      onDrag: ({
+        event,
+        down,
+        movement,
+        direction: [dx, dy],
+        velocity,
+        pinching,
+        last,
+        cancel,
+        memo = { xy: xy.getValue(), theta: theta.getValue() },
+      }: FullGestureState<StateKey<'drag'>>) => {
+        // disable native browser events
+        event && event.preventDefault();
+
+        // let pinch handle movement
+        if (pinching) cancel && cancel();
+        // change according to this formula:
+        // move (x, y) in the opposite direction of drag (pan with cursor)
+        // divide by canvas size to scale appropriately
+        // multiply by 2 to correct scaling on viewport (?)
+        // use screen multiplier for more granularity
+        const realZoom = getRealZoom(z.getValue());
+
+        const [px, py]: Vector = vScale(-2 / realZoom, movement);
+        // const relMove: Vector = vScale(2 / realZoom, movement);
+
+        const relMove: Vector = [px, -py];
+        // const relDir: Vector = [dx, -dy];
+
+        // const t = theta.getValue();
+
+        // const vecXY = addV(memo.xy, vRotate(t, relMove)); // add the displacement to the starting position
+        // const velXY = vScale(velocity, vNorm(vecXY))
 
         updateXY({
           xy: memo.xy,

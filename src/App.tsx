@@ -31,6 +31,12 @@ import ServiceWorkerWrapper from './components/ServiceWorkerWrapper';
 import SettingsProvider, { SettingsContext } from './components/settings/SettingsContext';
 import SettingsMenu from './components/settings/SettingsMenu';
 import theme from './theme/theme';
+import { PreperiodicPoint } from './components/tansTheoremUtils';
+
+const defaultMisiurewiczPoint = new PreperiodicPoint(
+  [-0.10109636384562218, +0.9562865108091414],
+  [-0.10109636384562218, +0.9562865108091414],
+);
 
 function App(): JSX.Element {
   const size = useWindowSize();
@@ -147,8 +153,32 @@ function App(): JSX.Element {
   // const { settings } = useSettings();
 
   const [animationState, setAnimationState] = React.useState(
-    AnimationStatus.NO_ANIMATION,
+    AnimationStatus.SELECT_MANDELBROT_POINT,
   );
+  const [magnification, setMagnification] = React.useState<number>(1);
+  const [focusedPointMandelbrot, setFocusedPointMandelbrot] = useState(
+    defaultMisiurewiczPoint,
+  );
+  const [focusedPointJulia, setFocusedPointJulia] = useState(defaultMisiurewiczPoint);
+
+  const alignM = (z: number) => {
+    setMagnification(z / focusedPointJulia.aMagnitude);
+    const zoomM = focusedPointMandelbrot.uMagnitude * magnification;
+
+    mandelbrotControls.zoomCtrl[1]({
+      z: zoomM,
+    });
+  };
+
+  const alignJ = (z: number) => {
+    setMagnification(z / focusedPointMandelbrot.uMagnitude);
+
+    const zoomJ = focusedPointJulia.aMagnitude * magnification;
+
+    juliaControls.zoomCtrl[1]({
+      z: zoomJ,
+    });
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -183,6 +213,11 @@ function App(): JSX.Element {
                     animationState={animationState}
                     setAnimationState={setAnimationState}
                     shadeDomains={settings.shadeMisiurewiczDomains}
+                    magnification={magnification}
+                    focusedPointMandelbrot={focusedPointMandelbrot}
+                    setFocusedPointMandelbrot={setFocusedPointMandelbrot}
+                    focusedPointJulia={focusedPointJulia}
+                    setFocusedPointJulia={setFocusedPointJulia}
                   />
                   <Grid
                     item
@@ -195,6 +230,7 @@ function App(): JSX.Element {
                   >
                     <MandelbrotRenderer
                       animationState={animationState}
+                      align={alignJ}
                       controls={mandelbrotControls}
                       DPR={currentDPR}
                       {...settings}
@@ -215,6 +251,8 @@ function App(): JSX.Element {
                     }}
                   >
                     <JuliaRenderer
+                      animationState={animationState}
+                      align={alignM}
                       c={mandelbrotControls.xyCtrl[0].xy}
                       controls={juliaControls}
                       DPR={currentDPR}

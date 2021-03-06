@@ -364,20 +364,19 @@ export const withinBoundingBox = (
 };
 
 export const complexToScreenCoordinate = (
-  x: number,
-  y: number,
+  m: XYType,
   angle: number,
   zoom: number,
   boxWidth: number,
   boxHeight: number,
-  c: XYType,
+  boxCentre: XYType,
 ): XYType => {
-  const distanceX = c[0] - x;
-  const distanceY = c[1] - y;
+  const distanceX = boxCentre[0] - m[0];
+  const distanceY = boxCentre[1] - m[1];
+  const half = boxHeight / 2;
   return [
-    (boxHeight / 2) *
+    half *
       ((distanceX * Math.cos(angle) - distanceY * Math.sin(angle)) * zoom + boxWidth),
-    (boxHeight / 2) *
-      ((distanceX * Math.sin(angle) + distanceY * Math.cos(angle)) * zoom + 1),
+    half * ((distanceX * Math.sin(angle) + distanceY * Math.cos(angle)) * zoom + 1),
   ];
 };

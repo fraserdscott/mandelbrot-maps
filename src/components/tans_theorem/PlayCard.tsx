@@ -1,72 +1,63 @@
-import { Card, IconButton, Grid, Typography } from '@material-ui/core';
+import { Card, Slider } from '@material-ui/core';
 import React from 'react';
+import { useState } from 'react';
 import { PlayCardProps } from '../../common/info';
-import { warpToPoint } from '../../common/utils';
-import { AnimationStatus } from './MisiurewiczModeFragment';
-import ZoomBar from './ZoomBar';
-import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
+import { cycleEigenvalue, magnitude, formatAngle } from '../tansTheoremUtils';
+
+const TAU = Math.PI * 2;
 
 const PlayCard = (props: PlayCardProps): JSX.Element => {
-  const [mag, setMagState] = React.useState<number>(1);
+  const [eigenvalue] = useState(
+    cycleEigenvalue(
+      props.focusedPointMandelbrot.point,
+      props.focusedPointMandelbrot.prePeriod,
+      props.focusedPointMandelbrot.period,
+    ),
+  );
 
+  const [eigenvalueMagnitude] = useState(magnitude(eigenvalue));
+  const [eigenvalueTheta] = useState(Math.atan2(eigenvalue[1], eigenvalue[0]));
+
+  const legOfJourney =
+    (Math.log(props.magnification) / Math.log(eigenvalueMagnitude)) % 1;
   return (
-    <div
-      style={{
-        zIndex: 1300,
-        position: 'absolute',
-        left: 0,
-        top: 0,
-      }}
-    >
+    <div>
       <Card
         style={{
           zIndex: 1300,
-          position: 'relative',
           display: 'flex',
+          left: 0,
+          top: 50,
           flexDirection: 'column',
           flexShrink: 1,
+          position: 'absolute',
         }}
       >
-        <Grid id="top-row" container spacing={4}>
-          <Grid item>
-            <IconButton
-              onClick={() => {
-                props.setAnimationState(AnimationStatus.SELECT_JULIA_POINT);
-                warpToPoint(props.mandelbrot, {
-                  xy: props.focusedPointMandelbrot.point,
-                  z: props.focusedPointMandelbrot.uMagnitude,
-                  theta: 0,
-                });
-                warpToPoint(props.julia, {
-                  xy: [0, 0],
-                  z: 0.5,
-                  theta: 0,
-                });
-              }}
-            >
-              <ArrowBackwardIcon />
-            </IconButton>
-          </Grid>
-          <Grid item>
-            <Typography component="span">
-              The Mandelbrot and Julia set movement controls are now synchronised!
-            </Typography>
-          </Grid>
-        </Grid>
-        {/* <Grid id="bottom-row" container spacing={8}>
-          <Grid item>
-            <Typography component="span">Magnitication Mandelbrot: Mag: Julia</Typography>
-          </Grid>
-        </Grid> */}
+        <Slider
+          value={legOfJourney}
+          style={{
+            height: '70vh',
+          }}
+          min={0}
+          max={1}
+          orientation="vertical"
+          aria-labelledby="continuous-slider"
+        />
+        <Card
+          style={{
+            zIndex: 1300,
+            display: 'flex',
+            flexDirection: 'row',
+            flexShrink: 1,
+          }}
+        >
+          {formatAngle(
+            (Math.floor(Math.log(props.magnification) / Math.log(eigenvalueMagnitude)) *
+              eigenvalueTheta) %
+              TAU,
+          )}
+        </Card>
       </Card>
-      <ZoomBar
-        mandelbrot={props.mandelbrot}
-        julia={props.julia}
-        focusedPoint={props.focusedPointMandelbrot}
-        focusedPointJulia={props.focusedPointJulia}
-        mag={mag}
-        setMagState={setMagState}
-      />
     </div>
   );
 };

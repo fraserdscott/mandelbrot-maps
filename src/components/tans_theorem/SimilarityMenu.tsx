@@ -1,35 +1,14 @@
-import { Card, Button, Typography, IconButton, Tooltip, Select } from '@material-ui/core';
-import InfoIcon from '@material-ui/icons/Info';
+import { Card, Button, Typography, Grow } from '@material-ui/core';
 import React from 'react';
-import { formatComplexNumber, PreperiodicPoint } from '../tansTheoremUtils';
-import { warpToPoint } from '../../common/utils';
 import { SimilarityMenuProps } from '../../common/info';
-import {
-  AnimationStatus,
-  MISIUREWICZ_POINTS,
-  parsePoint,
-} from './MisiurewiczModeFragment';
-import { XYType } from '../../common/types';
-import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
-import {
-  handleJuliaSelection,
-  handleMandelbrotSelection,
-} from './MisiurewiczPointMarker';
+import { AnimationStatus } from './MisiurewiczModeFragment';
+import SimilarPointsList from './SimilarPointsList';
+import { warpToPoint } from '../../common/utils';
 
 const SimilarityMenu = (props: SimilarityMenuProps): JSX.Element => {
-  const backButton = (state: AnimationStatus) => {
-    return (
-      <IconButton
-        onClick={() => {
-          props.setAnimationState(state);
-        }}
-      >
-        <ArrowBackwardIcon />
-      </IconButton>
-    );
-  };
-
-  const goButton = () => {
+  const goButton = (
+    setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>,
+  ) => {
     return (
       <Button
         variant="contained"
@@ -37,7 +16,12 @@ const SimilarityMenu = (props: SimilarityMenuProps): JSX.Element => {
           float: 'right',
         }}
         onClick={() => {
-          props.setAnimationState(AnimationStatus.TRANSLATE_M);
+          setAnimationState(AnimationStatus.ZOOM_M);
+          warpToPoint(props.julia, {
+            xy: props.focusedPointJulia.point,
+            z: 1,
+            theta: 0,
+          });
         }}
       >
         GO
@@ -45,70 +29,8 @@ const SimilarityMenu = (props: SimilarityMenuProps): JSX.Element => {
     );
   };
 
-  const handleMandelbrotPointSelection = (
-    event: React.ChangeEvent<{ value: unknown }>,
-  ) => {
-    const chosenPoint: XYType = parsePoint(event.target.value as string);
-
-    const chosenMisiurewicz = new PreperiodicPoint(chosenPoint, chosenPoint);
-
-    handleMandelbrotSelection(
-      chosenMisiurewicz,
-      props.setFocusedPoint,
-      chosenMisiurewicz,
-      props.setFocusedPointJulia,
-    );
-    warpToPoint(props.mandelbrot, {
-      xy: chosenMisiurewicz.point,
-      z: chosenMisiurewicz.uMagnitude,
-      theta: 0,
-    });
-  };
-
-  const handleJuliaSimilarSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const chosenPoint: XYType = parsePoint(event.target.value as string);
-
-    handleJuliaSelection(
-      new PreperiodicPoint(props.focusedPoint.point, chosenPoint),
-      props.setFocusedPointJulia,
-    );
-  };
-
-  const misiurewiczPointsList = (): JSX.Element => {
-    return (
-      <Select
-        native
-        value={props.focusedPoint.point}
-        onChange={handleMandelbrotPointSelection}
-        inputProps={{
-          name: 'mandelbrot',
-          id: 'select-multiple-native',
-        }}
-      >
-        {MISIUREWICZ_POINTS.map((m) => (
-          <option key={m.point.toString()} value={m.point.toString()}>
-            {m.toString()} = {formatComplexNumber(m.point)}
-          </option>
-        ))}
-      </Select>
-    );
-  };
-
   return (
-    <Card
-      style={{
-        width: 200,
-        padding: 12,
-        zIndex: 100,
-        display: 'flex',
-        flexDirection: 'column',
-        flexShrink: 1,
-        position: 'absolute',
-        left: 0,
-        top: 0,
-      }}
-    >
-      {backButton(AnimationStatus.NO_ANIMATION)}
+    <>
       <Typography
         style={{
           marginBottom: 8,
@@ -116,37 +38,15 @@ const SimilarityMenu = (props: SimilarityMenuProps): JSX.Element => {
         variant="h6"
         gutterBottom
       >
-        Show me the similarity between...
+        Pick a point in the Julia set!
       </Typography>
-      {props.shadeDomains
-        ? `${formatComplexNumber(props.focusedPoint.point)}`
-        : misiurewiczPointsList()}
-      <div style={{ marginBottom: 12 }}>in the Mandelbrot set</div>
-      <Typography variant="h6" component="h5" gutterBottom>
-        and
-      </Typography>
-      <Select
-        native
-        value={props.focusedPointJulia.point}
-        onChange={handleJuliaSimilarSelection}
-      >
-        {props.similarPointsJulia.map((m) => (
-          <option key={m.point.toString()} value={m.point.toString()}>
-            {formatComplexNumber(m.point)}
-          </option>
-        ))}
-      </Select>
-      <Tooltip
-        title={`These points are all similar because they enter the same cycle as ${formatComplexNumber(
-          props.focusedPoint.point,
-        )} under iteration`}
-        placement="top"
-      >
-        <InfoIcon />
-      </Tooltip>
-      <div style={{ marginBottom: 12 }}>in the Julia set</div>
-      {goButton()}
-    </Card>
+      <SimilarPointsList
+        focusedPointJulia={props.focusedPointJulia}
+        similarPointsJulia={props.similarPointsJulia}
+        handleSimilarPointSelection={props.handleSimilarPointSelection}
+      />
+      {goButton(props.setAnimationState)}
+    </>
   );
 };
 

@@ -1,29 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { MisiurewiczModeDivProps } from '../../common/info';
+import React, { useState, useEffect, useCallback } from 'react';
+import { MisiurewiczModeFragmentProps } from '../../common/info';
 import MisiurewiczPointMarker from './MisiurewiczPointMarker';
-import { useWindowSize } from '../../common/utils';
-import { Button } from '@material-ui/core';
+import { useWindowSize, warpToPoint } from '../../common/utils';
+import { Button, Card, IconButton, Grow } from '@material-ui/core';
 import {
   findNearestMisiurewiczPoint,
   similarPoints,
   PreperiodicPoint,
-  distance,
   withinBoundingBox,
 } from '../tansTheoremUtils';
-import PointsInfoCard from './PointsInfoCard';
+import PointsInfoCard from './MisiurewiczPointsMenu';
 import SimilarityAnimationCard from './SimilarityAnimationCard';
 import SimilarityMenu from './SimilarityMenu';
 import PlayCard from './PlayCard';
 import PreperiodicPointMarker from './PreperiodicPointMarker';
-import DomainInfoCard from './DomainInfoCard';
+import ZoomMenu from './ZoomMenu';
 import { misiurewiczPairs } from './MPoints';
 import { XYType } from '../../common/types';
+import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
 
 export enum AnimationStatus {
-  NO_ANIMATION = -2,
-  SELECT_JULIA_POINT = -1,
-  TRANSLATE_M = 0,
-  TRANSLATE_J = 1,
+  SELECT_MANDELBROT_POINT = 0,
+  SELECT_JULIA_POINT = 1,
   ZOOM_M = 2,
   ZOOM_J = 3,
   ROTATE_M = 4,
@@ -41,24 +39,66 @@ export const parsePoint = (s: string): XYType => {
   return [parseFloat(commaSeperated[0]), parseFloat(commaSeperated[1])];
 };
 
-const defaultMisiurewiczPoint = new PreperiodicPoint(
-  [-0.10109636384562218, +0.9562865108091414],
-  [-0.10109636384562218, +0.9562865108091414],
-);
+const MAX_DEPTH = 4;
 
-const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element => {
-  const [focusedPointMandelbrot, setFocusedPointMandelbrot] = useState(
-    defaultMisiurewiczPoint,
-  );
-  const [focusedPointJulia, setFocusedPointJulia] = useState(defaultMisiurewiczPoint);
+const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Element => {
   const [similarPointsJulia, setSimilarPointsJulia] = useState(
-    similarPoints(focusedPointJulia, 4).sort((a, b) => a.prePeriod - b.prePeriod),
+    similarPoints(props.focusedPointJulia, MAX_DEPTH).sort(
+      (a, b) => a.prePeriod - b.prePeriod,
+    ),
   );
 
+  const handleMisiurewiczPointSelection = useCallback(
+    (pointM: PreperiodicPoint, pointJ: PreperiodicPoint): void => {
+      props.setFocusedPointMandelbrot(pointM);
+      props.setFocusedPointJulia(new PreperiodicPoint(pointM.point, pointJ.point));
+      setSimilarPointsJulia(
+        similarPoints(pointM, MAX_DEPTH).sort((a, b) => a.prePeriod - b.prePeriod),
+      );
+    },
+    [props],
+  );
+
+  const handleSimilarPointSelection = useCallback(
+    (pointJ: PreperiodicPoint): void => {
+      props.setFocusedPointJulia(pointJ);
+    },
+    [props],
+  );
+
+  const BackButton = () => {
+    return (
+      <IconButton
+        style={{ width: 50 }}
+        onClick={() => {
+          props.setAnimationState(AnimationStatus.SELECT_MANDELBROT_POINT);
+          warpToPoint(props.mandelbrot, {
+            xy: props.focusedPointMandelbrot.point,
+            z: props.focusedPointMandelbrot.uMagnitude,
+            theta: 0,
+          });
+          warpToPoint(props.julia, {
+            xy: [0, 0],
+            z: 0.5,
+            theta: 0,
+          });
+        }}
+      >
+        <ArrowBackwardIcon />
+      </IconButton>
+    );
+  };
   const size = useWindowSize();
 
-  const mapWidth = (size.w || 1) < (size.h || 0) ? size.w || 1 : (size.w || 1) / 2;
-  const mapHeight = (size.w || 1) < (size.h || 0) ? (size.h || 0) / 2 : size.h || 0;
+  const isVertical = (size.w || 1) < (size.h || 0);
+
+  const mapWidth = isVertical ? size.w || 1 : (size.w || 1) / 2;
+  const mapHeight = isVertical ? (size.h || 0) / 2 : size.h || 0;
+
+  const juliaOffset = [
+    isVertical ? 0 : (size.w || 1) / 2,
+    isVertical ? -(size.h || 0) / 2 : 0,
+  ];
 
   const ASPECT_RATIO = mapWidth / mapHeight;
 
@@ -71,12 +111,8 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
           mapWidth={mapWidth}
           mapHeight={mapHeight}
           mandelbrotControl={props.mandelbrot}
-          focusedPointMandelbrot={focusedPointMandelbrot}
-          setFocusedPointMandelbrot={setFocusedPointMandelbrot}
-          setFocusedPointJulia={setFocusedPointJulia}
-          setSimilarPointsJulia={setSimilarPointsJulia}
-          offsetX={0}
-          offsetY={0}
+          focusedPointMandelbrot={props.focusedPointMandelbrot}
+          handleMandelbrotSelection={handleMisiurewiczPointSelection}
         />
       );
     }),
@@ -87,15 +123,11 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
         <PreperiodicPointMarker
           key={m.point.toString()}
           preperiodicPoint={m}
-          offset={[
-            (size.w || 1) < (size.h || 0) ? 0 : (size.w || 1) / 2,
-            (size.w || 1) < (size.h || 0) ? (size.h || 0) / 2 : 0,
-          ]}
           mapWidth={mapWidth}
           mapHeight={mapHeight}
           viewerControl={props.julia}
-          focusedPointJulia={focusedPointJulia}
-          setFocusedPointJulia={setFocusedPointJulia}
+          focusedPointJulia={props.focusedPointJulia}
+          handleSimilarPointSelection={handleSimilarPointSelection}
         />
       );
     }),
@@ -105,6 +137,42 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
     const interval = setInterval(() => {
       if (!props.show) {
         return;
+      }
+
+      if (props.animationState === AnimationStatus.SELECT_MANDELBROT_POINT) {
+        const visiblePoints = [];
+
+        const boxCentre = props.mandelbrot.xyCtrl[0].xy.getValue();
+        const boxWidth = ASPECT_RATIO / props.mandelbrot.zoomCtrl[0].z.getValue();
+        const boxHeight = 1 / props.mandelbrot.zoomCtrl[0].z.getValue();
+        const boxAngle = props.mandelbrot.rotCtrl[0].theta.getValue();
+
+        for (let i = 0; i < MISIUREWICZ_POINTS.length; i++) {
+          if (visiblePoints.length === 5) break;
+
+          if (
+            withinBoundingBox(
+              MISIUREWICZ_POINTS[i].point,
+              boxCentre,
+              boxWidth,
+              boxHeight,
+              boxAngle,
+            )
+          ) {
+            visiblePoints.push(
+              <MisiurewiczPointMarker
+                key={MISIUREWICZ_POINTS[i].point.toString()}
+                m={MISIUREWICZ_POINTS[i]}
+                mapWidth={mapWidth}
+                mapHeight={mapHeight}
+                mandelbrotControl={props.mandelbrot}
+                focusedPointMandelbrot={props.focusedPointMandelbrot}
+                handleMandelbrotSelection={handleMisiurewiczPointSelection}
+              />,
+            );
+          }
+        }
+        setMisiurewiczMarkers(visiblePoints);
       }
 
       if (props.animationState === AnimationStatus.SELECT_JULIA_POINT) {
@@ -131,90 +199,38 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
               <PreperiodicPointMarker
                 key={similarPointsJulia[i].point.toString()}
                 preperiodicPoint={similarPointsJulia[i]}
-                offset={[
-                  (size.w || 1) < (size.h || 0) ? 0 : (size.w || 1) / 2,
-                  (size.w || 1) < (size.h || 0) ? (size.h || 0) / 2 : 0,
-                ]}
                 mapWidth={mapWidth}
                 mapHeight={mapHeight}
                 viewerControl={props.julia}
-                focusedPointJulia={focusedPointJulia}
-                setFocusedPointJulia={setFocusedPointJulia}
+                focusedPointJulia={props.focusedPointJulia}
+                handleSimilarPointSelection={handleSimilarPointSelection}
               />,
             );
           }
         }
         setJuliaMarkers(visibleJuliaPoints);
       }
-
-      if (props.animationState === AnimationStatus.NO_ANIMATION) {
-        const visiblePoints = [];
-
-        const boxCentre = props.mandelbrot.xyCtrl[0].xy.getValue();
-        const boxWidth = ASPECT_RATIO / props.mandelbrot.zoomCtrl[0].z.getValue();
-        const boxHeight = 1 / props.mandelbrot.zoomCtrl[0].z.getValue();
-        const boxAngle = props.mandelbrot.rotCtrl[0].theta.getValue();
-
-        for (let i = 0; i < MISIUREWICZ_POINTS.length; i++) {
-          const show_threshold = MISIUREWICZ_POINTS[i].uMagnitude;
-
-          if (
-            visiblePoints.length === 5 ||
-            props.mandelbrot.zoomCtrl[0].z.getValue() < show_threshold
-          )
-            break;
-
-          if (
-            withinBoundingBox(
-              MISIUREWICZ_POINTS[i].point,
-              boxCentre,
-              boxWidth,
-              boxHeight,
-              boxAngle,
-            )
-          ) {
-            visiblePoints.push(
-              <MisiurewiczPointMarker
-                key={MISIUREWICZ_POINTS[i].point.toString()}
-                m={MISIUREWICZ_POINTS[i]}
-                mapWidth={mapWidth}
-                mapHeight={mapHeight}
-                mandelbrotControl={props.mandelbrot}
-                focusedPointMandelbrot={focusedPointMandelbrot}
-                setFocusedPointMandelbrot={setFocusedPointMandelbrot}
-                setFocusedPointJulia={setFocusedPointJulia}
-                setSimilarPointsJulia={setSimilarPointsJulia}
-                offsetX={0}
-                offsetY={0}
-              />,
-            );
-          }
-        }
-        setMisiurewiczMarkers(visiblePoints);
-      } else {
-        setMisiurewiczMarkers([]);
-      }
     }, 10);
     return () => clearInterval(interval);
   }, [
     ASPECT_RATIO,
-    focusedPointJulia,
-    focusedPointMandelbrot,
+    handleMisiurewiczPointSelection,
+    handleSimilarPointSelection,
     mapHeight,
     mapWidth,
     props.animationState,
+    props.focusedPointJulia,
+    props.focusedPointMandelbrot,
     props.julia,
     props.mandelbrot,
     props.show,
     similarPointsJulia,
-    size.h,
-    size.w,
   ]);
 
   return (
     <>
       {props.show &&
-      props.animationState === AnimationStatus.NO_ANIMATION &&
+      props.animationState === AnimationStatus.SELECT_MANDELBROT_POINT &&
       props.shadeDomains ? (
         <Button
           style={{
@@ -228,90 +244,161 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeDivProps): JSX.Element =>
             const mPoint = findNearestMisiurewiczPoint(
               props.mandelbrot.xyCtrl[0].xy.getValue(),
             );
-            setFocusedPointMandelbrot(new PreperiodicPoint(mPoint, mPoint));
+            props.setFocusedPointMandelbrot(new PreperiodicPoint(mPoint, mPoint));
           }}
         >
           Select nearest Misiurewicz point
         </Button>
       ) : null}
-      {props.show &&
-      !props.shadeDomains &&
-      (props.animationState === AnimationStatus.NO_ANIMATION ||
-        props.animationState === AnimationStatus.SELECT_JULIA_POINT)
-        ? misiurewiczMarkers
-        : null}
+      {props.show && props.animationState === AnimationStatus.SELECT_MANDELBROT_POINT ? (
+        <div
+          style={{
+            zIndex: 100,
+            position: 'fixed',
+            visibility: 'hidden',
+            width: '100%',
+            height: '100%',
+            left: 0,
+            top: 0,
+          }}
+        >
+          {misiurewiczMarkers}
+        </div>
+      ) : null}
 
-      {props.animationState === AnimationStatus.SELECT_JULIA_POINT ? juliaMarkers : null}
+      {props.animationState === AnimationStatus.SELECT_JULIA_POINT ? (
+        <div
+          style={{
+            zIndex: 100,
+            position: 'fixed',
+            visibility: 'hidden',
+            width: '100%',
+            height: '100%',
+            left: juliaOffset[0],
+            top: juliaOffset[1],
+          }}
+        >
+          {juliaMarkers}
+        </div>
+      ) : null}
 
-      {props.animationState === AnimationStatus.NO_ANIMATION && !props.shadeDomains ? (
+      {props.animationState === AnimationStatus.SELECT_MANDELBROT_POINT ? (
         <PointsInfoCard
           show={props.show}
-          shadeDomains={props.shadeDomains}
           mandelbrot={props.mandelbrot}
           julia={props.julia}
           animationState={props.animationState}
           setAnimationState={props.setAnimationState}
-          focusedPoint={focusedPointMandelbrot}
-          setFocusedPoint={setFocusedPointMandelbrot}
-          focusedPointJulia={focusedPointJulia}
-          setFocusedPointJulia={setFocusedPointJulia}
-        ></PointsInfoCard>
-      ) : null}
-      {props.animationState === AnimationStatus.NO_ANIMATION && props.shadeDomains ? (
-        <DomainInfoCard
-          show={props.show}
-          shadeDomains={props.shadeDomains}
-          mandelbrot={props.mandelbrot}
-          julia={props.julia}
-          animationState={props.animationState}
-          setAnimationState={props.setAnimationState}
-          focusedPoint={focusedPointMandelbrot}
-          setFocusedPoint={setFocusedPointMandelbrot}
-          focusedPointJulia={focusedPointJulia}
-          setFocusedPointJulia={setFocusedPointJulia}
-        ></DomainInfoCard>
+          focusedPointMandelbrot={props.focusedPointMandelbrot}
+          focusedPointJulia={props.focusedPointJulia}
+          handleMandelbrotSelection={handleMisiurewiczPointSelection}
+        />
       ) : null}
       {props.animationState === AnimationStatus.SELECT_JULIA_POINT ? (
-        <SimilarityMenu
-          show={props.show}
-          shadeDomains={props.shadeDomains}
-          mandelbrot={props.mandelbrot}
-          julia={props.julia}
-          animationState={props.animationState}
-          setAnimationState={props.setAnimationState}
-          focusedPoint={focusedPointMandelbrot}
-          setFocusedPoint={setFocusedPointMandelbrot}
-          focusedPointJulia={focusedPointJulia}
-          setFocusedPointJulia={setFocusedPointJulia}
-          similarPointsJulia={similarPointsJulia}
-        />
+        <Card
+          style={{
+            width: 200,
+            padding: 12,
+            zIndex: 100,
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: 1,
+            position: 'absolute',
+            left: 0,
+            top: 0,
+          }}
+        >
+          <>{BackButton()}</>
+          <SimilarityMenu
+            show={props.show}
+            shadeDomains={props.shadeDomains}
+            mandelbrot={props.mandelbrot}
+            julia={props.julia}
+            animationState={props.animationState}
+            setAnimationState={props.setAnimationState}
+            focusedPoint={props.focusedPointMandelbrot}
+            focusedPointJulia={props.focusedPointJulia}
+            similarPointsJulia={similarPointsJulia}
+            handleMandelbrotSelection={handleMisiurewiczPointSelection}
+            handleSimilarPointSelection={handleSimilarPointSelection}
+          />
+        </Card>
       ) : null}
       {props.animationState === AnimationStatus.PLAY ? (
-        <PlayCard
-          mandelbrot={props.mandelbrot}
-          julia={props.julia}
-          setAnimationState={props.setAnimationState}
-          focusedPointMandelbrot={focusedPointMandelbrot}
-          focusedPointJulia={focusedPointJulia}
-        />
+        <>
+          <Card
+            style={{
+              padding: 12,
+              zIndex: 100,
+              display: 'flex',
+              flexDirection: 'column',
+              flexShrink: 1,
+              position: 'absolute',
+              left: 0,
+              top: 0,
+            }}
+          >
+            <>{BackButton()}</>
+          </Card>
+          <PlayCard
+            mandelbrot={props.mandelbrot}
+            julia={props.julia}
+            setAnimationState={props.setAnimationState}
+            focusedPointMandelbrot={props.focusedPointMandelbrot}
+            focusedPointJulia={props.focusedPointJulia}
+            magnification={props.magnification}
+          />
+        </>
       ) : null}
-      {props.animationState === AnimationStatus.TRANSLATE_M ||
-      props.animationState === AnimationStatus.TRANSLATE_J ||
-      props.animationState === AnimationStatus.ZOOM_M ||
-      props.animationState === AnimationStatus.ZOOM_J ||
-      props.animationState === AnimationStatus.ROTATE_M ||
-      props.animationState === AnimationStatus.ROTATE_J ? (
+      {[
+        AnimationStatus.SELECT_MANDELBROT_POINT,
+        AnimationStatus.SELECT_JULIA_POINT,
+        AnimationStatus.ZOOM_M,
+        AnimationStatus.ZOOM_J,
+        AnimationStatus.ROTATE_M,
+        AnimationStatus.ROTATE_J,
+      ].includes(props.animationState) ? (
         <SimilarityAnimationCard
           show={props.show}
           mandelbrot={props.mandelbrot}
           julia={props.julia}
           animationState={props.animationState}
           setAnimationState={props.setAnimationState}
-          focusedPoint={focusedPointMandelbrot}
-          setFocusedPoint={setFocusedPointMandelbrot}
-          focusedPointJulia={focusedPointJulia}
-          setFocusedPointJulia={setFocusedPointJulia}
-        ></SimilarityAnimationCard>
+          focusedPoint={props.focusedPointMandelbrot}
+          focusedPointJulia={props.focusedPointJulia}
+        />
+      ) : null}
+      {[
+        AnimationStatus.ZOOM_M,
+        AnimationStatus.ZOOM_J,
+        AnimationStatus.ROTATE_M,
+        AnimationStatus.ROTATE_J,
+      ].includes(props.animationState) ? (
+        <Card
+          style={{
+            width: 200,
+            padding: 12,
+            zIndex: 100,
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: 1,
+            position: 'absolute',
+            left: 0,
+            top: 0,
+          }}
+        >
+          <>{BackButton()}</>
+          <ZoomMenu
+            show={props.show}
+            mandelbrot={props.mandelbrot}
+            julia={props.julia}
+            animationState={props.animationState}
+            setAnimationState={props.setAnimationState}
+            focusedPointMandelbrot={props.focusedPointMandelbrot}
+            focusedPointJulia={props.focusedPointJulia}
+            handleMandelbrotSelection={handleMisiurewiczPointSelection}
+          />
+        </Card>
       ) : null}
     </>
   );

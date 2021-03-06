@@ -3,35 +3,13 @@ import { Tooltip } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import IconButton from '@material-ui/core/IconButton';
 import { MisiurewiczPointMarkerProps } from '../../common/info';
-import {
-  complexToScreenCoordinate,
-  distance,
-  PreperiodicPoint,
-  similarPoints,
-} from '../tansTheoremUtils';
+import { complexToScreenCoordinate, distance } from '../tansTheoremUtils';
 
 const BUTTON_SIZE = 40;
-const BUTTON_OFFSET_Y = BUTTON_SIZE / 4;
 const BUTTON_OFFSET_X = (3 * BUTTON_SIZE) / 4;
-
-export const handleJuliaSelection = (
-  focusedPointJulia: PreperiodicPoint,
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>,
-): void => {
-  setFocusedPointJulia(focusedPointJulia);
-};
-
-export const handleMandelbrotSelection = (
-  focusedPointMandelbrot: PreperiodicPoint,
-  setFocusedPointMandelbrot: React.Dispatch<React.SetStateAction<PreperiodicPoint>>,
-  focusedPointJulia: PreperiodicPoint,
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>,
-): void => {
-  setFocusedPointMandelbrot(focusedPointMandelbrot);
-  setFocusedPointJulia(
-    new PreperiodicPoint(focusedPointMandelbrot.point, focusedPointJulia.point),
-  );
-};
+const BUTTON_OFFSET_Y = BUTTON_SIZE / 4;
+const FOCUSED_POINT_COLOR = '#FF5588';
+const UNFOCUSED_POINT_COLOR = '#00FFFF';
 
 const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element => {
   const [{ z }] = props.mandelbrotControl.zoomCtrl;
@@ -40,8 +18,7 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
   const ASPECT_RATIO = props.mapWidth / props.mapHeight;
 
   const coord = complexToScreenCoordinate(
-    props.mandelbrotControl.xyCtrl[0].xy.getValue()[0],
-    props.mandelbrotControl.xyCtrl[0].xy.getValue()[1],
+    props.mandelbrotControl.xyCtrl[0].xy.getValue(),
     -theta.getValue(),
     z.getValue(),
     ASPECT_RATIO,
@@ -49,33 +26,26 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
     props.m.point,
   );
 
+  const isFocusedPoint =
+    distance(props.m.point, props.focusedPointMandelbrot.point) < 0.01;
+
   return (
     <div
       style={{
-        zIndex: 100,
+        zIndex: 1400,
         position: 'absolute',
-        left: coord[0] + props.offsetX - BUTTON_OFFSET_X,
-        bottom: coord[1] + props.offsetY - BUTTON_OFFSET_Y,
+        visibility: 'visible',
+        left: coord[0] - BUTTON_OFFSET_X,
+        bottom: coord[1] - BUTTON_OFFSET_Y,
       }}
     >
       <Tooltip title={`${props.m.toString()}`} placement="top">
         <IconButton
           style={{
-            color:
-              distance(props.m.point, props.focusedPointMandelbrot.point) < 0.01
-                ? '#FF5588'
-                : '#00FFFF',
+            color: isFocusedPoint ? FOCUSED_POINT_COLOR : UNFOCUSED_POINT_COLOR,
           }}
           onClick={() => {
-            handleMandelbrotSelection(
-              props.m,
-              props.setFocusedPointMandelbrot,
-              props.m,
-              props.setFocusedPointJulia,
-            );
-            props.setSimilarPointsJulia(
-              similarPoints(props.m, 4).sort((a, b) => a.prePeriod - b.prePeriod),
-            );
+            props.handleMandelbrotSelection(props.m, props.m);
           }}
         >
           <RoomIcon style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }} />

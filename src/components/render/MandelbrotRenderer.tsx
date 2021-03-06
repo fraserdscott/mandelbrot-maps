@@ -3,7 +3,12 @@ import { useGesture } from 'react-use-gesture';
 import { forwardOrbit } from '../../common/complex_number_utils';
 import { MandelbrotRendererProps } from '../../common/render';
 import { MandelbrotMapsWebGLUniforms } from '../../common/types';
-import { genericTouchBind, Rgb255ColourToFloat } from '../../common/utils';
+import {
+  genericTouchBind,
+  frozenTouchBind,
+  Rgb255ColourToFloat,
+  frozoneTouchBind,
+} from '../../common/utils';
 import newSmoothMandelbrotShader, {
   miniCrosshair,
   standardCrosshair,
@@ -96,13 +101,34 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
 
   const [dragging, setDragging] = useState(false);
 
-  const gtb = genericTouchBind({
-    domTarget: canvasRef,
-    controls: props.controls,
-    // gl: gl,
-    setDragging: setDragging,
-    DPR: props.DPR,
-  });
+  const gtb = [
+    AnimationStatus.SELECT_JULIA_POINT,
+    AnimationStatus.ZOOM_M,
+    AnimationStatus.ZOOM_J,
+    AnimationStatus.ROTATE_M,
+    AnimationStatus.ROTATE_J,
+  ].includes(props.animationState)
+    ? frozoneTouchBind({
+        domTarget: canvasRef,
+        controls: props.controls,
+        setDragging: setDragging,
+        DPR: props.DPR,
+      })
+    : props.animationState === AnimationStatus.PLAY
+    ? frozenTouchBind({
+        domTarget: canvasRef,
+        controls: props.controls,
+        setDragging: setDragging,
+        DPR: props.DPR,
+        align: props.align,
+      })
+    : genericTouchBind({
+        domTarget: canvasRef,
+        controls: props.controls,
+        // gl: gl,
+        setDragging: setDragging,
+        DPR: props.DPR,
+      });
 
   // https://use-gesture.netlify.app/docs/changelog/#breaking
   // When adding events directly to the dom element using `domTarget`
@@ -138,7 +164,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
             fragShader={
               settings.showMisiurewiczPoints &&
               settings.shadeMisiurewiczDomains &&
-              props.animationState === AnimationStatus.NO_ANIMATION
+              props.animationState === AnimationStatus.SELECT_MANDELBROT_POINT
                 ? fragShaderMisiurewiczDomain
                 : fragShader
             }

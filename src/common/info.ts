@@ -23,50 +23,48 @@ export interface ChangeCoordinatesCardProps extends CardProps {
   julia?: OpaqueInterpolation<XYType>;
 }
 
-export interface MisiurewiczModeDivProps extends CardProps {
+export interface MisiurewiczModeFragmentProps extends CardProps {
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   shadeDomains: boolean;
   show: boolean;
   mandelbrot: ViewerControlSprings;
   julia: ViewerControlSprings;
-}
-
-export interface SelectMisiurewiczCardProps extends CardProps {
-  show: boolean;
-  shadeDomains: boolean;
-  mandelbrot: ViewerControlSprings;
-  julia: ViewerControlSprings;
-  animationState: AnimationStatus;
-  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  focusedPoint: PreperiodicPoint;
-  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  magnification: number;
+  focusedPointMandelbrot: PreperiodicPoint;
+  setFocusedPointMandelbrot: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   focusedPointJulia: PreperiodicPoint;
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
-  mag: number;
-  setMagState: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface InfoCardProps extends CardProps {
   show: boolean;
-  shadeDomains: boolean;
   mandelbrot: ViewerControlSprings;
   julia: ViewerControlSprings;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  focusedPoint: PreperiodicPoint;
-  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  focusedPointMandelbrot: PreperiodicPoint;
   focusedPointJulia: PreperiodicPoint;
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  handleMandelbrotSelection: (
+    focusedPointMandelbrot: PreperiodicPoint,
+    focusedPointJulia: PreperiodicPoint,
+  ) => void;
 }
 
-export interface ZoomBarProps extends CardProps {
+export interface MisiurewiczPointsListProps extends CardProps {
+  show: boolean;
   mandelbrot: ViewerControlSprings;
-  julia: ViewerControlSprings;
   focusedPoint: PreperiodicPoint;
+  handleMandelbrotSelection: (
+    focusedPointMandelbrot: PreperiodicPoint,
+    focusedPointJulia: PreperiodicPoint,
+  ) => void;
+}
+
+export interface SimilarPointsListProps extends CardProps {
   focusedPointJulia: PreperiodicPoint;
-  mag: number;
-  setMagState: React.Dispatch<React.SetStateAction<number>>;
+  similarPointsJulia: PreperiodicPoint[];
+  handleSimilarPointSelection: (focusedPointJulia: PreperiodicPoint) => void;
 }
 
 export interface PlayCardProps extends CardProps {
@@ -75,53 +73,38 @@ export interface PlayCardProps extends CardProps {
   focusedPointMandelbrot: PreperiodicPoint;
   focusedPointJulia: PreperiodicPoint;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
+  magnification: number;
 }
 
 export interface MisiurewiczPointMarkerProps extends CardProps {
   mapWidth: number;
   mapHeight: number;
-  offsetX: number;
-  offsetY: number;
   m: PreperiodicPoint;
   mandelbrotControl: ViewerControlSprings;
   focusedPointMandelbrot: PreperiodicPoint;
-  setFocusedPointMandelbrot: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
-  setSimilarPointsJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint[]>>;
+  handleMandelbrotSelection: (
+    focusedPointMandelbrot: PreperiodicPoint,
+    focusedPointJulia: PreperiodicPoint,
+  ) => void;
 }
 
 export interface PreperiodicPointMarkerProps extends CardProps {
   mapWidth: number;
   mapHeight: number;
-  offset: XYType;
   preperiodicPoint: PreperiodicPoint;
   viewerControl: ViewerControlSprings;
   focusedPointJulia: PreperiodicPoint;
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  handleSimilarPointSelection: (focusedPointJulia: PreperiodicPoint) => void;
 }
 
-export interface MisiurewiczInfoCardProps extends CardProps {
+export interface SimilarityAnimationProps extends CardProps {
   show: boolean;
   mandelbrot: ViewerControlSprings;
   julia: ViewerControlSprings;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   focusedPoint: PreperiodicPoint;
-  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   focusedPointJulia: PreperiodicPoint;
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
-}
-
-export interface MisiurewiczInfoCardProps extends CardProps {
-  show: boolean;
-  mandelbrot: ViewerControlSprings;
-  julia: ViewerControlSprings;
-  animationState: AnimationStatus;
-  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  focusedPoint: PreperiodicPoint;
-  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
-  focusedPointJulia: PreperiodicPoint;
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
 }
 
 export interface SimilarityMenuProps extends CardProps {
@@ -132,10 +115,13 @@ export interface SimilarityMenuProps extends CardProps {
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
   focusedPoint: PreperiodicPoint;
-  setFocusedPoint: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   focusedPointJulia: PreperiodicPoint;
-  setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  handleSimilarPointSelection: (focusedPointJulia: PreperiodicPoint) => void;
   similarPointsJulia: PreperiodicPoint[];
+  handleMandelbrotSelection: (
+    focusedPointMandelbrot: PreperiodicPoint,
+    focusedPointJulia: PreperiodicPoint,
+  ) => void;
 }
 
 export interface InfoDialogProps {

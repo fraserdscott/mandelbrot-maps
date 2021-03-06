@@ -1,13 +1,12 @@
 import { Select } from '@material-ui/core';
 import React from 'react';
-import { InfoCardProps } from '../../common/info';
+import { MisiurewiczPointsListProps } from '../../common/info';
 import { XYType } from '../../common/types';
 import { warpToPoint } from '../../common/utils';
 import { formatComplexNumber, PreperiodicPoint } from '../tansTheoremUtils';
 import { MISIUREWICZ_POINTS, parsePoint } from './MisiurewiczModeFragment';
-import { handleMandelbrotSelection } from './MisiurewiczPointMarker';
 
-const MisiurewiczPointsList = (props: InfoCardProps): JSX.Element => {
+const MisiurewiczPointsList = (props: MisiurewiczPointsListProps): JSX.Element => {
   const handleMandelbrotPointSelection = (
     event: React.ChangeEvent<{ value: unknown }>,
   ) => {
@@ -15,12 +14,7 @@ const MisiurewiczPointsList = (props: InfoCardProps): JSX.Element => {
 
     const chosenMisiurewicz = new PreperiodicPoint(chosenPoint, chosenPoint);
 
-    handleMandelbrotSelection(
-      chosenMisiurewicz,
-      props.setFocusedPoint,
-      chosenMisiurewicz,
-      props.setFocusedPointJulia,
-    );
+    props.handleMandelbrotSelection(chosenMisiurewicz, chosenMisiurewicz);
     warpToPoint(props.mandelbrot, {
       xy: chosenMisiurewicz.point,
       z: chosenMisiurewicz.uMagnitude,
