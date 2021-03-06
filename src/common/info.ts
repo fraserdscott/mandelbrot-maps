@@ -62,6 +62,7 @@ export interface MisiurewiczPointsListProps extends CardProps {
 }
 
 export interface SimilarPointsListProps extends CardProps {
+  focusedPointMandelbrot: PreperiodicPoint;
   focusedPointJulia: PreperiodicPoint;
   similarPointsJulia: PreperiodicPoint[];
   handleSimilarPointSelection: (focusedPointJulia: PreperiodicPoint) => void;
@@ -114,7 +115,7 @@ export interface SimilarityMenuProps extends CardProps {
   julia: ViewerControlSprings;
   animationState: AnimationStatus;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  focusedPoint: PreperiodicPoint;
+  focusedPointMandelbrot: PreperiodicPoint;
   focusedPointJulia: PreperiodicPoint;
   handleSimilarPointSelection: (focusedPointJulia: PreperiodicPoint) => void;
   similarPointsJulia: PreperiodicPoint[];

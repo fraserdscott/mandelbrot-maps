@@ -9,7 +9,10 @@ const SimilarPointsList = (props: SimilarPointsListProps): JSX.Element => {
   const handleSimilarPointSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
     const chosenPoint: XYType = parsePoint(event.target.value as string);
 
-    const newPoint = new PreperiodicPoint(chosenPoint, chosenPoint);
+    const newPoint = new PreperiodicPoint(
+      props.focusedPointMandelbrot.point,
+      chosenPoint,
+    );
 
     props.handleSimilarPointSelection(newPoint);
   };

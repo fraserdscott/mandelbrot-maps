@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { MisiurewiczModeFragmentProps } from '../../common/info';
 import MisiurewiczPointMarker from './MisiurewiczPointMarker';
 import { useWindowSize, warpToPoint } from '../../common/utils';
-import { Button, Card, IconButton, Grow } from '@material-ui/core';
+import { Button, Card, IconButton } from '@material-ui/core';
 import {
   findNearestMisiurewiczPoint,
   similarPoints,
@@ -316,7 +316,7 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
             julia={props.julia}
             animationState={props.animationState}
             setAnimationState={props.setAnimationState}
-            focusedPoint={props.focusedPointMandelbrot}
+            focusedPointMandelbrot={props.focusedPointMandelbrot}
             focusedPointJulia={props.focusedPointJulia}
             similarPointsJulia={similarPointsJulia}
             handleMandelbrotSelection={handleMisiurewiczPointSelection}

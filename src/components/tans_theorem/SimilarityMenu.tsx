@@ -1,4 +1,4 @@
-import { Card, Button, Typography, Grow } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import React from 'react';
 import { SimilarityMenuProps } from '../../common/info';
 import { AnimationStatus } from './MisiurewiczModeFragment';
@@ -41,6 +41,7 @@ const SimilarityMenu = (props: SimilarityMenuProps): JSX.Element => {
         Pick a point in the Julia set!
       </Typography>
       <SimilarPointsList
+        focusedPointMandelbrot={props.focusedPointMandelbrot}
         focusedPointJulia={props.focusedPointJulia}
         similarPointsJulia={props.similarPointsJulia}
         handleSimilarPointSelection={props.handleSimilarPointSelection}
