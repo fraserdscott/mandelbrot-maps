@@ -8,6 +8,7 @@ import {
 } from '../tansTheoremUtils';
 import { SimilarityAnimationProps } from '../../common/info';
 import { AnimationStatus } from './MisiurewiczModeFragment';
+import { useWindowSize } from '../../common/utils';
 
 function getSteps(
   c: PreperiodicPoint,
@@ -53,30 +54,36 @@ const SimilarityAnimationCard = (props: SimilarityAnimationProps): JSX.Element =
 
   return (
     <Grow in={props.show}>
-      <Card
+      <div
         style={{
-          zIndex: 1300,
-          position: 'absolute',
-          left: 400,
-          top: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
           display: 'flex',
-          flexDirection: 'row',
-          flexShrink: 1,
+          position: 'absolute',
         }}
       >
-        <Stepper activeStep={props.animationState.valueOf()} orientation="horizontal">
-          {steps.map((label) => {
-            const stepProps: { completed?: boolean } = {};
-            const labelProps: { optional?: React.ReactNode } = {};
-            labelProps.optional = label[1];
-            return (
-              <Step key={label[0]} {...stepProps}>
-                <StepLabel {...labelProps}>{label[0]}</StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
-      </Card>
+        <Card
+          style={{
+            zIndex: 1300,
+            display: 'flex',
+            flexDirection: 'row',
+            flexShrink: 1,
+          }}
+        >
+          <Stepper activeStep={props.animationState.valueOf()} orientation="horizontal">
+            {steps.map((label) => {
+              const stepProps: { completed?: boolean } = {};
+              const labelProps: { optional?: React.ReactNode } = {};
+              labelProps.optional = label[1];
+              return (
+                <Step key={label[0]} {...stepProps}>
+                  <StepLabel {...labelProps}>{label[0]}</StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+        </Card>
+      </div>
     </Grow>
   );
 };
