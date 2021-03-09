@@ -31,10 +31,12 @@ export interface MisiurewiczModeFragmentProps extends CardProps {
   mandelbrot: ViewerControlSprings;
   julia: ViewerControlSprings;
   magnification: number;
+  setMagnification: React.Dispatch<React.SetStateAction<number>>;
   focusedPointMandelbrot: PreperiodicPoint;
   setFocusedPointMandelbrot: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
   focusedPointJulia: PreperiodicPoint;
   setFocusedPointJulia: React.Dispatch<React.SetStateAction<PreperiodicPoint>>;
+  rotate: boolean;
 }
 
 export interface InfoCardProps extends CardProps {
@@ -87,6 +89,7 @@ export interface MisiurewiczPointMarkerProps extends CardProps {
     focusedPointMandelbrot: PreperiodicPoint,
     focusedPointJulia: PreperiodicPoint,
   ) => void;
+  isFocused: boolean;
 }
 
 export interface PreperiodicPointMarkerProps extends CardProps {

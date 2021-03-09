@@ -316,6 +316,9 @@ export class PreperiodicPoint {
   uAngle: number;
   aMagnitude: number;
   aAngle: number;
+  eigenValue: XYType;
+  eMagnitude: number;
+  eAngle: number;
 
   constructor(c: XYType, z: XYType) {
     this.point = z;
@@ -331,6 +334,10 @@ export class PreperiodicPoint {
     this.a = magnificationRotationJulia(c, this.point, this.prePeriod);
     this.aMagnitude = magnitude(this.a);
     this.aAngle = Math.atan2(this.a[1], this.a[0]);
+
+    this.eigenValue = cycleEigenvalue(this.point, this.prePeriod, this.period);
+    this.eMagnitude = magnitude(this.eigenValue);
+    this.eAngle = Math.atan2(this.eigenValue[1], this.eigenValue[0]);
   }
 
   toString(): string {

@@ -46,13 +46,33 @@ and allows warping to specific coordinates
     label: "Tan's theorem animation",
     checked: settings.showMisiurewiczPoints,
     control: <Switch />,
+    helptext: `
+This setting takes the user through an animation to show Tan's Theorem, which states that at particular points, the Mandelbrot and Julia sets are almost indistinguishable.
+Simply turn the mode on, and follow the instructions on the screen.
+`,
   },
 
   shadeMisiurewiczDomains: {
-    label: 'Shade Misiurewicz domains',
+    label: 'Select using Misiurewicz domains',
     value: settings.shadeMisiurewiczDomains,
     control: <Switch />,
+    helptext: `
+Changes the method of selecting Misiurewicz points.
+This changes the shader to colour each point based on how close they are to a Misiurewicz point.
+Instead of choosing from a preset list, click anywhere on the Mandelbrot set to find the nearest Misiurewicz point.
+`,
   },
+  rotateWhileZooming: {
+    label: '⚠️Rotate to show self-similarity',
+    value: settings.rotateWhileZooming,
+    control: <Switch />,
+    helptext: `
+Adds an additional rotation at the final stage of the Tan's theorem animation to show how both sets are self-similar.
+As you increase the magnification, you should notice that the same pattern repeats at regular intervals on both sets.
+WARNING: for particular points, this setting can cause excessive rotation which may be off-putting to some.
+`,
+  },
+
   showOrbit: {
     label: 'Show orbit',
     checked: settings.showOrbit,
@@ -188,6 +208,7 @@ export const getSettingsWidgetsGrouping = (
     widgets: {
       showMisiurewiczPoints: settingsWidgets.showMisiurewiczPoints,
       shadeMisiurewiczDomains: settingsWidgets.shadeMisiurewiczDomains,
+      rotateWhileZooming: settingsWidgets.rotateWhileZooming,
     },
   },
 ];

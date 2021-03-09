@@ -7,19 +7,9 @@ import { cycleEigenvalue, magnitude, formatAngle } from '../tansTheoremUtils';
 const TAU = Math.PI * 2;
 
 const PlayCard = (props: PlayCardProps): JSX.Element => {
-  const [eigenvalue] = useState(
-    cycleEigenvalue(
-      props.focusedPointMandelbrot.point,
-      props.focusedPointMandelbrot.prePeriod,
-      props.focusedPointMandelbrot.period,
-    ),
-  );
-
-  const [eigenvalueMagnitude] = useState(magnitude(eigenvalue));
-  const [eigenvalueTheta] = useState(Math.atan2(eigenvalue[1], eigenvalue[0]));
-
   const legOfJourney =
-    (Math.log(props.magnification) / Math.log(eigenvalueMagnitude)) % 1;
+    (Math.log(props.magnification) / Math.log(props.focusedPointMandelbrot.eMagnitude)) %
+    1;
   return (
     <div>
       <Card
@@ -27,7 +17,7 @@ const PlayCard = (props: PlayCardProps): JSX.Element => {
           zIndex: 1300,
           display: 'flex',
           left: 0,
-          top: 50,
+          top: 70,
           flexDirection: 'column',
           flexShrink: 1,
           position: 'absolute',
@@ -40,10 +30,11 @@ const PlayCard = (props: PlayCardProps): JSX.Element => {
           }}
           min={0}
           max={1}
+          track={false}
           orientation="vertical"
           aria-labelledby="continuous-slider"
         />
-        <Card
+        {/* <Card
           style={{
             zIndex: 1300,
             display: 'flex',
@@ -56,7 +47,7 @@ const PlayCard = (props: PlayCardProps): JSX.Element => {
               eigenvalueTheta) %
               TAU,
           )}
-        </Card>
+        </Card> */}
       </Card>
     </div>
   );

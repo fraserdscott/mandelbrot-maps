@@ -26,9 +26,6 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
     props.m.point,
   );
 
-  const isFocusedPoint =
-    distance(props.m.point, props.focusedPointMandelbrot.point) < 0.01;
-
   return (
     <div
       style={{
@@ -42,7 +39,7 @@ const MisiurewiczPointMarker = (props: MisiurewiczPointMarkerProps): JSX.Element
       <Tooltip title={`${props.m.toString()}`} placement="top">
         <IconButton
           style={{
-            color: isFocusedPoint ? FOCUSED_POINT_COLOR : UNFOCUSED_POINT_COLOR,
+            color: props.isFocused ? FOCUSED_POINT_COLOR : UNFOCUSED_POINT_COLOR,
           }}
           onClick={() => {
             props.handleMandelbrotSelection(props.m, props.m);

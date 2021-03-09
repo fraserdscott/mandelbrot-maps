@@ -8,6 +8,7 @@ import {
   similarPoints,
   PreperiodicPoint,
   withinBoundingBox,
+  distance,
 } from '../tansTheoremUtils';
 import PointsInfoCard from './MisiurewiczPointsMenu';
 import DomainsInfoCard from './MisiurewiczDomainsMenu';
@@ -51,11 +52,14 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
 
   const handleMisiurewiczPointSelection = useCallback(
     (pointM: PreperiodicPoint, pointJ: PreperiodicPoint): void => {
-      props.setFocusedPointMandelbrot(pointM);
-      props.setFocusedPointJulia(new PreperiodicPoint(pointM.point, pointJ.point));
-      setSimilarPointsJulia(
-        similarPoints(pointM, MAX_DEPTH).sort((a, b) => a.prePeriod - b.prePeriod),
+      const similars = similarPoints(pointM, MAX_DEPTH).sort(
+        (a, b) => a.prePeriod - b.prePeriod,
       );
+      if (similars.length > 0) {
+        props.setFocusedPointMandelbrot(pointM);
+        props.setFocusedPointJulia(new PreperiodicPoint(pointM.point, pointJ.point));
+        setSimilarPointsJulia(similars);
+      }
     },
     [props],
   );
@@ -73,6 +77,7 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
         style={{ width: 50 }}
         onClick={() => {
           props.setAnimationState(AnimationStatus.SELECT_MANDELBROT_POINT);
+          props.setMagnification(1);
           warpToPoint(props.mandelbrot, {
             xy: props.focusedPointMandelbrot.point,
             z: props.focusedPointMandelbrot.uMagnitude,
@@ -114,6 +119,7 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
           mandelbrotControl={props.mandelbrot}
           focusedPointMandelbrot={props.focusedPointMandelbrot}
           handleMandelbrotSelection={handleMisiurewiczPointSelection}
+          isFocused={false}
         />
       );
     }),
@@ -166,11 +172,39 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
                 mandelbrotControl={props.mandelbrot}
                 focusedPointMandelbrot={props.focusedPointMandelbrot}
                 handleMandelbrotSelection={handleMisiurewiczPointSelection}
+                isFocused={true}
               />,
             );
           }
         } else {
+          if (
+            withinBoundingBox(
+              props.focusedPointMandelbrot.point,
+              boxCentre,
+              boxWidth,
+              boxHeight,
+              boxAngle,
+            )
+          ) {
+            visiblePoints.push(
+              <MisiurewiczPointMarker
+                key={props.focusedPointMandelbrot.point.toString()}
+                m={props.focusedPointMandelbrot}
+                mapWidth={mapWidth}
+                mapHeight={mapHeight}
+                mandelbrotControl={props.mandelbrot}
+                focusedPointMandelbrot={props.focusedPointMandelbrot}
+                handleMandelbrotSelection={handleMisiurewiczPointSelection}
+                isFocused={true}
+              />,
+            );
+          }
           for (let i = 0; i < MISIUREWICZ_POINTS.length; i++) {
+            const isFocusedPoint =
+              distance(MISIUREWICZ_POINTS[i].point, props.focusedPointMandelbrot.point) <
+              0.001;
+            if (isFocusedPoint) continue;
+
             if (visiblePoints.length === 5) break;
 
             if (
@@ -191,6 +225,7 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
                   mandelbrotControl={props.mandelbrot}
                   focusedPointMandelbrot={props.focusedPointMandelbrot}
                   handleMandelbrotSelection={handleMisiurewiczPointSelection}
+                  isFocused={isFocusedPoint}
                 />,
               );
             }
@@ -246,10 +281,12 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
     props.focusedPointJulia,
     props.focusedPointMandelbrot,
     props.julia,
+    props.magnification,
     props.mandelbrot,
     props.shadeDomains,
     props.show,
     similarPointsJulia,
+    size.w,
   ]);
 
   return (
@@ -268,7 +305,7 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
           onClick={() => {
             const mPoint = findNearestMisiurewiczPoint(
               props.mandelbrot.xyCtrl[0].xy.getValue(),
-              1000,
+              10000,
             );
             if (mPoint[0] !== 0 && mPoint[1] !== 0) {
               const p = new PreperiodicPoint(mPoint, mPoint);
@@ -382,14 +419,16 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
           >
             <>{BackButton()}</>
           </Card>
-          {/* <PlayCard
-            mandelbrot={props.mandelbrot}
-            julia={props.julia}
-            setAnimationState={props.setAnimationState}
-            focusedPointMandelbrot={props.focusedPointMandelbrot}
-            focusedPointJulia={props.focusedPointJulia}
-            magnification={props.magnification}
-          /> */}
+          {props.rotate ? (
+            <PlayCard
+              mandelbrot={props.mandelbrot}
+              julia={props.julia}
+              setAnimationState={props.setAnimationState}
+              focusedPointMandelbrot={props.focusedPointMandelbrot}
+              focusedPointJulia={props.focusedPointJulia}
+              magnification={props.magnification}
+            />
+          ) : null}
         </>
       ) : null}
       {[
@@ -399,17 +438,9 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
         AnimationStatus.ZOOM_J,
         AnimationStatus.ROTATE_M,
         AnimationStatus.ROTATE_J,
-      ].includes(props.animationState) ? (
-        <SimilarityAnimationCard
-          show={props.show}
-          mandelbrot={props.mandelbrot}
-          julia={props.julia}
-          animationState={props.animationState}
-          setAnimationState={props.setAnimationState}
-          focusedPoint={props.focusedPointMandelbrot}
-          focusedPointJulia={props.focusedPointJulia}
-        />
-      ) : null}
+      ].includes(props.animationState)
+        ? null
+        : null}
       {[
         AnimationStatus.ZOOM_M,
         AnimationStatus.ZOOM_J,

@@ -31,7 +31,11 @@ import ServiceWorkerWrapper from './components/ServiceWorkerWrapper';
 import SettingsProvider, { SettingsContext } from './components/settings/SettingsContext';
 import SettingsMenu from './components/settings/SettingsMenu';
 import theme from './theme/theme';
-import { PreperiodicPoint } from './components/tansTheoremUtils';
+import {
+  cycleEigenvalue,
+  PreperiodicPoint,
+  magnitude,
+} from './components/tansTheoremUtils';
 
 const defaultMisiurewiczPoint = new PreperiodicPoint(
   [-0.10109636384562218, +0.9562865108091414],
@@ -161,23 +165,47 @@ function App(): JSX.Element {
   );
   const [focusedPointJulia, setFocusedPointJulia] = useState(defaultMisiurewiczPoint);
 
+  let rotate = false;
+
+  const rotBoth = (newMagnification: number) => {
+    if (rotate) {
+      const selfSimilarityAngle =
+        (Math.log(newMagnification) / Math.log(focusedPointMandelbrot.eMagnitude)) *
+        focusedPointMandelbrot.eAngle;
+
+      const rotM = -(focusedPointMandelbrot.uAngle + selfSimilarityAngle);
+      const rotJ = -(focusedPointJulia.aAngle + selfSimilarityAngle);
+
+      mandelbrotControls.rotCtrl[1]({
+        theta: rotM,
+      });
+      juliaControls.rotCtrl[1]({
+        theta: rotJ,
+      });
+    }
+  };
+
   const alignM = (z: number) => {
-    setMagnification(z / focusedPointJulia.aMagnitude);
-    const zoomM = focusedPointMandelbrot.uMagnitude * magnification;
+    const newMagnification = z / focusedPointJulia.aMagnitude;
+    setMagnification(newMagnification);
+    const zoomM = focusedPointMandelbrot.uMagnitude * newMagnification;
 
     mandelbrotControls.zoomCtrl[1]({
       z: zoomM,
     });
+    rotBoth(newMagnification);
   };
 
   const alignJ = (z: number) => {
-    setMagnification(z / focusedPointMandelbrot.uMagnitude);
+    const newMagnification = z / focusedPointMandelbrot.uMagnitude;
+    setMagnification(newMagnification);
 
-    const zoomJ = focusedPointJulia.aMagnitude * magnification;
+    const zoomJ = focusedPointJulia.aMagnitude * newMagnification;
 
     juliaControls.zoomCtrl[1]({
       z: zoomJ,
     });
+    rotBoth(newMagnification);
   };
 
   return (
@@ -189,6 +217,7 @@ function App(): JSX.Element {
             {({ settings }) => {
               const currentDPR = settings.useDPR ? DPR : 1;
               const vertical = size.w < size.h;
+              rotate = settings.rotateWhileZooming;
               return (
                 // JSX expressions must have one parent element
                 <Grid
@@ -214,10 +243,12 @@ function App(): JSX.Element {
                     setAnimationState={setAnimationState}
                     shadeDomains={settings.shadeMisiurewiczDomains}
                     magnification={magnification}
+                    setMagnification={setMagnification}
                     focusedPointMandelbrot={focusedPointMandelbrot}
                     setFocusedPointMandelbrot={setFocusedPointMandelbrot}
                     focusedPointJulia={focusedPointJulia}
                     setFocusedPointJulia={setFocusedPointJulia}
+                    rotate={rotate}
                   />
                   <Grid
                     item
