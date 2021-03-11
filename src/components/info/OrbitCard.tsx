@@ -26,7 +26,7 @@ const OrbitCard = (props: OrbitCardProps): JSX.Element => {
         }}
       >
         <Typography align="left" style={{ fontFamily: 'monospace', fontSize: '1.2rem' }}>
-          <span>Orbit for {formatComplexNumber(props.xy.getValue())}</span>
+          <span>Orbit for {formatComplexNumber(props.xy.getValue(), 2)}</span>
           <br />
           {props.flag === OrbitFlag.Cyclic ? (
             <>

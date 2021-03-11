@@ -3,7 +3,7 @@ import { Tooltip } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import IconButton from '@material-ui/core/IconButton';
 import { MisiurewiczPointMarkerProps } from '../../common/info';
-import { complexToScreenCoordinate, distance } from '../tansTheoremUtils';
+import { complexToScreenCoordinate } from '../tansTheoremUtils';
 
 const BUTTON_SIZE = 40;
 const BUTTON_OFFSET_X = (3 * BUTTON_SIZE) / 4;

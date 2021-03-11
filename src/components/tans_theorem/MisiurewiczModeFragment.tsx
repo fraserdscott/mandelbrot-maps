@@ -438,40 +438,34 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
         AnimationStatus.ZOOM_J,
         AnimationStatus.ROTATE_M,
         AnimationStatus.ROTATE_J,
-      ].includes(props.animationState)
-        ? null
-        : null}
+      ].includes(props.animationState) ? (
+        <SimilarityAnimationCard
+          show={props.show}
+          mandelbrot={props.mandelbrot}
+          julia={props.julia}
+          animationState={props.animationState}
+          setAnimationState={props.setAnimationState}
+          focusedPoint={props.focusedPointMandelbrot}
+          focusedPointJulia={props.focusedPointJulia}
+        />
+      ) : null}
       {[
         AnimationStatus.ZOOM_M,
         AnimationStatus.ZOOM_J,
         AnimationStatus.ROTATE_M,
         AnimationStatus.ROTATE_J,
       ].includes(props.animationState) ? (
-        <Card
-          style={{
-            width: 200,
-            padding: 12,
-            zIndex: 100,
-            display: 'flex',
-            flexDirection: 'column',
-            flexShrink: 1,
-            position: 'absolute',
-            left: 0,
-            top: 0,
-          }}
-        >
-          <>{BackButton()}</>
-          <ZoomMenu
-            show={props.show}
-            mandelbrot={props.mandelbrot}
-            julia={props.julia}
-            animationState={props.animationState}
-            setAnimationState={props.setAnimationState}
-            focusedPointMandelbrot={props.focusedPointMandelbrot}
-            focusedPointJulia={props.focusedPointJulia}
-            handleMandelbrotSelection={handleMisiurewiczPointSelection}
-          />
-        </Card>
+        <ZoomMenu
+          backButton={BackButton}
+          show={props.show}
+          mandelbrot={props.mandelbrot}
+          julia={props.julia}
+          animationState={props.animationState}
+          setAnimationState={props.setAnimationState}
+          focusedPointMandelbrot={props.focusedPointMandelbrot}
+          focusedPointJulia={props.focusedPointJulia}
+          handleMandelbrotSelection={handleMisiurewiczPointSelection}
+        />
       ) : null}
     </>
   );

@@ -53,6 +53,21 @@ export interface InfoCardProps extends CardProps {
   ) => void;
 }
 
+export interface ZoomCardProps extends CardProps {
+  show: boolean;
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
+  animationState: AnimationStatus;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
+  focusedPointMandelbrot: PreperiodicPoint;
+  focusedPointJulia: PreperiodicPoint;
+  handleMandelbrotSelection: (
+    focusedPointMandelbrot: PreperiodicPoint,
+    focusedPointJulia: PreperiodicPoint,
+  ) => void;
+  backButton: () => JSX.Element;
+}
+
 export interface MisiurewiczPointsListProps extends CardProps {
   show: boolean;
   mandelbrot: ViewerControlSprings;

@@ -2,7 +2,6 @@ import { Button, Card, Grow, Typography } from '@material-ui/core';
 import React from 'react';
 import { InfoCardProps } from '../../common/info';
 import { AnimationStatus } from './MisiurewiczModeFragment';
-import MisiurewiczPointsList from './MisiurewiczPointsList';
 import { warpToPoint } from '../../common/utils';
 
 const DomainsInfoCard = (props: InfoCardProps): JSX.Element => {

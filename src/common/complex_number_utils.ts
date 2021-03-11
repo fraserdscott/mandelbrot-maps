@@ -103,6 +103,6 @@ function round(value: number, precision: number): number {
   return Math.round(value * multiplier) / multiplier;
 }
 
-export function formatComplexNumber(c: XYType): string {
-  return `${round(c[0], 2)}${c[1] >= 0 ? '+' : ''}${round(c[1], 2)}i`;
+export function formatComplexNumber(c: XYType, precision: number): string {
+  return `${round(c[0], precision)}${c[1] >= 0 ? '+' : ''}${round(c[1], precision)}i`;
 }
