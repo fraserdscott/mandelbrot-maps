@@ -23,7 +23,10 @@ import { AnimationStatus } from '../tans_theorem/MisiurewiczModeFragment';
 
 export const MAX_ORBIT_LENGTH = 400;
 
-export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.Element {
+export default function MandelbrotRenderer({
+  precision,
+  ...props
+}: MandelbrotRendererProps): JSX.Element {
   // variables to hold canvas and webgl information
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const miniCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -44,7 +47,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
   // read incoming props
   const [{ xy }] = props.controls.xyCtrl;
   // const [{ theta, last_pointer_angle }, setControlRot] = props.controls.rot;
-  const [{ z }, setControlZoom] = props.controls.zoomCtrl;
+  const [{ z }] = props.controls.zoomCtrl;
   const [{ theta }] = props.controls.rotCtrl;
   const maxI = props.maxI; // -> global
   const AA = props.useAA ? 2 : 1; // -> global
@@ -113,6 +116,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
         controls: props.controls,
         setDragging: setDragging,
         DPR: props.DPR,
+        precision: precision,
       })
     : props.animationState === AnimationStatus.PLAY
     ? frozenTouchBind({
@@ -121,6 +125,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
         setDragging: setDragging,
         DPR: props.DPR,
         align: props.align,
+        precision: precision,
       })
     : genericTouchBind({
         domTarget: canvasRef,
@@ -128,6 +133,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
         // gl: gl,
         setDragging: setDragging,
         DPR: props.DPR,
+        precision: precision,
       });
 
   // https://use-gesture.netlify.app/docs/changelog/#breaking
@@ -140,7 +146,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
   //   touchBind();
   // }, [touchBind]);
 
-  const [fps, setFps] = useState('');
+  const [FPS, setFPS] = useState('');
 
   return (
     <SettingsContext.Consumer>
@@ -158,7 +164,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
             period={orbitInfo[2]}
             flag={orbitInfo[3]}
           />
-          <FPSCard fps={fps} show={settings.showFPS} />
+          <FPSCard fps={FPS} show={settings.showFPS} />
           <WebGLCanvas
             id="mandelbrot-canvas"
             fragShader={
@@ -173,7 +179,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
             u={u}
             ref={canvasRef}
             // glRef={gl}
-            fps={setFps}
+            setFPS={setFPS}
             dragging={dragging}
           />
           <MinimapViewer
@@ -184,7 +190,7 @@ export default function MandelbrotRenderer(props: MandelbrotRendererProps): JSX.
             canvasRef={miniCanvasRef}
             // glRef={miniGl}
             show={settings.showMinimap}
-            onClick={() => setControlZoom({ z: 1 })}
+            controls={props.controls}
           />
         </div>
       )}

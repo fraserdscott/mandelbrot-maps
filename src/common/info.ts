@@ -2,10 +2,24 @@ import { CardProps } from '@material-ui/core';
 import { OpaqueInterpolation } from 'react-spring';
 import { AnimationStatus } from '../components/tans_theorem/MisiurewiczModeFragment';
 import { PreperiodicPoint } from '../components/tansTheoremUtils';
-import { ThetaType, ViewerControlSprings, XYType, ZoomType } from './types';
+import {
+  precisionFormatterInterface,
+  precisionSpecifier,
+  ThetaType,
+  ViewerControlSprings,
+  XYType,
+  ZoomType,
+} from './types';
 
 export interface FPSCardProps {
-  fps: string;
+  FPS: string;
+  show: boolean;
+}
+
+export interface CoordinateInterfaceProps {
+  mandelbrot: ViewerControlSprings;
+  precision: precisionSpecifier;
+  precisionFormatter: precisionFormatterInterface;
   show: boolean;
 }
 
@@ -16,11 +30,13 @@ export interface CoordinatesCardProps extends CardProps {
     theta: OpaqueInterpolation<ThetaType>;
   };
   julia?: OpaqueInterpolation<XYType>;
+  precisionFormatter: precisionFormatterInterface;
 }
 
 export interface ChangeCoordinatesCardProps extends CardProps {
   mandelbrot: ViewerControlSprings;
   julia?: OpaqueInterpolation<XYType>;
+  precision: precisionSpecifier;
 }
 
 export interface MisiurewiczModeFragmentProps extends CardProps {

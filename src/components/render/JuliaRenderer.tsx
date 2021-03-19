@@ -13,13 +13,17 @@ import { SettingsContext } from '../settings/SettingsContext';
 import { AnimationStatus } from '../tans_theorem/MisiurewiczModeFragment';
 import MinimapViewer from './MinimapViewer';
 import WebGLCanvas from './WebGLCanvas';
-export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
+
+export default function JuliaRenderer({
+  precision,
+  ...props
+}: JuliaRendererProps): JSX.Element {
   // variables to hold canvas and webgl information
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const miniCanvasRef = useRef<HTMLCanvasElement>(null);
 
   const [{ xy }] = props.controls.xyCtrl;
-  const [{ z }, setControlZoom] = props.controls.zoomCtrl;
+  const [{ z }] = props.controls.zoomCtrl;
   const [{ theta }] = props.controls.rotCtrl;
   const maxI = props.maxI; // -> global
   const AA = props.useAA ? 2 : 1;
@@ -59,6 +63,7 @@ export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
         controls: props.controls,
         setDragging: setDragging,
         DPR: props.DPR,
+        precision: precision,
       })
     : props.animationState === AnimationStatus.PLAY
     ? frozenTouchBind({
@@ -67,6 +72,7 @@ export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
         setDragging: setDragging,
         DPR: props.DPR,
         align: props.align,
+        precision: precision,
       })
     : genericTouchBind({
         domTarget: canvasRef,
@@ -74,6 +80,7 @@ export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
         // gl: gl,
         setDragging: setDragging,
         DPR: props.DPR,
+        precision: precision,
       });
 
   useGesture(gtb.handlers, gtb.config);
@@ -101,8 +108,8 @@ export default function JuliaRenderer(props: JuliaRendererProps): JSX.Element {
             DPR={props.DPR}
             u={u}
             canvasRef={miniCanvasRef}
-            onClick={() => setControlZoom({ z: 1 })}
             show={settings.showMinimap}
+            controls={props.controls}
           />
         </div>
       )}
