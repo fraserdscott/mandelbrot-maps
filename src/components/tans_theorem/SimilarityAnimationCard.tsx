@@ -8,7 +8,6 @@ import {
 } from '../tansTheoremUtils';
 import { SimilarityAnimationProps } from '../../common/info';
 import { AnimationStatus } from './MisiurewiczModeFragment';
-import { useWindowSize } from '../../common/utils';
 
 function getSteps(
   c: PreperiodicPoint,

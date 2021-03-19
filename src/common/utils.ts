@@ -563,7 +563,7 @@ export function frozoneTouchBind({
   DPR,
 }: GenericTouchBindParams): GenericTouchBindReturn {
   const [{ xy }] = controls.xyCtrl;
-  const [{ z, minZoom, maxZoom }, setControlZoom] = controls.zoomCtrl;
+  const [{ z, minZoom, maxZoom }] = controls.zoomCtrl;
   const [{ theta }] = controls.rotCtrl;
 
   const zoomMult = { in: 3e-3, out: 1e-3 };

@@ -24,7 +24,7 @@ const PointsInfoCard = (props: InfoCardProps): JSX.Element => {
           });
         }}
       >
-        GO
+        CONFIRM
       </Button>
     );
   };

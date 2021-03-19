@@ -1,10 +1,6 @@
 import { Card, Slider } from '@material-ui/core';
 import React from 'react';
-import { useState } from 'react';
 import { PlayCardProps } from '../../common/info';
-import { cycleEigenvalue, magnitude, formatAngle } from '../tansTheoremUtils';
-
-const TAU = Math.PI * 2;
 
 const PlayCard = (props: PlayCardProps): JSX.Element => {
   const legOfJourney =

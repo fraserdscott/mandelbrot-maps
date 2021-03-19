@@ -24,7 +24,7 @@ const SimilarityMenu = (props: SimilarityMenuProps): JSX.Element => {
           });
         }}
       >
-        GO
+        CONFIRM
       </Button>
     );
   };

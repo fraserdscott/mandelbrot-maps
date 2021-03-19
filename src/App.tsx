@@ -31,11 +31,7 @@ import ServiceWorkerWrapper from './components/ServiceWorkerWrapper';
 import SettingsProvider, { SettingsContext } from './components/settings/SettingsContext';
 import SettingsMenu from './components/settings/SettingsMenu';
 import theme from './theme/theme';
-import {
-  cycleEigenvalue,
-  PreperiodicPoint,
-  magnitude,
-} from './components/tansTheoremUtils';
+import { PreperiodicPoint } from './components/tansTheoremUtils';
 
 const defaultMisiurewiczPoint = new PreperiodicPoint(
   [-0.10109636384562218, +0.9562865108091414],

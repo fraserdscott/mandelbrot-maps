@@ -8,7 +8,7 @@ export function magnitude(p: XYType): number {
   return Math.sqrt(p[0] * p[0] + p[1] * p[1]);
 }
 
-export const distance = (a: XYType, b: XYType) => {
+export const distance = (a: XYType, b: XYType): number => {
   return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
 };
 
@@ -166,7 +166,7 @@ const numericalDerivative = function (c: XYType, f: (c: XYType) => XYType): XYTy
   return [sub(withH, withoutH)[0] / h, sub(withH, withoutH)[1] / h];
 };
 
-export const cycleEigenvalue = (c: XYType, l: number, p: number) => {
+export const cycleEigenvalue = (c: XYType, l: number, p: number): XYType => {
   const firstIterateInCycle: XYType = orbit(c, c, l);
   return orbitEigenvalue(firstIterateInCycle, c, p);
 };
@@ -296,10 +296,11 @@ const depthFirstSearch = (z: XYType, c: XYType, zs: XYType[], depth: number) => 
 export const similarPoints = (c: PreperiodicPoint, depth: number): PreperiodicPoint[] => {
   const zs: XYType[] = [];
 
-  for (let i = c.prePeriod; i < c.prePeriod + c.period; i++) {
-    const z = orbit(c.point, c.point, i);
+  let z = orbit(c.point, c.point, c.prePeriod);
+  for (let i = 0; i < c.period; i++) {
     zs.push(z);
     depthFirstSearch(mult([-1, 0], z), c.point, zs, depth);
+    z = add(square(z), c.point);
   }
   return zs.map((p) => new PreperiodicPoint(c.point, p));
 };

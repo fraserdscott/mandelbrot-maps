@@ -1,4 +1,4 @@
-import { Button, Typography, Card, Grid, Tooltip } from '@material-ui/core';
+import { Button, Typography, Card, Grid } from '@material-ui/core';
 import React from 'react';
 import { ZoomCardProps } from '../../common/info';
 import { AnimationStatus } from './MisiurewiczModeFragment';
@@ -8,8 +8,16 @@ import RotateRightIcon from '@material-ui/icons/RotateRight';
 import { ThetaType, ZoomType } from '../../common/types';
 import { formatComplexNumber } from '../../common/complex_number_utils';
 import { formatAngle } from '../tansTheoremUtils';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
 
 const INITIAL_ZOOM = 1;
+
+export interface SimpleDialogProps {
+  animationState: AnimationStatus;
+  open: boolean;
+  onClose: (value: string) => void;
+}
 
 const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   const zoomMandelbrot = () => {
@@ -33,7 +41,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
     6: 'null',
   };
 
-  const messages = {
+  const titleStrings = {
     0: 'null',
     1: 'null',
     2: 'Magnify M by',
@@ -43,7 +51,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
     6: 'null',
   };
 
-  const messages2 = {
+  const factorText = {
     0: 'null',
     1: 'null',
     2: `|${formatComplexNumber(props.focusedPointMandelbrot.u, 1)}| = ${Math.round(
@@ -61,6 +69,104 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
     6: 'null',
   };
 
+  const factorTextExpanded = {
+    0: 'null',
+    1: 'null',
+    2: `|u'(c)| = |${formatComplexNumber(props.focusedPointMandelbrot.u, 2)}| = ${
+      Math.round(props.focusedPointMandelbrot.uMagnitude * 100) / 100
+    }`,
+    3: `|a| = |${formatComplexNumber(props.focusedPointJulia.a, 2)}| = ${
+      Math.round(props.focusedPointJulia.aMagnitude * 100) / 100
+    }`,
+    4: `arg(u'(c)) = arg(${formatComplexNumber(
+      props.focusedPointMandelbrot.u,
+      2,
+    )}) = ${formatAngle(props.focusedPointMandelbrot.uAngle)}`,
+    5: `arg(a) = arg(${formatComplexNumber(
+      props.focusedPointJulia.a,
+      2,
+    )}) = ${formatAngle(props.focusedPointJulia.aAngle)}`,
+    6: 'null',
+  };
+
+  const paragraph1 = {
+    0: 'null',
+    1: 'null',
+    2: `The complex number, u'(c), used to "align" the Mandelbrot set is the following:`,
+    3: `The complex number, a, used to "align" the Julia set is the following:`,
+    4: `The complex number, u'(c), used to "align" the Mandelbrot set is the following:`,
+    5: `The complex number, a, used to "align" the Julia set is the following:`,
+    6: 'null',
+  };
+
+  const paragraph2 = {
+    0: 'null',
+    1: 'null',
+    2: `To magnify, we take the magnitude of u'(c), so the magnification factor is:`,
+    3: `To magnify, we take the magnitude of a, so the magnification factor is:`,
+    4: `To rotate, we take the argument of u'(c), so the rotation factor is:`,
+    5: `To rotate, we take the argument of a, so the rotation factor is:`,
+    6: 'null',
+  };
+
+  const numberText = {
+    0: 'null',
+    1: 'null',
+    2: `u'(c) = ${formatComplexNumber(props.focusedPointMandelbrot.u, 2)}`,
+    3: `a = ${formatComplexNumber(props.focusedPointJulia.a, 2)}`,
+    4: `u'(c) = ${formatComplexNumber(props.focusedPointMandelbrot.u, 2)}`,
+    5: `a = ${formatComplexNumber(props.focusedPointJulia.a, 2)}`,
+    6: 'null',
+  };
+
+  const dialogText = {
+    0: 'null',
+    1: 'null',
+    2: `The Mandelbrot set magnification factor`,
+    3: `The Julia set magnification factor`,
+    4: `The Mandelbrot set rotation factor`,
+    5: `The Julia set rotation factor`,
+    6: 'null',
+  };
+
+  function SimpleDialog(props: SimpleDialogProps) {
+    const { onClose, open } = props;
+
+    const handleClose = () => {
+      onClose('null');
+    };
+
+    return (
+      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+        <DialogTitle id="simple-dialog-title">
+          {dialogText[props.animationState]}
+        </DialogTitle>
+        <div style={{ margin: 16 }}>
+          <Typography>
+            To show the similarity between the Mandelbrot and Julia set, we multiply every
+            point in each set by a particular complex number. Geometrically, multiplying
+            two complex numbers is equivalent to multiplying their magnitudes and adding
+            their angles. That&apos;s why we magnify and rotate in this animation!
+          </Typography>
+          <br />
+          <Typography>{paragraph1[props.animationState]}</Typography>
+          <Typography>{numberText[props.animationState]}</Typography>
+          <Typography>{paragraph2[props.animationState]}</Typography>
+          <Typography>{factorTextExpanded[props.animationState]}</Typography>
+          <br />
+          <Typography
+            style={{
+              fontSize: '0.8rem',
+            }}
+          >
+            For the full details on calculating the magnification and rotation factors for
+            each set, read &quot;Similarity Between the Mandelbrot Set and Julia
+            Sets&quot;, Tan, page 609.
+          </Typography>
+        </div>
+      </Dialog>
+    );
+  }
   const zoomJulia = () => {
     props.setAnimationState(AnimationStatus.ROTATE_M);
 
@@ -95,6 +201,16 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
     });
   };
 
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value: string) => {
+    setOpen(false);
+  };
+
   return (
     <Card
       style={{
@@ -118,7 +234,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
             variant="h6"
             gutterBottom
           >
-            {messages[props.animationState]}
+            {titleStrings[props.animationState]}
           </Typography>
         </Grid>
       </Grid>
@@ -130,20 +246,19 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
               fontSize: '1.2rem',
             }}
           >
-            {messages2[props.animationState]}
+            {factorText[props.animationState]}
           </Typography>
         </Grid>
         <Grid item>
-          <Tooltip title="Coming soon!">
-            <Button
-              style={{
-                fontSize: '0.5rem',
-              }}
-              color="primary"
-            >
-              How is this <br /> calculated?
-            </Button>
-          </Tooltip>
+          <Button
+            style={{
+              fontSize: '0.5rem',
+            }}
+            color="primary"
+            onClick={handleClickOpen}
+          >
+            How is this <br /> calculated?
+          </Button>
         </Grid>
       </Grid>
       <Button
@@ -169,7 +284,12 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
           }
         }}
         startIcon={icons[props.animationState]}
-      ></Button>
+      ></Button>{' '}
+      <SimpleDialog
+        animationState={props.animationState}
+        open={open}
+        onClose={handleClose}
+      />
     </Card>
   );
 };
