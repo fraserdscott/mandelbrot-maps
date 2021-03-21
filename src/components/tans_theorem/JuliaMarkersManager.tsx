@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { JuliaManagerProps } from '../../common/tans';
-import { generateJuliaMarkers } from '../tansTheoremUtils';
+import { generateJuliaMarkers } from './tansTheoremUtils';
 
 const JuliaMarkersManager = (props: JuliaManagerProps): JSX.Element => {
   const [markers, setMarkers] = useState([<div key={0} />]);
@@ -20,6 +20,8 @@ const JuliaMarkersManager = (props: JuliaManagerProps): JSX.Element => {
       }
     }, 10);
     return () => clearInterval(interval);
+    // explicitly not adding mandelbrotControls to the deps list
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     props.aspectRatio,
     props.focusedPoint,

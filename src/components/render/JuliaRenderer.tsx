@@ -45,9 +45,6 @@ export default function JuliaRenderer({
     theta: theta,
     maxI: maxI,
     colour: Rgb255ColourToFloat(props.colour),
-    orbit: [],
-    orbit_length: -1,
-    preperiod: -1,
   };
 
   const [dragging, setDragging] = useState(false);

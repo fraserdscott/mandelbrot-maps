@@ -1,7 +1,7 @@
 import React from 'react';
 import { MisiurewiczModeFragmentProps } from '../../common/tans';
 import { Card, Grid, IconButton, Typography, Box } from '@material-ui/core';
-import { PreperiodicPoint } from '../tansTheoremUtils';
+import { PreperiodicPoint } from './tansTheoremUtils';
 import { misiurewiczPairs } from './MPoints';
 import { XYType } from '../../common/types';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
@@ -38,32 +38,30 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
   return (
     <>
       {props.animationState === AnimationStatus.PLAY ? (
-        <>
-          <Card
-            style={{
-              padding: 12,
-              zIndex: 100,
-              display: 'flex',
-              flexDirection: 'column',
-              flexShrink: 1,
-              fontSize: '0.8rem',
-            }}
-          >
-            <Grid container direction="row">
-              <Grid item>{BackButton()}</Grid>
-              <Grid item>
-                <Typography gutterBottom>
-                  You are now free to continue magnifying.
-                </Typography>
-                <Typography gutterBottom>
-                  <Box fontWeight="fontWeightBold" m={0} textAlign="left">
-                    higher magnification &#8594; stronger similarity
-                  </Box>
-                </Typography>
-              </Grid>
+        <Card
+          style={{
+            padding: 12,
+            zIndex: 100,
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: 1,
+            fontSize: '0.8rem',
+          }}
+        >
+          <Grid container direction="row">
+            <Grid item>{BackButton()}</Grid>
+            <Grid item>
+              <Typography gutterBottom>
+                You are now free to continue magnifying.
+              </Typography>
+              <Typography gutterBottom>
+                <Box fontWeight="fontWeightBold" m={0} textAlign="left">
+                  higher magnification &#8594; stronger similarity
+                </Box>
+              </Typography>
             </Grid>
-          </Card>
-        </>
+          </Grid>
+        </Card>
       ) : null}
     </>
   );

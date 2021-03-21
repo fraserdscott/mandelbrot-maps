@@ -1,7 +1,7 @@
 import { CanvasHTMLAttributes } from 'react';
 import { RgbColor } from 'react-colorful';
 import { OpaqueInterpolation } from 'react-spring';
-import { OrbitFlag } from '../components/tansTheoremUtils';
+import { OrbitFlag } from '../components/tans_theorem/tansTheoremUtils';
 import { AnimationStatus } from '../components/tans_theorem/MisiurewiczModeFragment';
 import {
   MandelbrotMapsWebGLUniforms,
@@ -51,10 +51,8 @@ export interface RendererRenderValues {
 export interface MandelbrotRendererProps extends RendererProps {
   showCrosshair: boolean;
   animationState: AnimationStatus;
-  showOrbit: boolean;
   showTan: boolean;
   align: (z: number) => void;
-  orbitInfo: [orbit: XYType[], prePeriod: number, period: number, flag: OrbitFlag];
 }
 
 export interface JuliaRendererProps extends RendererProps {

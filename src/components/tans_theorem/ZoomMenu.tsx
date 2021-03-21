@@ -6,7 +6,7 @@ import { warpToPoint } from '../../common/utils';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import RotateRightIcon from '@material-ui/icons/RotateRight';
 import { ThetaType, ZoomType } from '../../common/types';
-import { formatAngle, formatComplexNumber } from '../tansTheoremUtils';
+import { formatAngle, formatComplexNumber } from './tansTheoremUtils';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 

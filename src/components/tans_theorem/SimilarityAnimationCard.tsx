@@ -5,7 +5,7 @@ import {
   formatComplexNumber,
   PreperiodicPoint,
   round,
-} from '../tansTheoremUtils';
+} from './tansTheoremUtils';
 import { SimilarityAnimationProps } from '../../common/tans';
 import { AnimationStatus } from './MisiurewiczModeFragment';
 

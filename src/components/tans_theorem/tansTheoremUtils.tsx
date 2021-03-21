@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core';
-import { ViewerControlSprings, XYType } from '../common/types';
-import ComplexNumberMarker from './tans_theorem/ComplexNumberMarker';
+import { ViewerControlSprings, XYType } from '../../common/types';
+import ComplexNumberMarker from './ComplexNumberMarker';
 import React from 'react';
 
 export const MAX_DEPTH = 4;
@@ -219,7 +219,7 @@ export const similarPoints = (c: PreperiodicPoint, depth: number): PreperiodicPo
   return zs.map((p) => new PreperiodicPoint(c.point, p, true));
 };
 
-export const forwardOrbit = function (
+const forwardOrbit = function (
   z: XYType,
   c: XYType,
   maxIterations: number,

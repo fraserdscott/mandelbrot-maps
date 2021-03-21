@@ -1,20 +1,10 @@
 import { AnimationStatus } from '../components/tans_theorem/MisiurewiczModeFragment';
-import { PreperiodicPoint } from '../components/tansTheoremUtils';
+import { PreperiodicPoint } from '../components/tans_theorem/tansTheoremUtils';
 import { ViewerControlSprings } from './types';
 
 export interface MisiurewiczModeFragmentProps {
   animationState: AnimationStatus;
-  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
-  shadeDomains: boolean;
-  show: boolean;
-  mandelbrot: ViewerControlSprings;
-  julia: ViewerControlSprings;
-  magnification: number;
-  focusedPointMandelbrot: PreperiodicPoint;
-  focusedPointJulia: PreperiodicPoint;
-  rotate: boolean;
   handleReset: () => void;
-  handleMandelbrotSelection: (focusedPointMandelbrot: PreperiodicPoint) => void;
 }
 
 export interface ManagerProps {

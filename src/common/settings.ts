@@ -10,7 +10,6 @@ export type settingsDefinitionsType = {
   showCoordinates: boolean;
   shadeMisiurewiczDomains: boolean;
   rotateWhileZooming: boolean;
-  showOrbit: boolean;
   showFPS: boolean;
   maxI: number;
   useDPR: boolean;
@@ -25,7 +24,6 @@ export const defaultSettings: settingsDefinitionsType = {
   showCoordinates: false,
   shadeMisiurewiczDomains: false,
   rotateWhileZooming: false,
-  showOrbit: false,
   maxI: 256,
   showFPS: false,
   useDPR: false,

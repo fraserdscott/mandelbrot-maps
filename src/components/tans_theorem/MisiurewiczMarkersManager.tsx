@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MandelbrotManagerProps } from '../../common/tans';
-import { generateMandelbrotMarkers } from '../tansTheoremUtils';
+import { generateMandelbrotMarkers } from './tansTheoremUtils';
 import { MISIUREWICZ_POINTS } from './MisiurewiczModeFragment';
 
 const MisiurewiczMarkersManager = (props: MandelbrotManagerProps): JSX.Element => {
@@ -22,6 +22,8 @@ const MisiurewiczMarkersManager = (props: MandelbrotManagerProps): JSX.Element =
       }
     }, 10);
     return () => clearInterval(interval);
+    // explicitly not adding mandelbrotControls to the deps list
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     props.aspectRatio,
     props.focusedPoint,

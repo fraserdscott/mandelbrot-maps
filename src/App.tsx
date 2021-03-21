@@ -50,12 +50,10 @@ import SettingsMenu from './components/settings/SettingsMenu';
 import {
   alignSets,
   findNearestMisiurewiczPoint,
-  forwardOrbit,
   NearestButton,
   PreperiodicPoint,
   similarPoints,
-} from './components/tansTheoremUtils';
-import OrbitCard, { MAX_ORBIT_LENGTH } from './components/info/OrbitCard';
+} from './components/tans_theorem/tansTheoremUtils';
 import SimilarityMenu from './components/tans_theorem/SimilarityMenu';
 import SimilarityAnimationCard from './components/tans_theorem/SimilarityAnimationCard';
 import MisiurewiczDomainsMenu from './components/tans_theorem/MisiurewiczDomainsMenu';
@@ -63,7 +61,7 @@ import PointsInfoCard from './components/tans_theorem/MisiurewiczPointsMenu';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import MisiurewiczMarkersManager from './components/tans_theorem/MisiurewiczMarkersManager';
-import JuliaMarkersManager from './components/tans_theorem/JuliaManager';
+import JuliaMarkersManager from './components/tans_theorem/JuliaMarkersManager';
 import ZoomMenu from './components/tans_theorem/ZoomMenu';
 import PlayCard from './components/tans_theorem/PlayCard';
 
@@ -268,9 +266,6 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
   );
   const [focusedPointJulia, setFocusedPointJulia] = useState(similarPointsJulia[0]);
 
-  const [orbitInfo, setOrbitInfo] = useState(
-    forwardOrbit([0.25, 0.25], [0.25, 0.25], MAX_ORBIT_LENGTH),
-  );
   const [aspectRatio, setAspectRatio] = useState(1);
   const rendererRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
@@ -331,21 +326,10 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
     });
   };
 
-  const updateOrbit = () => {
-    if (settings.showOrbit)
-      setOrbitInfo(
-        forwardOrbit(
-          mandelbrotControls.xyCtrl[0].xy.getValue(),
-          mandelbrotControls.xyCtrl[0].xy.getValue(),
-          MAX_ORBIT_LENGTH,
-        ),
-      );
-  };
   const updateAspectRatio = () => {
     if (showTan && rendererRef.current)
       setAspectRatio(rendererRef.current.offsetHeight / rendererRef.current.offsetWidth);
   };
-  useInterval(updateOrbit, 1000);
   useInterval(updateAspectRatio, 1000);
 
   const BackButton = () => (
@@ -396,15 +380,6 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
               pointerEvents: 'none',
             }}
           >
-            {settings.showOrbit ? (
-              <OrbitCard
-                show={settings.showOrbit}
-                xy={mandelbrotControls.xyCtrl[0].xy}
-                preperiod={orbitInfo[1]}
-                period={orbitInfo[2]}
-                flag={orbitInfo[3]}
-              />
-            ) : null}
             {showTan ? (
               <div
                 style={{
@@ -437,18 +412,8 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
                   )
                 ) : null}
                 <MisiurewiczModeFragment
-                  show={showTan}
-                  mandelbrot={mandelbrotControls}
-                  julia={juliaControls}
                   animationState={animationState}
-                  setAnimationState={setAnimationState}
-                  shadeDomains={settings.shadeMisiurewiczDomains}
-                  magnification={magnification}
                   handleReset={handleReset}
-                  focusedPointMandelbrot={focusedPointMandelbrot}
-                  focusedPointJulia={focusedPointJulia}
-                  rotate={settings.rotateWhileZooming}
-                  handleMandelbrotSelection={handleMisiurewiczPointSelection}
                 />
                 {showTan && animationState === AnimationStatus.SELECT_JULIA_POINT ? (
                   <SimilarityMenu
@@ -539,7 +504,6 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
                 controls={mandelbrotControls}
                 DPR={currentDPR}
                 precision={precision}
-                orbitInfo={orbitInfo}
                 showTan={showTan}
                 {...settings}
               />
@@ -550,7 +514,6 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
                 controls={mandelbrotControls}
                 DPR={currentDPR}
                 precision={precision}
-                orbitInfo={orbitInfo}
                 showTan={showTan}
                 {...settings}
               />

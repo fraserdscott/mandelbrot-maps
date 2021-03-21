@@ -64,16 +64,6 @@ As you increase the magnification, you should notice that the same pattern repea
 WARNING: for particular points, this setting can cause excessive rotation which may be off-putting to some.
 `,
   },
-
-  showOrbit: {
-    label: 'Show orbit',
-    checked: settings.showOrbit,
-    control: <Switch />,
-    helptext: `
-Displays the forward orbit of the current point.
-Yellow circle represent preperiodic points, while red circles represent periodic points.
-(Mandelbrot viewer only).`,
-  },
   maxI: {
     label: 'Iterations',
     value: settings.maxI,
@@ -189,7 +179,6 @@ export const getSettingsWidgetsGrouping = (
       showMinimap: settingsWidgets.showMinimap,
       showCrosshair: settingsWidgets.showCrosshair,
       showCoordinates: settingsWidgets.showCoordinates,
-      showOrbit: settingsWidgets.showOrbit,
     },
   },
   {

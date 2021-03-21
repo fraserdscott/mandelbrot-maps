@@ -62,7 +62,6 @@ export default function MandelbrotRenderer({
       AA: AA,
     },
     props.showCrosshair,
-    props.showOrbit,
     standardCrosshair,
   );
   const miniFragShader = newSmoothMandelbrotShader(
@@ -71,7 +70,6 @@ export default function MandelbrotRenderer({
       AA: 2,
     },
     props.showCrosshair,
-    props.showOrbit,
     miniCrosshair,
   );
 
@@ -81,9 +79,6 @@ export default function MandelbrotRenderer({
     theta: theta,
     maxI: maxI,
     colour: Rgb255ColourToFloat(props.colour), // vec3(0.0,0.6,1.0)
-    orbit: props.orbitInfo[0].flat(),
-    orbit_length: props.orbitInfo[0].length,
-    preperiod: props.orbitInfo[1],
   };
 
   const [dragging, setDragging] = useState(false);

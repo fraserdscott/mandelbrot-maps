@@ -100,9 +100,6 @@ export interface MandelbrotMapsWebGLUniforms {
   c?: { getValue: () => XYType };
   theta: OpaqueInterpolation<ThetaType>;
   colour: RgbFloatColour;
-  orbit: number[];
-  orbit_length: number;
-  preperiod: number;
 }
 
 export interface DefaultRendererProps {
