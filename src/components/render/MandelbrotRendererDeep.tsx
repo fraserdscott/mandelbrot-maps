@@ -71,6 +71,7 @@ export default function MandelbrotRendererDeep({
       AA: 2,
     },
     showCrosshair,
+    false,
     miniCrosshair,
   );
 
@@ -80,7 +81,9 @@ export default function MandelbrotRendererDeep({
     theta: theta,
     maxI: maxI,
     colour: Rgb255ColourToFloat(colour), // vec3(0.0,0.6,1.0)
-    // screenScaleMultiplier: screenScaleMultiplier,
+    orbit: [],
+    orbit_length: 0,
+    preperiod: 0,
   };
 
   const [dragging, setDragging] = useState(false);

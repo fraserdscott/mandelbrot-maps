@@ -1,9 +1,10 @@
 import { Card, Typography, Grow } from '@material-ui/core';
 import React from 'react';
 import { XYType } from '../../common/types';
-import { formatComplexNumber, OrbitFlag } from '../../common/complex_number_utils';
-import { MAX_ORBIT_LENGTH } from '../render/MandelbrotRenderer';
 import { OpaqueInterpolation } from 'react-spring';
+import { OrbitFlag, formatComplexNumber } from '../tansTheoremUtils';
+
+export const MAX_ORBIT_LENGTH = 400;
 
 type OrbitCardProps = {
   show: boolean;
@@ -19,8 +20,6 @@ const OrbitCard = (props: OrbitCardProps): JSX.Element => {
       <Card
         style={{
           width: 'auto',
-          zIndex: 1300,
-          position: 'absolute',
           padding: '6px 12px',
           marginBottom: 8,
         }}

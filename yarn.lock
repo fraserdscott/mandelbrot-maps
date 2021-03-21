@@ -6588,9 +6588,9 @@ __metadata:
   linkType: hard
 
 "double.js@npm:^1.0.15":
-  version: 1.0.15
-  resolution: "double.js@npm:1.0.15"
-  checksum: 74e774fc192f75f66b53bd8b8f8073943906ba758aadaf7fc94e750d596525a2a66f3de230d57033c6fb1e98bac34485d45eaa6ea5d4ce7ba615f575f5f6f0ed
+  version: 1.0.16
+  resolution: "double.js@npm:1.0.16"
+  checksum: a5324f54bda596776d0b8174b2fa1297e0806bcae1269b7d952bed14e1eea5a6dc3509c9bd81b7ac962315d2bf7313d80c5f9878917e713fa26c3befcc39ac1a
   languageName: node
   linkType: hard
 
@@ -6766,9 +6766,9 @@ __metadata:
   linkType: hard
 
 "env-paths@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "env-paths@npm:2.2.0"
-  checksum: 09de4fd1c068d5965aa8aede852a764b7fb6fa8f1299ba7789bc29c22840ab1985e0c9c55bc6bf40b4276834b8adfa1baf82ec9bc58445d9e75800dc32d78a4f
+  version: 2.2.1
+  resolution: "env-paths@npm:2.2.1"
+  checksum: 9579868bc73526de31682625d89aa08c83f3c87850218f9251f953bf4242428a1020e75cb201ca16b42f2874c3ca175ffc8aa47a88423b546711b7dbf86f79a8
   languageName: node
   linkType: hard
 

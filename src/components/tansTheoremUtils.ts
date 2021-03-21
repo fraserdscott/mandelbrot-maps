@@ -1,16 +1,20 @@
 import { XYType } from '../common/types';
 
-const TOLERANCE = 0.001;
-const FLOATING_POINT_TOLERANCE = 0.01;
 export const MAX_DEPTH = 4;
 
-export function magnitude(p: XYType): number {
+const FLOATING_POINT_TOLERANCE = 1e-10;
+const MAX_PREPERIOD = 1000;
+
+const equal = (a: XYType, b: XYType): boolean => {
+  const d = sub(a, b);
+  const dx: number = Math.abs(d[0]);
+  const dy: number = Math.abs(d[1]);
+  return dx < FLOATING_POINT_TOLERANCE && dy < FLOATING_POINT_TOLERANCE;
+};
+
+function magnitude(p: XYType): number {
   return Math.sqrt(p[0] * p[0] + p[1] * p[1]);
 }
-
-export const distance = (a: XYType, b: XYType): number => {
-  return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
-};
 
 const add = function (a: XYType, b: XYType): XYType {
   return [a[0] + b[0], a[1] + b[1]];
@@ -20,7 +24,7 @@ const sub = function (a: XYType, b: XYType): XYType {
   return [a[0] - b[0], a[1] - b[1]];
 };
 
-export const mult = function (a: XYType, b: XYType): XYType {
+const mult = function (a: XYType, b: XYType): XYType {
   return [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
 };
 
@@ -39,54 +43,22 @@ const sqrt = (c: XYType): XYType => {
   return [r2 * Math.cos(theta / 2), r2 * Math.sin(theta / 2)];
 };
 
-export function complexNumbersEqual(a: XYType, b: XYType): boolean {
-  return a[0] === b[0] && a[1] === b[1];
-}
-
-export const preImagePositive = function (z: XYType, c: XYType): XYType {
+const preImagePositive = function (z: XYType, c: XYType): XYType {
   return sqrt(sub(z, c));
 };
 
-export const preImageNegative = function (z: XYType, c: XYType): XYType {
-  return mult([-1, 0], sqrt(sub(z, c)));
+const preImageNegative = function (z: XYType, c: XYType): XYType {
+  return mult([-1, 0], preImagePositive(z, c));
 };
 
-export const orbit = function (z: XYType, c: XYType, t: number): XYType {
+const orbit = function (z: XYType, c: XYType, t: number): XYType {
   for (let i = 0; i < t; i++) {
     z = add(square(z), c);
   }
   return z;
 };
 
-export const orbitList = function (
-  z: XYType,
-  c: XYType,
-  maxIterations: number,
-): [XYType[], number, number] {
-  const points = [];
-  for (let i = 0; i < maxIterations; i++) {
-    const similar = points.findIndex((elem) => distance(elem, z) < TOLERANCE);
-    if (similar !== -1) {
-      // we've hit a cycle
-      return [points, similar, i - similar];
-    }
-    points.push(z);
-    z = add(square(z), c);
-  }
-  return [points, -1, -1];
-};
-
-/**
- * Take the derivative of f sub c with respect to z
- *
- * This value depends not on z per se., but the orbit of z.
- *
- * @param z - The point we're taking the derivative w.r.t
- * @param c - The fixed constant +c of iteration
- * @param t - How many iterations to go for
- * @returns The derivative of W at c
- */
-export const orbitEigenvalue = function (z: XYType, c: XYType, t: number): XYType {
+const orbitEigenvalue = function (z: XYType, c: XYType, t: number): XYType {
   let der: XYType = [1, 0];
   for (let i = 0; i < t; i++) {
     der = mult([2, 0], mult(der, z));
@@ -102,12 +74,12 @@ export const orbitEigenvalue = function (z: XYType, c: XYType, t: number): XYTyp
  * @param c - The point
  * @returns If it's preperiodic: the preperiod, if it's periodic: nonsense, otherwise: -1.
  */
-export const prePeriod = (z: XYType, c: XYType): number => {
+const prePeriod = (z: XYType, c: XYType): number => {
   const olds: XYType[] = [];
   for (let i = 0; i < 50; i++) {
     olds.push(z);
     const newZ: XYType = add(square(z), c);
-    const similar = olds.findIndex((elem) => distance(elem, newZ) < TOLERANCE);
+    const similar = olds.findIndex((elem) => equal(elem, newZ));
     if (similar !== -1) return similar;
 
     z = newZ;
@@ -122,12 +94,12 @@ export const prePeriod = (z: XYType, c: XYType): number => {
  * @param c - The constant of iteration
  * @returns The period, otherwise: -1.
  */
-export const period = (z: XYType, c: XYType): number => {
+const period = (z: XYType, c: XYType): number => {
   const olds: XYType[] = [];
   for (let i = 0; i < 50; i++) {
     olds.push(z);
     const newZ: XYType = add(square(z), c);
-    const similar = olds.findIndex((elem) => distance(elem, newZ) < TOLERANCE);
+    const similar = olds.findIndex((elem) => equal(elem, newZ));
     if (similar !== -1) {
       // we've hit a cycle
       return i - similar + 1;
@@ -166,7 +138,7 @@ const numericalDerivative = function (c: XYType, f: (c: XYType) => XYType): XYTy
   return [sub(withH, withoutH)[0] / h, sub(withH, withoutH)[1] / h];
 };
 
-export const cycleEigenvalue = (c: XYType, l: number, p: number): XYType => {
+const cycleEigenvalue = (c: XYType, l: number, p: number): XYType => {
   const firstIterateInCycle: XYType = orbit(c, c, l);
   return orbitEigenvalue(firstIterateInCycle, c, p);
 };
@@ -178,7 +150,7 @@ export const cycleEigenvalue = (c: XYType, l: number, p: number): XYType => {
  * @param p - The period of z
  * @returns The size of the branch
  */
-export const magnificationRotationMandelbrot = function (
+const magnificationRotationMandelbrot = function (
   c: XYType,
   l: number,
   p: number,
@@ -198,12 +170,12 @@ export const magnificationRotationMandelbrot = function (
  * @param c - The point
  * @returns If it's preperiodic: the preperiod, if it's periodic: nonsense, otherwise: -1.
  */
-export const getAlpha = (z: XYType, c: XYType): XYType => {
+const getAlpha = (z: XYType, c: XYType): XYType => {
   const olds: XYType[] = [];
   for (let i = 0; i < 50; i++) {
     olds.push(z);
     const newZ: XYType = add(square(z), c);
-    const similar = olds.findIndex((elem) => distance(elem, newZ) < TOLERANCE);
+    const similar = olds.findIndex((elem) => equal(elem, newZ));
     if (similar !== -1) return newZ;
 
     z = newZ;
@@ -211,20 +183,16 @@ export const getAlpha = (z: XYType, c: XYType): XYType => {
   return [-7, -7];
 };
 
-export const reachAlpha = function (c: XYType, z: XYType): number {
+const reachAlpha = function (c: XYType, z: XYType): number {
   const alpha = getAlpha([0, 0], c);
   for (let i = 0; i < 50; i++) {
-    if (distance(alpha, z) < TOLERANCE) return i;
+    if (equal(alpha, z)) return i;
     z = add(square(z), c);
   }
   return -1;
 };
 
-export const magnificationRotationJulia = function (
-  c: XYType,
-  z: XYType,
-  q: number,
-): XYType {
+const magnificationRotationJulia = function (c: XYType, z: XYType, q: number): XYType {
   return orbitEigenvalue(z, c, reachAlpha(c, z));
 };
 
@@ -233,8 +201,8 @@ export function round(value: number, precision: number): number {
   return Math.round(value * multiplier) / multiplier;
 }
 
-export function formatComplexNumber(c: XYType): string {
-  return `${round(c[0], 3)}${c[1] >= 0 ? '+' : ''}${round(c[1], 3)}i`;
+export function formatComplexNumber(c: XYType, precision = 3): string {
+  return `${round(c[0], precision)}${c[1] >= 0 ? '+' : ''}${round(c[1], precision)}i`;
 }
 
 export function formatAngle(angle: number): string {
@@ -242,8 +210,6 @@ export function formatAngle(angle: number): string {
 }
 
 function findPotentialPreperiod(c: XYType): number {
-  const MAX_PREPERIOD = 1000;
-
   let z: XYType = c;
   let minDistance = 4;
   let minPreperiod = -1;
@@ -286,7 +252,7 @@ export const findNearestMisiurewiczPoint = function (
 
 const depthFirstSearch = (z: XYType, c: XYType, zs: XYType[], depth: number) => {
   zs.push(z);
-  if (distance(z, c) > FLOATING_POINT_TOLERANCE && depth > 0) {
+  if (equal(z, c) && depth > 0) {
     depthFirstSearch(preImagePositive(z, c), c, zs, depth - 1);
     depthFirstSearch(preImageNegative(z, c), c, zs, depth - 1);
   }
@@ -302,43 +268,39 @@ export const similarPoints = (c: PreperiodicPoint, depth: number): PreperiodicPo
     depthFirstSearch(mult([-1, 0], z), c.point, zs, depth);
     z = add(square(z), c.point);
   }
-  return zs.map((p) => new PreperiodicPoint(c.point, p));
+  return zs.map((p) => new PreperiodicPoint(c.point, p, true));
 };
 
 const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
 export class PreperiodicPoint {
   point: XYType;
-  c: XYType;
-  u: XYType;
-  a: XYType;
   prePeriod: number;
   period: number;
-  uMagnitude: number;
-  uAngle: number;
-  aMagnitude: number;
-  aAngle: number;
-  eigenValue: XYType;
-  eMagnitude: number;
-  eAngle: number;
+  factor: XYType;
+  factorAngle: number;
+  factorMagnitude: number;
+  selfSimilarityFactor: XYType;
+  selfSimilarityFactorMagnitude: number;
+  selfSimilarityFactorAngle: number;
 
-  constructor(c: XYType, z: XYType) {
+  constructor(c: XYType, z: XYType, julia: boolean) {
     this.point = z;
-    this.c = c;
 
     this.prePeriod = prePeriod(this.point, c);
     this.period = period(this.point, c);
 
-    this.u = magnificationRotationMandelbrot(c, this.prePeriod, this.period);
-    this.uMagnitude = magnitude(this.u);
-    this.uAngle = Math.atan2(this.u[1], this.u[0]);
+    this.factor = magnificationRotationMandelbrot(c, this.prePeriod, this.period);
+    if (julia) this.factor = magnificationRotationJulia(c, this.point, this.prePeriod);
 
-    this.a = magnificationRotationJulia(c, this.point, this.prePeriod);
-    this.aMagnitude = magnitude(this.a);
-    this.aAngle = Math.atan2(this.a[1], this.a[0]);
+    this.factorMagnitude = magnitude(this.factor);
+    this.factorAngle = Math.atan2(this.factor[1], this.factor[0]);
 
-    this.eigenValue = cycleEigenvalue(this.point, this.prePeriod, this.period);
-    this.eMagnitude = magnitude(this.eigenValue);
-    this.eAngle = Math.atan2(this.eigenValue[1], this.eigenValue[0]);
+    this.selfSimilarityFactor = cycleEigenvalue(this.point, this.prePeriod, this.period);
+    this.selfSimilarityFactorMagnitude = magnitude(this.selfSimilarityFactor);
+    this.selfSimilarityFactorAngle = Math.atan2(
+      this.selfSimilarityFactor[1],
+      this.selfSimilarityFactor[0],
+    );
   }
 
   toString(): string {
@@ -379,20 +341,80 @@ export const withinBoundingBox = (
   return horizontalDistance < boxWidth && verticalDistance < boxHeight;
 };
 
-export const complexToScreenCoordinate = (
-  m: XYType,
-  angle: number,
-  zoom: number,
-  boxWidth: number,
-  boxHeight: number,
-  boxCentre: XYType,
-): XYType => {
-  const distanceX = boxCentre[0] - m[0];
-  const distanceY = boxCentre[1] - m[1];
-  const half = boxHeight / 2;
-  return [
-    half *
-      ((distanceX * Math.cos(angle) - distanceY * Math.sin(angle)) * zoom + boxWidth),
-    half * ((distanceX * Math.sin(angle) + distanceY * Math.cos(angle)) * zoom + 1),
-  ];
+export enum OrbitFlag {
+  Divergent,
+  Cyclic,
+  Acyclic,
+}
+
+export const forwardOrbit = function (
+  z: XYType,
+  c: XYType,
+  maxIterations: number,
+): [orbit: XYType[], prePeriod: number, period: number, flag: OrbitFlag] {
+  const orbit: XYType[] = [];
+  let preperiod = maxIterations;
+  let period = 0;
+  let flag = OrbitFlag.Acyclic;
+  for (let i = 0; i < maxIterations; i++) {
+    // eslint-disable-next-line no-loop-func
+    orbit.push(z);
+    z = add(square(z), c);
+    if (magnitude(z) >= 2) {
+      preperiod = i;
+      flag = OrbitFlag.Divergent;
+    }
+  }
+  if (flag === OrbitFlag.Divergent) {
+    return [orbit, preperiod, -1, flag];
+  }
+
+  [preperiod, period] = brent(orbit, maxIterations);
+  if (preperiod === -1) {
+    return [orbit.slice(0, preperiod + period), -1, -1, OrbitFlag.Acyclic];
+  }
+  return [orbit.slice(0, preperiod + period), preperiod, period, OrbitFlag.Cyclic];
+};
+
+/**
+ * This is a Brent's algorithm implementation for cycle detection.
+ * https://en.wikipedia.org/wiki/Cycle_detection#Brent's_algorithm
+ *
+ * @param array which contains cycles
+ * @param length array length
+ * @return length of the cycle
+ */
+const brent = (array: XYType[], length: number): [number, number] => {
+  // Search successive powers of two
+  let power_of_two = 1;
+  let period = 1; // Length of the cycle
+
+  let tortoise_pos = 0;
+  let hare_pos = 1;
+
+  let tortoise = array[tortoise_pos];
+  let hare = array[hare_pos];
+
+  while (!equal(tortoise, hare) && tortoise_pos < length) {
+    // Time to start a new power of two?
+    if (power_of_two === period) {
+      // Move tortoise forward to hare pos
+      tortoise_pos = hare_pos;
+      tortoise = array[tortoise_pos];
+
+      power_of_two *= 2;
+      period = 0;
+    }
+
+    // Move hare 1 step forward the hare
+    hare_pos++;
+    hare = array[hare_pos];
+    if (!hare) {
+      return [-1, -1];
+    }
+
+    period += 1;
+  }
+
+  return equal(tortoise, hare) ? [tortoise_pos, period] : [-1, -1];
 };

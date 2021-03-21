@@ -121,6 +121,7 @@ export type SettingsContextType = {
 export interface SettingsMenuProps {
   reset: () => void;
   toggleInfo: () => void;
+  toggleTan: () => void;
   helpState: [boolean, () => void];
 }
 

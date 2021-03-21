@@ -6,7 +6,7 @@ import {
   PreperiodicPoint,
   round,
 } from '../tansTheoremUtils';
-import { SimilarityAnimationProps } from '../../common/info';
+import { SimilarityAnimationProps } from '../../common/tans';
 import { AnimationStatus } from './MisiurewiczModeFragment';
 
 function getSteps(
@@ -27,19 +27,19 @@ function getSteps(
     return [
       ['Select point in M', `${formatComplexNumber(c.point)}`],
       ['Select point in J', `?`],
-      ['Magnify M', `${round(c.uMagnitude, 1)}x`],
+      ['Magnify M', `${round(c.factorMagnitude, 1)}x`],
       ['Magnify J', `?x`],
-      ['Rotate M', `${formatAngle(c.uAngle)}`],
+      ['Rotate M', `${formatAngle(c.factorAngle)}`],
       ['Rotate J', `?°`],
     ];
   } else {
     return [
       ['Select point in M', `${formatComplexNumber(c.point)}`],
       ['Select point in J', `${formatComplexNumber(cj.point)}`],
-      ['Magnify M', `${round(c.uMagnitude, 1)}x`],
-      ['Magnify J', `${round(cj.aMagnitude, 1)}x`],
-      ['Rotate M', `${formatAngle(c.uAngle)}`],
-      ['Rotate J', `${formatAngle(cj.aAngle)}`],
+      ['Magnify M', `${round(c.factorMagnitude, 1)}x`],
+      ['Magnify J', `${round(cj.factorMagnitude, 1)}x`],
+      ['Rotate M', `${formatAngle(c.factorAngle)}`],
+      ['Rotate J', `${formatAngle(cj.factorAngle)}`],
     ];
   }
 }
@@ -53,36 +53,27 @@ const SimilarityAnimationCard = (props: SimilarityAnimationProps): JSX.Element =
 
   return (
     <Grow in={props.show}>
-      <div
+      <Card
         style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          display: 'flex',
           position: 'absolute',
+          right: 0,
+          zIndex: 2000,
+          fontSize: '0.8rem',
         }}
       >
-        <Card
-          style={{
-            zIndex: 1300,
-            display: 'flex',
-            flexDirection: 'row',
-            flexShrink: 1,
-          }}
-        >
-          <Stepper activeStep={props.animationState.valueOf()} orientation="horizontal">
-            {steps.map((label) => {
-              const stepProps: { completed?: boolean } = {};
-              const labelProps: { optional?: React.ReactNode } = {};
-              labelProps.optional = label[1];
-              return (
-                <Step key={label[0]} {...stepProps}>
-                  <StepLabel {...labelProps}>{label[0]}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-        </Card>
-      </div>
+        <Stepper activeStep={props.animationState.valueOf()} orientation="horizontal">
+          {steps.map((label) => {
+            const stepProps: { completed?: boolean } = {};
+            const labelProps: { optional?: React.ReactNode } = {};
+            labelProps.optional = label[1];
+            return (
+              <Step key={label[0]} {...stepProps}>
+                <StepLabel {...labelProps}>{label[0]}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+      </Card>
     </Grow>
   );
 };

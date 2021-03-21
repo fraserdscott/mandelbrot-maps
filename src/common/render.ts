@@ -1,6 +1,7 @@
 import { CanvasHTMLAttributes } from 'react';
 import { RgbColor } from 'react-colorful';
 import { OpaqueInterpolation } from 'react-spring';
+import { OrbitFlag } from '../components/tansTheoremUtils';
 import { AnimationStatus } from '../components/tans_theorem/MisiurewiczModeFragment';
 import {
   MandelbrotMapsWebGLUniforms,
@@ -52,6 +53,7 @@ export interface MandelbrotRendererProps extends RendererProps {
   animationState: AnimationStatus;
   showOrbit: boolean;
   align: (z: number) => void;
+  orbitInfo: [orbit: XYType[], prePeriod: number, period: number, flag: OrbitFlag];
 }
 
 export interface JuliaRendererProps extends RendererProps {

@@ -3,7 +3,7 @@ import { useGesture } from 'react-use-gesture';
 import { JuliaRendererProps } from '../../common/render';
 import { MandelbrotMapsWebGLUniforms } from '../../common/types';
 import {
-  frozenTouchBind,
+  synchronisedTouchBind,
   frozoneTouchBind,
   genericTouchBind,
   Rgb255ColourToFloat,
@@ -66,7 +66,7 @@ export default function JuliaRenderer({
         precision: precision,
       })
     : props.animationState === AnimationStatus.PLAY
-    ? frozenTouchBind({
+    ? synchronisedTouchBind({
         domTarget: canvasRef,
         controls: props.controls,
         setDragging: setDragging,

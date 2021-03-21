@@ -1,6 +1,6 @@
 import { Button, Card, Grow, Typography } from '@material-ui/core';
 import React from 'react';
-import { InfoCardProps } from '../../common/info';
+import { InfoCardProps } from '../../common/tans';
 import { AnimationStatus } from './MisiurewiczModeFragment';
 import MisiurewiczPointsList from './MisiurewiczPointsList';
 import { warpToPoint } from '../../common/utils';
@@ -33,15 +33,11 @@ const PointsInfoCard = (props: InfoCardProps): JSX.Element => {
     <Grow in={props.show}>
       <Card
         style={{
-          width: 200,
           padding: 12,
-          zIndex: 100,
           display: 'flex',
           flexDirection: 'column',
           flexShrink: 1,
-          position: 'absolute',
-          left: 0,
-          top: 0,
+          marginBottom: 8,
         }}
       >
         <Typography

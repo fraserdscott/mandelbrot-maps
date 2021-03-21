@@ -18,6 +18,7 @@ import {
   SvgIconComponent,
 } from '@material-ui/icons';
 import SettingsIcon from '@material-ui/icons/Settings';
+import CompareIcon from '@material-ui/icons/Compare';
 import React, { useState } from 'react';
 import { SettingsMenuProps, settingsWidgetType } from '../../common/settings';
 // react-colorful requires style imports
@@ -117,6 +118,7 @@ export default function SettingsMenu(props: SettingsMenuProps): JSX.Element {
       onClick={() => {
         // eslint-disable-next-line react/prop-types
         props.reset();
+        setAnchorEl(undefined);
       }}
     >
       Reset
@@ -134,6 +136,20 @@ export default function SettingsMenu(props: SettingsMenuProps): JSX.Element {
       }}
     >
       About
+    </Button>
+  );
+
+  const TanButton = () => (
+    <Button
+      startIcon={<CompareIcon />}
+      color="primary"
+      aria-controls="tan"
+      onClick={() => {
+        // eslint-disable-next-line react/prop-types
+        props.toggleTan();
+      }}
+    >
+      Explore Tan&apos;s theorem
     </Button>
   );
 
@@ -238,18 +254,23 @@ export default function SettingsMenu(props: SettingsMenuProps): JSX.Element {
 
             <GroupDivider />
 
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              // alignItems="stretch"
-              spacing={1}
-            >
-              <Grid item style={{ margin: 'auto' }}>
-                <ResetButton />
+            <Grid container direction="column">
+              <Grid
+                container
+                direction="row"
+                justify="space-between"
+                // alignItems="stretch"
+                spacing={1}
+              >
+                <Grid item style={{ margin: 'auto' }}>
+                  <ResetButton />
+                </Grid>
+                <Grid item style={{ margin: 'auto' }}>
+                  <AboutButton />
+                </Grid>
               </Grid>
               <Grid item style={{ margin: 'auto' }}>
-                <AboutButton />
+                <TanButton />
               </Grid>
             </Grid>
           </Grid>

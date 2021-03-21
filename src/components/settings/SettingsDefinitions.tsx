@@ -218,7 +218,6 @@ export const getSettingsWidgetsGrouping = (
     icon: CompareIcon,
     name: "Tan's Theorem",
     widgets: {
-      showMisiurewiczPoints: settingsWidgets.showMisiurewiczPoints,
       shadeMisiurewiczDomains: settingsWidgets.shadeMisiurewiczDomains,
       rotateWhileZooming: settingsWidgets.rotateWhileZooming,
     },

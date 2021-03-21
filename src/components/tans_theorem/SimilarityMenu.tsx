@@ -1,6 +1,6 @@
-import { Button, Typography } from '@material-ui/core';
+import { Button, Card, Grid, Typography } from '@material-ui/core';
 import React from 'react';
-import { SimilarityMenuProps } from '../../common/info';
+import { SimilarityMenuProps } from '../../common/tans';
 import { AnimationStatus } from './MisiurewiczModeFragment';
 import SimilarPointsList from './SimilarPointsList';
 import { warpToPoint } from '../../common/utils';
@@ -30,16 +30,30 @@ const SimilarityMenu = (props: SimilarityMenuProps): JSX.Element => {
   };
 
   return (
-    <>
-      <Typography
-        style={{
-          marginBottom: 8,
-        }}
-        variant="h6"
-        gutterBottom
-      >
-        Pick a point in the Julia set!
-      </Typography>
+    <Card
+      style={{
+        padding: 12,
+        zIndex: 1400,
+        display: 'flex',
+        flexDirection: 'column',
+        flexShrink: 1,
+        marginBottom: 8,
+      }}
+    >
+      <Grid container>
+        <Grid item>{props.backButton()}</Grid>
+        <Grid item>
+          <Typography
+            style={{
+              marginBottom: 8,
+            }}
+            variant="h6"
+            gutterBottom
+          >
+            Pick a point in the Julia set!
+          </Typography>
+        </Grid>
+      </Grid>
       <SimilarPointsList
         focusedPointMandelbrot={props.focusedPointMandelbrot}
         focusedPointJulia={props.focusedPointJulia}
@@ -47,7 +61,7 @@ const SimilarityMenu = (props: SimilarityMenuProps): JSX.Element => {
         handleSimilarPointSelection={props.handleSimilarPointSelection}
       />
       {goButton(props.setAnimationState)}
-    </>
+    </Card>
   );
 };
 

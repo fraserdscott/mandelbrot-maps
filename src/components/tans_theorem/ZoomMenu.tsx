@@ -1,13 +1,12 @@
 import { Button, Typography, Card, Grid } from '@material-ui/core';
 import React from 'react';
-import { ZoomCardProps } from '../../common/info';
+import { ZoomCardProps } from '../../common/tans';
 import { AnimationStatus } from './MisiurewiczModeFragment';
 import { warpToPoint } from '../../common/utils';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import RotateRightIcon from '@material-ui/icons/RotateRight';
 import { ThetaType, ZoomType } from '../../common/types';
-import { formatComplexNumber } from '../../common/complex_number_utils';
-import { formatAngle } from '../tansTheoremUtils';
+import { formatAngle, formatComplexNumber } from '../tansTheoremUtils';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 
@@ -22,7 +21,7 @@ export interface SimpleDialogProps {
 const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   const zoomMandelbrot = () => {
     props.setAnimationState(AnimationStatus.ZOOM_J);
-    const zoomM: ZoomType = props.focusedPointMandelbrot.uMagnitude * INITIAL_ZOOM;
+    const zoomM: ZoomType = props.focusedPointMandelbrot.factorMagnitude * INITIAL_ZOOM;
 
     warpToPoint(props.mandelbrot, {
       xy: props.focusedPointMandelbrot.point,
@@ -54,17 +53,18 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   const factorText = {
     0: 'null',
     1: 'null',
-    2: `|${formatComplexNumber(props.focusedPointMandelbrot.u, 1)}| = ${Math.round(
-      props.focusedPointMandelbrot.uMagnitude,
+    2: `|${formatComplexNumber(props.focusedPointMandelbrot.factor, 1)}| = ${Math.round(
+      props.focusedPointMandelbrot.factorMagnitude,
     )}x`,
-    3: `|${formatComplexNumber(props.focusedPointJulia.a, 1)}| = ${Math.round(
-      props.focusedPointJulia.aMagnitude,
+    3: `|${formatComplexNumber(props.focusedPointJulia.factor, 1)}| = ${Math.round(
+      props.focusedPointJulia.factorMagnitude,
     )}x`,
-    4: `arg(${formatComplexNumber(props.focusedPointMandelbrot.u, 1)}) = ${formatAngle(
-      props.focusedPointMandelbrot.uAngle,
-    )}`,
-    5: `arg(${formatComplexNumber(props.focusedPointJulia.a, 1)}) = ${formatAngle(
-      props.focusedPointJulia.aAngle,
+    4: `arg(${formatComplexNumber(
+      props.focusedPointMandelbrot.factor,
+      1,
+    )}) = ${formatAngle(props.focusedPointMandelbrot.factorAngle)}`,
+    5: `arg(${formatComplexNumber(props.focusedPointJulia.factor, 1)}) = ${formatAngle(
+      props.focusedPointJulia.factorAngle,
     )}`,
     6: 'null',
   };
@@ -72,20 +72,20 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   const factorTextExpanded = {
     0: 'null',
     1: 'null',
-    2: `|u'(c)| = |${formatComplexNumber(props.focusedPointMandelbrot.u, 2)}| = ${
-      Math.round(props.focusedPointMandelbrot.uMagnitude * 100) / 100
+    2: `|u'(c)| = |${formatComplexNumber(props.focusedPointMandelbrot.factor, 2)}| = ${
+      Math.round(props.focusedPointMandelbrot.factorMagnitude * 100) / 100
     }`,
-    3: `|a| = |${formatComplexNumber(props.focusedPointJulia.a, 2)}| = ${
-      Math.round(props.focusedPointJulia.aMagnitude * 100) / 100
+    3: `|a| = |${formatComplexNumber(props.focusedPointJulia.factor, 2)}| = ${
+      Math.round(props.focusedPointJulia.factorMagnitude * 100) / 100
     }`,
     4: `arg(u'(c)) = arg(${formatComplexNumber(
-      props.focusedPointMandelbrot.u,
+      props.focusedPointMandelbrot.factor,
       2,
-    )}) = ${formatAngle(props.focusedPointMandelbrot.uAngle)}`,
+    )}) = ${formatAngle(props.focusedPointMandelbrot.factorAngle)}`,
     5: `arg(a) = arg(${formatComplexNumber(
-      props.focusedPointJulia.a,
+      props.focusedPointJulia.factor,
       2,
-    )}) = ${formatAngle(props.focusedPointJulia.aAngle)}`,
+    )}) = ${formatAngle(props.focusedPointJulia.factorAngle)}`,
     6: 'null',
   };
 
@@ -112,10 +112,10 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   const numberText = {
     0: 'null',
     1: 'null',
-    2: `u'(c) = ${formatComplexNumber(props.focusedPointMandelbrot.u, 2)}`,
-    3: `a = ${formatComplexNumber(props.focusedPointJulia.a, 2)}`,
-    4: `u'(c) = ${formatComplexNumber(props.focusedPointMandelbrot.u, 2)}`,
-    5: `a = ${formatComplexNumber(props.focusedPointJulia.a, 2)}`,
+    2: `u'(c) = ${formatComplexNumber(props.focusedPointMandelbrot.factor, 2)}`,
+    3: `a = ${formatComplexNumber(props.focusedPointJulia.factor, 2)}`,
+    4: `u'(c) = ${formatComplexNumber(props.focusedPointMandelbrot.factor, 2)}`,
+    5: `a = ${formatComplexNumber(props.focusedPointJulia.factor, 2)}`,
     6: 'null',
   };
 
@@ -137,7 +137,12 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
     };
 
     return (
-      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <Dialog
+        style={{ zIndex: 1500 }}
+        onClose={handleClose}
+        aria-labelledby="simple-dialog-title"
+        open={open}
+      >
         <DialogTitle id="simple-dialog-title">
           {dialogText[props.animationState]}
         </DialogTitle>
@@ -170,7 +175,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   const zoomJulia = () => {
     props.setAnimationState(AnimationStatus.ROTATE_M);
 
-    const zoomJ: ZoomType = props.focusedPointJulia.aMagnitude * INITIAL_ZOOM;
+    const zoomJ: ZoomType = props.focusedPointJulia.factorMagnitude * INITIAL_ZOOM;
 
     warpToPoint(props.julia, { xy: props.focusedPointJulia.point, z: zoomJ, theta: 0 });
   };
@@ -178,8 +183,8 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   const rotateMandelbrot = () => {
     props.setAnimationState(AnimationStatus.ROTATE_J);
 
-    const zoomM: ZoomType = props.focusedPointMandelbrot.uMagnitude * INITIAL_ZOOM;
-    const thetaM: ThetaType = -props.focusedPointMandelbrot.uAngle;
+    const zoomM: ZoomType = props.focusedPointMandelbrot.factorMagnitude * INITIAL_ZOOM;
+    const thetaM: ThetaType = -props.focusedPointMandelbrot.factorAngle;
 
     warpToPoint(props.mandelbrot, {
       xy: props.focusedPointMandelbrot.point,
@@ -191,8 +196,8 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   const rotateJulia = () => {
     props.setAnimationState(AnimationStatus.PLAY);
 
-    const zoomJ: ZoomType = props.focusedPointJulia.aMagnitude * INITIAL_ZOOM;
-    const thetaJ: ThetaType = -props.focusedPointJulia.aAngle;
+    const zoomJ: ZoomType = props.focusedPointJulia.factorMagnitude * INITIAL_ZOOM;
+    const thetaJ: ThetaType = -props.focusedPointJulia.factorAngle;
 
     warpToPoint(props.julia, {
       xy: props.focusedPointJulia.point,
@@ -207,7 +212,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
     setOpen(true);
   };
 
-  const handleClose = (value: string) => {
+  const handleClose = () => {
     setOpen(false);
   };
 
@@ -215,13 +220,11 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
     <Card
       style={{
         padding: 12,
-        zIndex: 100,
+        zIndex: 1400,
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 1,
-        position: 'absolute',
-        left: 0,
-        top: 0,
+        marginBottom: 8,
       }}
     >
       <Grid container>

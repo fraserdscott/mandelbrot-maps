@@ -1,10 +1,10 @@
 import { Button, Card, Grow, Typography } from '@material-ui/core';
 import React from 'react';
-import { InfoCardProps } from '../../common/info';
+import { MisiurewiczDomainsMenuProps } from '../../common/tans';
 import { AnimationStatus } from './MisiurewiczModeFragment';
 import { warpToPoint } from '../../common/utils';
 
-const DomainsInfoCard = (props: InfoCardProps): JSX.Element => {
+const MisiurewiczDomainsMenu = (props: MisiurewiczDomainsMenuProps): JSX.Element => {
   const goButton = (
     setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>,
   ) => {
@@ -32,15 +32,11 @@ const DomainsInfoCard = (props: InfoCardProps): JSX.Element => {
     <Grow in={props.show}>
       <Card
         style={{
-          width: 200,
           padding: 12,
-          zIndex: 100,
           display: 'flex',
           flexDirection: 'column',
           flexShrink: 1,
-          position: 'absolute',
-          left: 0,
-          top: 0,
+          marginBottom: 8,
         }}
       >
         <Typography
@@ -59,4 +55,4 @@ const DomainsInfoCard = (props: InfoCardProps): JSX.Element => {
   );
 };
 
-export default DomainsInfoCard;
+export default MisiurewiczDomainsMenu;
