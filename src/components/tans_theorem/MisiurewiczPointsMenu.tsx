@@ -1,4 +1,4 @@
-import { Button, Card, Grow, Typography } from '@material-ui/core';
+import { Button, Card, Grow, Typography, Grid } from '@material-ui/core';
 import React from 'react';
 import { InfoCardProps } from '../../common/tans';
 import { AnimationStatus } from './MisiurewiczModeFragment';
@@ -22,6 +22,11 @@ const PointsInfoCard = (props: InfoCardProps): JSX.Element => {
             z: 1,
             theta: 0,
           });
+          warpToPoint(props.julia, {
+            xy: [0, 0],
+            z: 0.5,
+            theta: 0,
+          });
         }}
       >
         CONFIRM
@@ -40,15 +45,20 @@ const PointsInfoCard = (props: InfoCardProps): JSX.Element => {
           marginBottom: 8,
         }}
       >
-        <Typography
-          style={{
-            marginBottom: 8,
-          }}
-          variant="h6"
-          gutterBottom
-        >
-          Pick a point in the Mandelbrot set!
-        </Typography>
+        <Grid container>
+          <Grid item>{props.quitButton()}</Grid>
+          <Grid item>
+            <Typography
+              style={{
+                marginBottom: 8,
+              }}
+              variant="h6"
+              gutterBottom
+            >
+              Pick a point in the Mandelbrot set!
+            </Typography>
+          </Grid>
+        </Grid>
         <MisiurewiczPointsList
           show={props.show}
           mandelbrot={props.mandelbrot}

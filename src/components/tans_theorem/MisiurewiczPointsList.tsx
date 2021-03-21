@@ -14,7 +14,7 @@ const MisiurewiczPointsList = (props: MisiurewiczPointsListProps): JSX.Element =
 
     const chosenMisiurewicz = new PreperiodicPoint(chosenPoint, chosenPoint, false);
 
-    props.handleMandelbrotSelection(chosenMisiurewicz, chosenMisiurewicz);
+    props.handleMandelbrotSelection(chosenMisiurewicz);
     warpToPoint(props.mandelbrot, {
       xy: chosenMisiurewicz.point,
       z: chosenMisiurewicz.factorMagnitude,

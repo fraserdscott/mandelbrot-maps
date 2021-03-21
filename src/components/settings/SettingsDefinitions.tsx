@@ -44,16 +44,6 @@ and allows warping to specific coordinates
 (Mandelbrot viewer only).
     `,
   },
-  showMisiurewiczPoints: {
-    label: "Tan's theorem animation",
-    checked: settings.showMisiurewiczPoints,
-    control: <Switch />,
-    helptext: `
-This setting takes the user through an animation to show Tan's Theorem, which states that at particular points, the Mandelbrot and Julia sets are almost indistinguishable.
-Simply turn the mode on, and follow the instructions on the screen.
-`,
-  },
-
   shadeMisiurewiczDomains: {
     label: 'Select using Misiurewicz domains',
     value: settings.shadeMisiurewiczDomains,

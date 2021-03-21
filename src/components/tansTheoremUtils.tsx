@@ -1,15 +1,23 @@
-import { XYType } from '../common/types';
+import { Button } from '@material-ui/core';
+import { ViewerControlSprings, XYType } from '../common/types';
+import ComplexNumberMarker from './tans_theorem/ComplexNumberMarker';
+import React from 'react';
 
 export const MAX_DEPTH = 4;
 
-const FLOATING_POINT_TOLERANCE = 1e-10;
 const MAX_PREPERIOD = 1000;
 
-const equal = (a: XYType, b: XYType): boolean => {
+export enum OrbitFlag {
+  Divergent,
+  Cyclic,
+  Acyclic,
+}
+
+const equal = (a: XYType, b: XYType, tolerance = 1e-10): boolean => {
   const d = sub(a, b);
   const dx: number = Math.abs(d[0]);
   const dy: number = Math.abs(d[1]);
-  return dx < FLOATING_POINT_TOLERANCE && dy < FLOATING_POINT_TOLERANCE;
+  return dx < tolerance && dy < tolerance;
 };
 
 function magnitude(p: XYType): number {
@@ -69,47 +77,6 @@ const orbitEigenvalue = function (z: XYType, c: XYType, t: number): XYType {
 };
 
 /**
- * Find the preperiod of a given point under iteration. This assumes it is preperiodic
- *
- * @param c - The point
- * @returns If it's preperiodic: the preperiod, if it's periodic: nonsense, otherwise: -1.
- */
-const prePeriod = (z: XYType, c: XYType): number => {
-  const olds: XYType[] = [];
-  for (let i = 0; i < 50; i++) {
-    olds.push(z);
-    const newZ: XYType = add(square(z), c);
-    const similar = olds.findIndex((elem) => equal(elem, newZ));
-    if (similar !== -1) return similar;
-
-    z = newZ;
-  }
-  return -1;
-};
-
-/**
- * Find the period of a given point.
- *
- * @param z - The point
- * @param c - The constant of iteration
- * @returns The period, otherwise: -1.
- */
-const period = (z: XYType, c: XYType): number => {
-  const olds: XYType[] = [];
-  for (let i = 0; i < 50; i++) {
-    olds.push(z);
-    const newZ: XYType = add(square(z), c);
-    const similar = olds.findIndex((elem) => equal(elem, newZ));
-    if (similar !== -1) {
-      // we've hit a cycle
-      return i - similar + 1;
-    }
-    z = newZ;
-  }
-  return -1;
-};
-
-/**
  * Subtract the first iterate in a cycle from the last.
  *
  * @param c - The point we care about. Must be periodic or preperiodic
@@ -162,25 +129,6 @@ const magnificationRotationMandelbrot = function (
     numericalDerivative(c, (x: XYType) => W(x, l, p)),
     sub(cycleEigenvalue, [1, 0]),
   );
-};
-
-/**
- * the point where zero enters a cycle
- *
- * @param c - The point
- * @returns If it's preperiodic: the preperiod, if it's periodic: nonsense, otherwise: -1.
- */
-const getAlpha = (z: XYType, c: XYType): XYType => {
-  const olds: XYType[] = [];
-  for (let i = 0; i < 50; i++) {
-    olds.push(z);
-    const newZ: XYType = add(square(z), c);
-    const similar = olds.findIndex((elem) => equal(elem, newZ));
-    if (similar !== -1) return newZ;
-
-    z = newZ;
-  }
-  return [-7, -7];
 };
 
 const reachAlpha = function (c: XYType, z: XYType): number {
@@ -252,7 +200,7 @@ export const findNearestMisiurewiczPoint = function (
 
 const depthFirstSearch = (z: XYType, c: XYType, zs: XYType[], depth: number) => {
   zs.push(z);
-  if (equal(z, c) && depth > 0) {
+  if (!equal(z, c) && depth > 0) {
     depthFirstSearch(preImagePositive(z, c), c, zs, depth - 1);
     depthFirstSearch(preImageNegative(z, c), c, zs, depth - 1);
   }
@@ -271,6 +219,29 @@ export const similarPoints = (c: PreperiodicPoint, depth: number): PreperiodicPo
   return zs.map((p) => new PreperiodicPoint(c.point, p, true));
 };
 
+export const forwardOrbit = function (
+  z: XYType,
+  c: XYType,
+  maxIterations: number,
+): [orbit: XYType[], prePeriod: number, period: number, flag: OrbitFlag] {
+  const orbit: XYType[] = [];
+  for (let i = 0; i < maxIterations; i++) {
+    // eslint-disable-next-line no-loop-func
+    orbit.push(z);
+    const newZ = add(square(z), c);
+    const similar = orbit.findIndex((elem) => equal(elem, newZ, 0.001));
+    if (similar !== -1) {
+      return [orbit, similar, i - similar + 1, OrbitFlag.Cyclic];
+    }
+    if (magnitude(z) > 2) {
+      return [orbit, i, -1, OrbitFlag.Divergent];
+    }
+    z = newZ;
+  }
+
+  return [orbit, -1, -1, OrbitFlag.Acyclic];
+};
+
 const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
 export class PreperiodicPoint {
   point: XYType;
@@ -286,11 +257,14 @@ export class PreperiodicPoint {
   constructor(c: XYType, z: XYType, julia: boolean) {
     this.point = z;
 
-    this.prePeriod = prePeriod(this.point, c);
-    this.period = period(this.point, c);
+    const orbitInfo = forwardOrbit(this.point, c, 200);
 
-    this.factor = magnificationRotationMandelbrot(c, this.prePeriod, this.period);
-    if (julia) this.factor = magnificationRotationJulia(c, this.point, this.prePeriod);
+    this.prePeriod = orbitInfo[1];
+    this.period = orbitInfo[2];
+
+    julia
+      ? (this.factor = magnificationRotationJulia(c, this.point, this.prePeriod))
+      : (this.factor = magnificationRotationMandelbrot(c, this.prePeriod, this.period));
 
     this.factorMagnitude = magnitude(this.factor);
     this.factorAngle = Math.atan2(this.factor[1], this.factor[0]);
@@ -321,7 +295,7 @@ export class PreperiodicPoint {
  * @param {boxHeight} The height of the box.
  * @param {boxAngle} The angle the box makes with the x-axis.
  */
-export const withinBoundingBox = (
+const withinBoundingBox = (
   p: XYType,
   boxCentre: XYType,
   boxWidth: number,
@@ -341,80 +315,210 @@ export const withinBoundingBox = (
   return horizontalDistance < boxWidth && verticalDistance < boxHeight;
 };
 
-export enum OrbitFlag {
-  Divergent,
-  Cyclic,
-  Acyclic,
-}
+/**
+ * the point where zero enters a cycle
+ *
+ * @param c - The point
+ * @returns If it's preperiodic: the preperiod, if it's periodic: nonsense, otherwise: -1.
+ */
+const getAlpha = (z: XYType, c: XYType): XYType => {
+  const olds: XYType[] = [];
+  for (let i = 0; i < 50; i++) {
+    olds.push(z);
+    const newZ = add(square(z), c);
+    const similar = olds.findIndex((elem) => equal(elem, newZ));
+    if (similar !== -1) return newZ;
 
-export const forwardOrbit = function (
-  z: XYType,
-  c: XYType,
-  maxIterations: number,
-): [orbit: XYType[], prePeriod: number, period: number, flag: OrbitFlag] {
-  const orbit: XYType[] = [];
-  let preperiod = maxIterations;
-  let period = 0;
-  let flag = OrbitFlag.Acyclic;
-  for (let i = 0; i < maxIterations; i++) {
-    // eslint-disable-next-line no-loop-func
-    orbit.push(z);
-    z = add(square(z), c);
-    if (magnitude(z) >= 2) {
-      preperiod = i;
-      flag = OrbitFlag.Divergent;
-    }
+    z = newZ;
   }
-  if (flag === OrbitFlag.Divergent) {
-    return [orbit, preperiod, -1, flag];
-  }
-
-  [preperiod, period] = brent(orbit, maxIterations);
-  if (preperiod === -1) {
-    return [orbit.slice(0, preperiod + period), -1, -1, OrbitFlag.Acyclic];
-  }
-  return [orbit.slice(0, preperiod + period), preperiod, period, OrbitFlag.Cyclic];
+  return [-7, -7];
 };
 
-/**
- * This is a Brent's algorithm implementation for cycle detection.
- * https://en.wikipedia.org/wiki/Cycle_detection#Brent's_algorithm
- *
- * @param array which contains cycles
- * @param length array length
- * @return length of the cycle
- */
-const brent = (array: XYType[], length: number): [number, number] => {
-  // Search successive powers of two
-  let power_of_two = 1;
-  let period = 1; // Length of the cycle
+export const NearestButton = (
+  handleNearest: (xy: XYType) => void,
+  xy: XYType,
+): JSX.Element => (
+  <div
+    style={{
+      position: 'absolute',
+      bottom: 0,
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Button
+      style={{
+        zIndex: 10,
+      }}
+      variant="contained"
+      onClick={() => handleNearest(xy)}
+    >
+      Press to find nearest Misiurewicz point
+    </Button>
+  </div>
+);
 
-  let tortoise_pos = 0;
-  let hare_pos = 1;
+export const alignSets = (
+  newMagnification: number,
+  mandelbrotControls: ViewerControlSprings,
+  juliaControls: ViewerControlSprings,
+  focusedPointMandelbrot: PreperiodicPoint,
+  focusedPointJulia: PreperiodicPoint,
+  rotate: boolean,
+): void => {
+  const makeZoom = (point: PreperiodicPoint) => point.factorMagnitude * newMagnification;
+  const zoomM = makeZoom(focusedPointMandelbrot);
+  const zoomJ = makeZoom(focusedPointJulia);
 
-  let tortoise = array[tortoise_pos];
-  let hare = array[hare_pos];
+  mandelbrotControls.zoomCtrl[1]({
+    z: zoomM,
+  });
+  juliaControls.zoomCtrl[1]({
+    z: zoomJ,
+  });
 
-  while (!equal(tortoise, hare) && tortoise_pos < length) {
-    // Time to start a new power of two?
-    if (power_of_two === period) {
-      // Move tortoise forward to hare pos
-      tortoise_pos = hare_pos;
-      tortoise = array[tortoise_pos];
+  if (rotate) {
+    const selfSimilarityAngle =
+      (Math.log(newMagnification) /
+        Math.log(focusedPointMandelbrot.selfSimilarityFactorMagnitude)) *
+      focusedPointMandelbrot.selfSimilarityFactorAngle;
 
-      power_of_two *= 2;
-      period = 0;
-    }
+    const makeRot = (point: PreperiodicPoint) =>
+      -(point.factorAngle + selfSimilarityAngle);
+    const rotM = makeRot(focusedPointMandelbrot);
+    const rotJ = makeRot(focusedPointJulia);
 
-    // Move hare 1 step forward the hare
-    hare_pos++;
-    hare = array[hare_pos];
-    if (!hare) {
-      return [-1, -1];
-    }
-
-    period += 1;
+    mandelbrotControls.rotCtrl[1]({
+      theta: rotM,
+    });
+    juliaControls.rotCtrl[1]({
+      theta: rotJ,
+    });
   }
+};
 
-  return equal(tortoise, hare) ? [tortoise_pos, period] : [-1, -1];
+const filterPoints = (
+  points: PreperiodicPoint[],
+  boxCentre: XYType,
+  boxWidth: number,
+  boxHeight: number,
+  boxAngle: number,
+  focusedPoint: PreperiodicPoint,
+): PreperiodicPoint[] => {
+  const visiblePoints = [];
+
+  for (let i = 0; i < points.length; i++) {
+    const isFocusedPoint = points[i] === focusedPoint;
+    if (isFocusedPoint) continue;
+
+    if (visiblePoints.length === 5) break;
+
+    if (withinBoundingBox(points[i].point, boxCentre, boxWidth, boxHeight, boxAngle)) {
+      visiblePoints.push(points[i]);
+    }
+  }
+  return visiblePoints;
+};
+
+export const generateMandelbrotMarkers = (
+  viewerControls: ViewerControlSprings,
+  focusedPoint: PreperiodicPoint,
+  aspectRatio: number,
+  onClick: (x: PreperiodicPoint, y: PreperiodicPoint) => void,
+  points: PreperiodicPoint[],
+  shadeDomains: boolean,
+): JSX.Element[] => {
+  const mapMarkers = [];
+
+  const boxCentre = viewerControls.xyCtrl[0].xy.getValue();
+  const boxWidth = 1 / (aspectRatio * viewerControls.zoomCtrl[0].z.getValue());
+  const boxHeight = 1 / viewerControls.zoomCtrl[0].z.getValue();
+  const boxAngle = viewerControls.rotCtrl[0].theta.getValue();
+  if (withinBoundingBox(focusedPoint.point, boxCentre, boxWidth, boxHeight, boxAngle)) {
+    mapMarkers.push(
+      <ComplexNumberMarker
+        key={focusedPoint.point.toString()}
+        m={focusedPoint}
+        aspectRatio={aspectRatio}
+        viewerControl={viewerControls}
+        onClick={() => onClick(focusedPoint, focusedPoint)}
+        isFocused={true}
+      />,
+    );
+  }
+  if (!shadeDomains) {
+    const visiblePoints = filterPoints(
+      points,
+      boxCentre,
+      boxWidth,
+      boxHeight,
+      boxAngle,
+      focusedPoint,
+    );
+    for (let i = 0; i < visiblePoints.length; i++) {
+      mapMarkers.push(
+        <ComplexNumberMarker
+          key={visiblePoints[i].point.toString()}
+          m={visiblePoints[i]}
+          aspectRatio={aspectRatio}
+          viewerControl={viewerControls}
+          onClick={() => onClick(visiblePoints[i], visiblePoints[i])}
+          isFocused={false}
+        />,
+      );
+    }
+  }
+  return mapMarkers;
+};
+
+export const generateJuliaMarkers = (
+  viewerControls: ViewerControlSprings,
+  focusedPoint: PreperiodicPoint,
+  aspectRatio: number,
+  onClick: (x: PreperiodicPoint) => void,
+  points: PreperiodicPoint[],
+): JSX.Element[] => {
+  const mapMarkers: JSX.Element[] = [];
+
+  const boxCentre = viewerControls.xyCtrl[0].xy.getValue();
+  const boxWidth = 1 / (aspectRatio * viewerControls.zoomCtrl[0].z.getValue());
+  const boxHeight = 1 / viewerControls.zoomCtrl[0].z.getValue();
+  const boxAngle = viewerControls.rotCtrl[0].theta.getValue();
+
+  if (withinBoundingBox(focusedPoint.point, boxCentre, boxWidth, boxHeight, boxAngle))
+    mapMarkers.push(
+      <ComplexNumberMarker
+        key={focusedPoint.point.toString()}
+        m={focusedPoint}
+        aspectRatio={aspectRatio}
+        viewerControl={viewerControls}
+        onClick={() => onClick(focusedPoint)}
+        isFocused={true}
+      />,
+    );
+
+  const visiblePoints = filterPoints(
+    points,
+    boxCentre,
+    boxWidth,
+    boxHeight,
+    boxAngle,
+    focusedPoint,
+  );
+  visiblePoints.map((x) =>
+    mapMarkers.push(
+      <ComplexNumberMarker
+        key={x.point.toString()}
+        m={x}
+        aspectRatio={aspectRatio}
+        viewerControl={viewerControls}
+        onClick={() => onClick(x)}
+        isFocused={false}
+      />,
+    ),
+  );
+
+  return mapMarkers;
 };

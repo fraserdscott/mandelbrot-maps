@@ -2,10 +2,6 @@ import React from 'react';
 import { MisiurewiczModeFragmentProps } from '../../common/tans';
 import { Card, Grid, IconButton, Typography, Box } from '@material-ui/core';
 import { PreperiodicPoint } from '../tansTheoremUtils';
-import PointsInfoCard from './MisiurewiczPointsMenu';
-import MisiurewiczDomainsMenu from './MisiurewiczDomainsMenu';
-import PlayCard from './PlayCard';
-import ZoomMenu from './ZoomMenu';
 import { misiurewiczPairs } from './MPoints';
 import { XYType } from '../../common/types';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
@@ -41,28 +37,6 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
 
   return (
     <>
-      {props.animationState === AnimationStatus.SELECT_MANDELBROT_POINT ? (
-        props.shadeDomains ? (
-          <MisiurewiczDomainsMenu
-            show={props.show}
-            mandelbrot={props.mandelbrot}
-            setAnimationState={props.setAnimationState}
-            focusedPointMandelbrot={props.focusedPointMandelbrot}
-          />
-        ) : (
-          <PointsInfoCard
-            show={props.show}
-            mandelbrot={props.mandelbrot}
-            julia={props.julia}
-            animationState={props.animationState}
-            setAnimationState={props.setAnimationState}
-            focusedPointMandelbrot={props.focusedPointMandelbrot}
-            focusedPointJulia={props.focusedPointJulia}
-            handleMandelbrotSelection={props.handleMandelbrotSelection}
-          />
-        )
-      ) : null}
-
       {props.animationState === AnimationStatus.PLAY ? (
         <>
           <Card
@@ -89,30 +63,7 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
               </Grid>
             </Grid>
           </Card>
-          {props.rotate ? (
-            <PlayCard
-              focusedPointMandelbrot={props.focusedPointMandelbrot}
-              magnification={props.magnification}
-            />
-          ) : null}
         </>
-      ) : null}
-      {[
-        AnimationStatus.ZOOM_M,
-        AnimationStatus.ZOOM_J,
-        AnimationStatus.ROTATE_M,
-        AnimationStatus.ROTATE_J,
-      ].includes(props.animationState) ? (
-        <ZoomMenu
-          backButton={BackButton}
-          show={props.show}
-          mandelbrot={props.mandelbrot}
-          julia={props.julia}
-          animationState={props.animationState}
-          setAnimationState={props.setAnimationState}
-          focusedPointMandelbrot={props.focusedPointMandelbrot}
-          focusedPointJulia={props.focusedPointJulia}
-        />
       ) : null}
     </>
   );

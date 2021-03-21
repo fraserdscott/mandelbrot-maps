@@ -147,6 +147,7 @@ export default function SettingsMenu(props: SettingsMenuProps): JSX.Element {
       onClick={() => {
         // eslint-disable-next-line react/prop-types
         props.toggleTan();
+        setAnchorEl(undefined);
       }}
     >
       Explore Tan&apos;s theorem
@@ -254,7 +255,13 @@ export default function SettingsMenu(props: SettingsMenuProps): JSX.Element {
 
             <GroupDivider />
 
-            <Grid container direction="column">
+            <Grid
+              container
+              direction="column"
+              justify="space-between"
+              // alignItems="stretch"
+              spacing={1}
+            >
               <Grid
                 container
                 direction="row"
@@ -269,8 +276,16 @@ export default function SettingsMenu(props: SettingsMenuProps): JSX.Element {
                   <AboutButton />
                 </Grid>
               </Grid>
-              <Grid item style={{ margin: 'auto' }}>
-                <TanButton />
+              <Grid
+                container
+                direction="row"
+                justify="space-between"
+                // alignItems="stretch"
+                spacing={1}
+              >
+                <Grid item style={{ margin: 'auto' }}>
+                  <TanButton />
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

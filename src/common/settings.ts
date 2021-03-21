@@ -8,7 +8,6 @@ export type settingsDefinitionsType = {
   showMinimap: boolean;
   showCrosshair: boolean;
   showCoordinates: boolean;
-  showMisiurewiczPoints: boolean;
   shadeMisiurewiczDomains: boolean;
   rotateWhileZooming: boolean;
   showOrbit: boolean;
@@ -24,7 +23,6 @@ export const defaultSettings: settingsDefinitionsType = {
   showMinimap: true,
   showCrosshair: true,
   showCoordinates: false,
-  showMisiurewiczPoints: false,
   shadeMisiurewiczDomains: false,
   rotateWhileZooming: false,
   showOrbit: false,

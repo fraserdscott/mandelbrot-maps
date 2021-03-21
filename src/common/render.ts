@@ -52,6 +52,7 @@ export interface MandelbrotRendererProps extends RendererProps {
   showCrosshair: boolean;
   animationState: AnimationStatus;
   showOrbit: boolean;
+  showTan: boolean;
   align: (z: number) => void;
   orbitInfo: [orbit: XYType[], prePeriod: number, period: number, flag: OrbitFlag];
 }

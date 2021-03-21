@@ -145,7 +145,7 @@ export default function MandelbrotRenderer({
           <WebGLCanvas
             id="mandelbrot-canvas"
             fragShader={
-              settings.showMisiurewiczPoints &&
+              props.showTan &&
               settings.shadeMisiurewiczDomains &&
               props.animationState === AnimationStatus.SELECT_MANDELBROT_POINT
                 ? fragShaderMisiurewiczDomain
