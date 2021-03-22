@@ -522,8 +522,3 @@ export const generateJuliaMarkers = (
 
   return mapMarkers;
 };
-
-export const parsePoint = (s: string): XYType => {
-  const commaSeperated = s.split(',');
-  return [parseFloat(commaSeperated[0]), parseFloat(commaSeperated[1])];
-};

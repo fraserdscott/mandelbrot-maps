@@ -1,20 +1,21 @@
 import { Select } from '@material-ui/core';
 import React from 'react';
 import { SimilarPointsListProps } from '../../common/tans';
-import { XYType } from '../../common/types';
-import { formatComplexNumber, PreperiodicPoint, parsePoint } from './tansTheoremUtils';
+import { formatComplexNumber, PreperiodicPoint } from './tansTheoremUtils';
 
 const SimilarPointsList = (props: SimilarPointsListProps): JSX.Element => {
   const handleSimilarPointSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const chosenPoint: XYType = parsePoint(event.target.value as string);
+    const identifier = event.target.value as string;
 
-    const newPoint = new PreperiodicPoint(
-      props.focusedPointMandelbrot.point,
-      chosenPoint,
-      true,
-    );
+    let chosen: PreperiodicPoint = props.similarPointsJulia[0];
+    for (let i = 0; i < props.similarPointsJulia.length; i++) {
+      if (props.similarPointsJulia[i].point.toString() === identifier) {
+        chosen = props.similarPointsJulia[i];
+        break;
+      }
+    }
 
-    props.handleSimilarPointSelection(newPoint);
+    props.handleSimilarPointSelection(chosen);
   };
 
   return (

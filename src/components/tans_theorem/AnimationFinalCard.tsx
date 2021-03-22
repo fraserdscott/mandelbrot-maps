@@ -6,6 +6,7 @@ import { misiurewiczPairs } from './MPoints';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
 
 export enum AnimationStatus {
+  INTRO = -1,
   SELECT_MANDELBROT_POINT = 0,
   SELECT_JULIA_POINT = 1,
   ZOOM_M = 2,

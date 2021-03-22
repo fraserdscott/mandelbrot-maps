@@ -101,3 +101,15 @@ export interface SimilarityMenuProps {
   similarPointsJulia: PreperiodicPoint[];
   backButton: () => JSX.Element;
 }
+
+export interface IntroCardProps {
+  show: boolean;
+  mandelbrot: ViewerControlSprings;
+  julia: ViewerControlSprings;
+  animationState: AnimationStatus;
+  setAnimationState: React.Dispatch<React.SetStateAction<AnimationStatus>>;
+  focusedPointMandelbrot: PreperiodicPoint;
+  focusedPointJulia: PreperiodicPoint;
+  handleMandelbrotSelection: (focusedPointMandelbrot: PreperiodicPoint) => void;
+  quitButton: () => JSX.Element;
+}

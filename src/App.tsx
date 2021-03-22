@@ -64,6 +64,7 @@ import MisiurewiczMarkersManager from './components/tans_theorem/MisiurewiczMark
 import JuliaMarkersManager from './components/tans_theorem/JuliaMarkersManager';
 import ZoomMenu from './components/tans_theorem/ZoomMenu';
 import PlayCard from './components/tans_theorem/PlayCard';
+import IntroCard from './components/tans_theorem/IntroCard';
 
 const defaultP: XYType = [-0.10109636384562218, +0.9562865108091414];
 const defaultMisiurewiczPoint = new PreperiodicPoint(defaultP, defaultP, false);
@@ -241,7 +242,19 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
   const toggleHelp = () => setOpenHelp((i) => !i);
 
   const [showTan, setShowTan] = useState(false);
-  const toggleTan = () => setShowTan(true);
+  const toggleTan = () => {
+    setShowTan(true);
+    warpToPoint(mandelbrotControls, {
+      xy: [0, 0],
+      z: 0.5,
+      theta: 0,
+    });
+    warpToPoint(juliaControls, {
+      xy: [0, 0],
+      z: 0.5,
+      theta: 0,
+    });
+  };
   const handleQuit = () => setShowTan(false);
 
   // [showMandelbrot, showJulia]
@@ -252,9 +265,7 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
 
   // const { settings } = useSettings();
 
-  const [animationState, setAnimationState] = React.useState(
-    AnimationStatus.SELECT_MANDELBROT_POINT,
-  );
+  const [animationState, setAnimationState] = React.useState(AnimationStatus.INTRO);
   const [magnification, setMagnification] = React.useState<number>(1);
   const [focusedPointMandelbrot, setFocusedPointMandelbrot] = useState(
     defaultMisiurewiczPoint,
@@ -386,6 +397,19 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
                   pointerEvents: 'all',
                 }}
               >
+                {animationState === AnimationStatus.INTRO ? (
+                  <IntroCard
+                    show={true}
+                    mandelbrot={mandelbrotControls}
+                    julia={juliaControls}
+                    animationState={animationState}
+                    setAnimationState={setAnimationState}
+                    focusedPointMandelbrot={focusedPointMandelbrot}
+                    focusedPointJulia={focusedPointJulia}
+                    handleMandelbrotSelection={handleMisiurewiczPointSelection}
+                    quitButton={QuitButton}
+                  />
+                ) : null}
                 {animationState === AnimationStatus.SELECT_MANDELBROT_POINT ? (
                   settings.shadeMisiurewiczDomains ? (
                     <MisiurewiczDomainsMenu
@@ -459,6 +483,7 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
             show={
               showTan &&
               [
+                AnimationStatus.INTRO,
                 AnimationStatus.SELECT_MANDELBROT_POINT,
                 AnimationStatus.SELECT_JULIA_POINT,
                 AnimationStatus.ZOOM_M,

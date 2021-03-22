@@ -14,7 +14,10 @@ function getSteps(
   cj: PreperiodicPoint,
   animationState: AnimationStatus,
 ) {
-  if (animationState === AnimationStatus.SELECT_MANDELBROT_POINT) {
+  if (
+    animationState === AnimationStatus.SELECT_MANDELBROT_POINT ||
+    animationState === AnimationStatus.INTRO
+  ) {
     return [
       ['Select point in M', `?`],
       ['Select point in J', `?`],

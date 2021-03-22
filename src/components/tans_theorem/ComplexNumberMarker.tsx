@@ -9,8 +9,8 @@ const BUTTON_SIZE = 40;
 const BUTTON_OFFSET_X = (3 * BUTTON_SIZE) / 4;
 const BUTTON_OFFSET_Y = BUTTON_SIZE / 4;
 
-const FOCUSED_POINT_COLOR = '#FF5588';
-const UNFOCUSED_POINT_COLOR = '#00FFFF';
+const FOCUSED_POINT_COLOR = '#f21616';
+const UNFOCUSED_POINT_COLOR = '#edeb4e';
 
 const complexToWindow = (
   m: XYType,

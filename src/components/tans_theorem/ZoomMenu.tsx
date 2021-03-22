@@ -31,6 +31,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   };
 
   const icons = {
+    '-1': 'null',
     0: 'null',
     1: 'null',
     2: <ZoomInIcon />,
@@ -41,6 +42,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   };
 
   const titleStrings = {
+    '-1': 'null',
     0: 'null',
     1: 'null',
     2: 'Magnify M by',
@@ -51,6 +53,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   };
 
   const factorText = {
+    '-1': 'null',
     0: 'null',
     1: 'null',
     2: `|${formatComplexNumber(props.focusedPointMandelbrot.factor, 1)}| = ${Math.round(
@@ -70,6 +73,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   };
 
   const factorTextExpanded = {
+    '-1': 'null',
     0: 'null',
     1: 'null',
     2: `|u'(c)| = |${formatComplexNumber(props.focusedPointMandelbrot.factor, 2)}| = ${
@@ -90,6 +94,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   };
 
   const paragraph1 = {
+    '-1': 'null',
     0: 'null',
     1: 'null',
     2: `The complex number, u'(c), used to "align" the Mandelbrot set is the following:`,
@@ -100,6 +105,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   };
 
   const paragraph2 = {
+    '-1': 'null',
     0: 'null',
     1: 'null',
     2: `To magnify, we take the magnitude of u'(c), so the magnification factor is:`,
@@ -110,6 +116,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   };
 
   const numberText = {
+    '-1': 'null',
     0: 'null',
     1: 'null',
     2: `u'(c) = ${formatComplexNumber(props.focusedPointMandelbrot.factor, 2)}`,
@@ -120,6 +127,7 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
   };
 
   const dialogText = {
+    '-1': 'null',
     0: 'null',
     1: 'null',
     2: `The Mandelbrot set magnification factor`,
@@ -168,8 +176,8 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
               }}
             >
               For the full details on calculating the magnification and rotation factors
-              for each set, read &quot;Similarity Between the Mandelbrot Set and Julia
-              Sets&quot;, Tan, page 609.
+              for each set, read &quot; Lei Tan, Similarity Between the Mandelbrot Set and
+              Julia Sets&quot;, 1990, page 609.
             </Typography>
           </div>
         </DialogContent>

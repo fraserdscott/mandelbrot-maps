@@ -1,18 +1,23 @@
 import { Select } from '@material-ui/core';
 import React from 'react';
 import { MisiurewiczPointsListProps } from '../../common/tans';
-import { XYType } from '../../common/types';
 import { warpToPoint } from '../../common/utils';
-import { formatComplexNumber, PreperiodicPoint, parsePoint } from './tansTheoremUtils';
+import { formatComplexNumber, PreperiodicPoint } from './tansTheoremUtils';
 import { MISIUREWICZ_POINTS } from './AnimationFinalCard';
 
 const MisiurewiczPointsList = (props: MisiurewiczPointsListProps): JSX.Element => {
   const handleMandelbrotPointSelection = (
     event: React.ChangeEvent<{ value: unknown }>,
   ) => {
-    const chosenPoint: XYType = parsePoint(event.target.value as string);
+    const identifier = event.target.value as string;
 
-    const chosenMisiurewicz = new PreperiodicPoint(chosenPoint, chosenPoint, false);
+    let chosenMisiurewicz: PreperiodicPoint = MISIUREWICZ_POINTS[0];
+    for (let i = 0; i < MISIUREWICZ_POINTS.length; i++) {
+      if (MISIUREWICZ_POINTS[i].point.toString() === identifier) {
+        chosenMisiurewicz = MISIUREWICZ_POINTS[i];
+        break;
+      }
+    }
 
     props.handleMandelbrotSelection(chosenMisiurewicz);
     warpToPoint(props.mandelbrot, {
@@ -33,7 +38,7 @@ const MisiurewiczPointsList = (props: MisiurewiczPointsListProps): JSX.Element =
       }}
     >
       {MISIUREWICZ_POINTS.map((m) => (
-        <option key={m.point.toString()} value={m.point.toString()}>
+        <option key={m.toString()} value={m.point.toString()}>
           {m.toString()} = {formatComplexNumber(m.point)}
         </option>
       ))}

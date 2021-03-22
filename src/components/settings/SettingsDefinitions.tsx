@@ -45,7 +45,7 @@ and allows warping to specific coordinates
     `,
   },
   shadeMisiurewiczDomains: {
-    label: 'Select using Misiurewicz domains',
+    label: 'Select using domains',
     value: settings.shadeMisiurewiczDomains,
     control: <Switch />,
     helptext: `
