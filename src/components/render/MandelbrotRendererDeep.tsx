@@ -80,6 +80,7 @@ export default function MandelbrotRendererDeep({
     theta: theta,
     maxI: maxI,
     colour: Rgb255ColourToFloat(colour), // vec3(0.0,0.6,1.0)
+    // screenScaleMultiplier: screenScaleMultiplier,
   };
 
   const [dragging, setDragging] = useState(false);

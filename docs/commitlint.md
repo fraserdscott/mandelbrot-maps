@@ -1,5 +1,4 @@
 (from [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint/blob/master/@commitlint/config-conventional/README.md))
-
 > Lint your conventional commits
 
 # @commitlint/config-conventional
