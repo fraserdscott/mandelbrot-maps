@@ -1,7 +1,7 @@
 import { Button, Card, Grow, Typography, Grid } from '@material-ui/core';
 import React from 'react';
 import { MisiurewiczDomainsMenuProps } from '../../common/tans';
-import { AnimationStatus } from './MisiurewiczModeFragment';
+import { AnimationStatus } from './AnimationFinalCard';
 import { warpToPoint } from '../../common/utils';
 
 const MisiurewiczDomainsMenu = (props: MisiurewiczDomainsMenuProps): JSX.Element => {

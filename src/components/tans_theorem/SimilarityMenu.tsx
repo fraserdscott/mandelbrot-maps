@@ -1,7 +1,7 @@
 import { Button, Card, Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import { SimilarityMenuProps } from '../../common/tans';
-import { AnimationStatus } from './MisiurewiczModeFragment';
+import { AnimationStatus } from './AnimationFinalCard';
 import SimilarPointsList from './SimilarPointsList';
 import { warpToPoint } from '../../common/utils';
 

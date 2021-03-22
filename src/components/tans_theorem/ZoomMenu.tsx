@@ -1,14 +1,14 @@
 import { Button, Typography, Card, Grid } from '@material-ui/core';
 import React from 'react';
 import { ZoomCardProps } from '../../common/tans';
-import { AnimationStatus } from './MisiurewiczModeFragment';
+import { AnimationStatus } from './AnimationFinalCard';
 import { warpToPoint } from '../../common/utils';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import RotateRightIcon from '@material-ui/icons/RotateRight';
 import { ThetaType, ZoomType } from '../../common/types';
 import { formatAngle, formatComplexNumber } from './tansTheoremUtils';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
+import { DialogContent, DialogDivider, DialogTitle } from '../custom/DialogComponents';
 
 const INITIAL_ZOOM = 1;
 
@@ -143,32 +143,36 @@ const ZoomMenu = (props: ZoomCardProps): JSX.Element => {
         aria-labelledby="simple-dialog-title"
         open={open}
       >
-        <DialogTitle id="simple-dialog-title">
+        <DialogTitle onClose={handleClose}>
+          {icons[props.animationState]}
           {dialogText[props.animationState]}
         </DialogTitle>
-        <div style={{ margin: 16 }}>
-          <Typography>
-            To show the similarity between the Mandelbrot and Julia set, we multiply every
-            point in each set by a particular complex number. Geometrically, multiplying
-            two complex numbers is equivalent to multiplying their magnitudes and adding
-            their angles. That&apos;s why we magnify and rotate in this animation!
-          </Typography>
-          <br />
-          <Typography>{paragraph1[props.animationState]}</Typography>
-          <Typography>{numberText[props.animationState]}</Typography>
-          <Typography>{paragraph2[props.animationState]}</Typography>
-          <Typography>{factorTextExpanded[props.animationState]}</Typography>
-          <br />
-          <Typography
-            style={{
-              fontSize: '0.8rem',
-            }}
-          >
-            For the full details on calculating the magnification and rotation factors for
-            each set, read &quot;Similarity Between the Mandelbrot Set and Julia
-            Sets&quot;, Tan, page 609.
-          </Typography>
-        </div>
+        <DialogContent dividers>
+          <div style={{ margin: 16 }}>
+            <Typography>
+              To show the similarity between the Mandelbrot and Julia set, we multiply
+              every point in each set by a particular complex number. Geometrically,
+              multiplying two complex numbers is equivalent to multiplying their
+              magnitudes and adding their angles. That&apos;s why we magnify and rotate in
+              this animation!
+            </Typography>
+            <DialogDivider />
+            <Typography>{paragraph1[props.animationState]}</Typography>
+            <Typography>{numberText[props.animationState]}</Typography>
+            <Typography>{paragraph2[props.animationState]}</Typography>
+            <Typography>{factorTextExpanded[props.animationState]}</Typography>
+            <DialogDivider />
+            <Typography
+              style={{
+                fontSize: '0.8rem',
+              }}
+            >
+              For the full details on calculating the magnification and rotation factors
+              for each set, read &quot;Similarity Between the Mandelbrot Set and Julia
+              Sets&quot;, Tan, page 609.
+            </Typography>
+          </div>
+        </DialogContent>
       </Dialog>
     );
   }

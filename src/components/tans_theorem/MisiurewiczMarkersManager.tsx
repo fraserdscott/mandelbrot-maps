@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MandelbrotManagerProps } from '../../common/tans';
 import { generateMandelbrotMarkers } from './tansTheoremUtils';
-import { MISIUREWICZ_POINTS } from './MisiurewiczModeFragment';
+import { MISIUREWICZ_POINTS } from './AnimationFinalCard';
 
 const MisiurewiczMarkersManager = (props: MandelbrotManagerProps): JSX.Element => {
   const [markers, setMarkers] = useState([<div key={0} />]);

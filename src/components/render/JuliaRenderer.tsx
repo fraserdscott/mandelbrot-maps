@@ -3,14 +3,14 @@ import { useGesture } from 'react-use-gesture';
 import { JuliaRendererProps } from '../../common/render';
 import { MandelbrotMapsWebGLUniforms } from '../../common/types';
 import {
-  synchronisedTouchBind,
-  frozoneTouchBind,
+  synchronisedZoomTouchBind,
+  frozenTouchBind,
   genericTouchBind,
   Rgb255ColourToFloat,
 } from '../../common/utils';
 import newSmoothJuliaShader from '../../shaders/newSmoothJuliaShader';
 import { SettingsContext } from '../settings/SettingsContext';
-import { AnimationStatus } from '../tans_theorem/MisiurewiczModeFragment';
+import { AnimationStatus } from '../tans_theorem/AnimationFinalCard';
 import MinimapViewer from './MinimapViewer';
 import WebGLCanvas from './WebGLCanvas';
 
@@ -55,7 +55,7 @@ export default function JuliaRenderer({
     AnimationStatus.ROTATE_M,
     AnimationStatus.ROTATE_J,
   ].includes(props.animationState)
-    ? frozoneTouchBind({
+    ? frozenTouchBind({
         domTarget: canvasRef,
         controls: props.controls,
         setDragging: setDragging,
@@ -63,7 +63,7 @@ export default function JuliaRenderer({
         precision: precision,
       })
     : props.animationState === AnimationStatus.PLAY
-    ? synchronisedTouchBind({
+    ? synchronisedZoomTouchBind({
         domTarget: canvasRef,
         controls: props.controls,
         setDragging: setDragging,

@@ -4,9 +4,9 @@ import { MandelbrotRendererProps } from '../../common/render';
 import { MandelbrotMapsWebGLUniforms } from '../../common/types';
 import {
   genericTouchBind,
-  synchronisedTouchBind,
+  synchronisedZoomTouchBind,
   Rgb255ColourToFloat,
-  frozoneTouchBind,
+  frozenTouchBind,
 } from '../../common/utils';
 import newSmoothMandelbrotShader, {
   miniCrosshair,
@@ -17,7 +17,7 @@ import FPSCard from '../info/FPSCard';
 import { SettingsContext } from '../settings/SettingsContext';
 import MinimapViewer from './MinimapViewer';
 import WebGLCanvas from './WebGLCanvas';
-import { AnimationStatus } from '../tans_theorem/MisiurewiczModeFragment';
+import { AnimationStatus } from '../tans_theorem/AnimationFinalCard';
 
 export default function MandelbrotRenderer({
   precision,
@@ -90,7 +90,7 @@ export default function MandelbrotRenderer({
     AnimationStatus.ROTATE_M,
     AnimationStatus.ROTATE_J,
   ].includes(props.animationState)
-    ? frozoneTouchBind({
+    ? frozenTouchBind({
         domTarget: canvasRef,
         controls: props.controls,
         setDragging: setDragging,
@@ -98,7 +98,7 @@ export default function MandelbrotRenderer({
         precision: precision,
       })
     : props.animationState === AnimationStatus.PLAY
-    ? synchronisedTouchBind({
+    ? synchronisedZoomTouchBind({
         domTarget: canvasRef,
         controls: props.controls,
         setDragging: setDragging,

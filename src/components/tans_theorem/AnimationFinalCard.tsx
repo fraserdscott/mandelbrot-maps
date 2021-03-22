@@ -1,9 +1,8 @@
 import React from 'react';
-import { MisiurewiczModeFragmentProps } from '../../common/tans';
+import { AnimationFinalCardProps } from '../../common/tans';
 import { Card, Grid, IconButton, Typography, Box } from '@material-ui/core';
 import { PreperiodicPoint } from './tansTheoremUtils';
 import { misiurewiczPairs } from './MPoints';
-import { XYType } from '../../common/types';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
 
 export enum AnimationStatus {
@@ -21,12 +20,7 @@ export const MISIUREWICZ_POINTS: PreperiodicPoint[] = misiurewiczPairs
   .map((p) => new PreperiodicPoint(p, p, false))
   .sort((a, b) => a.factorMagnitude - b.factorMagnitude);
 
-export const parsePoint = (s: string): XYType => {
-  const commaSeperated = s.split(',');
-  return [parseFloat(commaSeperated[0]), parseFloat(commaSeperated[1])];
-};
-
-const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Element => {
+const AnimationFinalCard = (props: AnimationFinalCardProps): JSX.Element => {
   const BackButton = () => {
     return (
       <IconButton style={{ width: 50 }} onClick={props.handleReset}>
@@ -67,4 +61,4 @@ const MisiurewiczModeFragment = (props: MisiurewiczModeFragmentProps): JSX.Eleme
   );
 };
 
-export default MisiurewiczModeFragment;
+export default AnimationFinalCard;

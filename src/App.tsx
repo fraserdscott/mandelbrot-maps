@@ -38,9 +38,9 @@ import {
 import CoordinateInterface from './components/info/CoordinateInterface';
 import FirstTimeInfo from './components/info/FirstTimeInfo';
 import InfoDialog from './components/info/InfoDialog';
-import MisiurewiczModeFragment, {
+import AnimationFinalCard, {
   AnimationStatus,
-} from './components/tans_theorem/MisiurewiczModeFragment';
+} from './components/tans_theorem/AnimationFinalCard';
 import JuliaRenderer from './components/render/JuliaRenderer';
 // import 'typeface-roboto';
 import MandelbrotRenderer from './components/render/MandelbrotRenderer';
@@ -411,11 +411,11 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
                     />
                   )
                 ) : null}
-                <MisiurewiczModeFragment
+                <AnimationFinalCard
                   animationState={animationState}
                   handleReset={handleReset}
                 />
-                {showTan && animationState === AnimationStatus.SELECT_JULIA_POINT ? (
+                {animationState === AnimationStatus.SELECT_JULIA_POINT ? (
                   <SimilarityMenu
                     show={showTan}
                     julia={juliaControls}
@@ -427,8 +427,7 @@ function App({ settings }: { settings: settingsDefinitionsType }): JSX.Element {
                     backButton={BackButton}
                   />
                 ) : null}
-                {showTan &&
-                [
+                {[
                   AnimationStatus.ZOOM_M,
                   AnimationStatus.ZOOM_J,
                   AnimationStatus.ROTATE_M,

@@ -2,8 +2,7 @@ import { Select } from '@material-ui/core';
 import React from 'react';
 import { SimilarPointsListProps } from '../../common/tans';
 import { XYType } from '../../common/types';
-import { formatComplexNumber, PreperiodicPoint } from './tansTheoremUtils';
-import { parsePoint } from './MisiurewiczModeFragment';
+import { formatComplexNumber, PreperiodicPoint, parsePoint } from './tansTheoremUtils';
 
 const SimilarPointsList = (props: SimilarPointsListProps): JSX.Element => {
   const handleSimilarPointSelection = (event: React.ChangeEvent<{ value: unknown }>) => {

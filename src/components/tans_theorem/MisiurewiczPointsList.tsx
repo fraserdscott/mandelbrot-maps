@@ -3,8 +3,8 @@ import React from 'react';
 import { MisiurewiczPointsListProps } from '../../common/tans';
 import { XYType } from '../../common/types';
 import { warpToPoint } from '../../common/utils';
-import { formatComplexNumber, PreperiodicPoint } from './tansTheoremUtils';
-import { MISIUREWICZ_POINTS, parsePoint } from './MisiurewiczModeFragment';
+import { formatComplexNumber, PreperiodicPoint, parsePoint } from './tansTheoremUtils';
+import { MISIUREWICZ_POINTS } from './AnimationFinalCard';
 
 const MisiurewiczPointsList = (props: MisiurewiczPointsListProps): JSX.Element => {
   const handleMandelbrotPointSelection = (

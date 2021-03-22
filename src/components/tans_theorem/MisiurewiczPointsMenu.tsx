@@ -1,7 +1,7 @@
 import { Button, Card, Grow, Typography, Grid } from '@material-ui/core';
 import React from 'react';
 import { InfoCardProps } from '../../common/tans';
-import { AnimationStatus } from './MisiurewiczModeFragment';
+import { AnimationStatus } from './AnimationFinalCard';
 import MisiurewiczPointsList from './MisiurewiczPointsList';
 import { warpToPoint } from '../../common/utils';
 

@@ -7,7 +7,7 @@ import {
   round,
 } from './tansTheoremUtils';
 import { SimilarityAnimationProps } from '../../common/tans';
-import { AnimationStatus } from './MisiurewiczModeFragment';
+import { AnimationStatus } from './AnimationFinalCard';
 
 function getSteps(
   c: PreperiodicPoint,

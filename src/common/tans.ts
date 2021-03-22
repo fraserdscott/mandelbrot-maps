@@ -1,8 +1,8 @@
-import { AnimationStatus } from '../components/tans_theorem/MisiurewiczModeFragment';
+import { AnimationStatus } from '../components/tans_theorem/AnimationFinalCard';
 import { PreperiodicPoint } from '../components/tans_theorem/tansTheoremUtils';
 import { ViewerControlSprings } from './types';
 
-export interface MisiurewiczModeFragmentProps {
+export interface AnimationFinalCardProps {
   animationState: AnimationStatus;
   handleReset: () => void;
 }

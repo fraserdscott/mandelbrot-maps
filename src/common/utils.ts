@@ -354,7 +354,7 @@ export function genericTouchBind({
   };
 }
 
-export function synchronisedTouchBind({
+export function synchronisedZoomTouchBind({
   domTarget,
   controls,
   setDragging,
@@ -469,7 +469,7 @@ export function synchronisedTouchBind({
   };
 }
 
-export function frozoneTouchBind({
+export function frozenTouchBind({
   domTarget,
   controls,
 }: GenericTouchBindParams): GenericTouchBindReturn {
