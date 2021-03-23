@@ -44,7 +44,7 @@ const IntroCard = (props: IntroCardProps): JSX.Element => {
               variant="h6"
               gutterBottom
             >
-              Welcome to the Tans theorem visualizer!
+              Welcome to the Tans theorem explorer!
             </Typography>
           </Grid>
         </Grid>
